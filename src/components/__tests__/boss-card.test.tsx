@@ -1,0 +1,257 @@
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+} from '@testing-library/react-native';
+import { Alert } from 'react-native';
+import type { TestInstance } from 'test-renderer';
+
+import type { AppContextValue } from '../../contexts/app-context';
+import { getTranslationDictionary } from '../../i18n';
+import { lightTheme } from '../../theme';
+import { BossCard } from '../boss-card';
+
+interface ControlledVoidPromise {
+  promise: Promise<void>;
+  reject: (reason?: unknown) => void;
+  resolve: () => void;
+}
+
+const translations = getTranslationDictionary('en');
+const markBossDefeated = jest.fn<
+  ReturnType<AppContextValue['markBossDefeated']>,
+  Parameters<AppContextValue['markBossDefeated']>
+>();
+const markBossNotDefeated = jest.fn<
+  ReturnType<AppContextValue['markBossNotDefeated']>,
+  Parameters<AppContextValue['markBossNotDefeated']>
+>();
+let mockAppState: Pick<
+  AppContextValue,
+  'markBossDefeated' | 'markBossNotDefeated' | 'theme' | 'translations'
+> = {
+  markBossDefeated,
+  markBossNotDefeated,
+  theme: lightTheme,
+  translations,
+};
+
+jest.mock('../../hooks/use-app', () => ({
+  useApp: jest.fn(() => mockAppState),
+}));
+
+function createControlledVoidPromise(): ControlledVoidPromise {
+  let rejectPromise: (reason?: unknown) => void = () => undefined;
+  let resolvePromise: () => void = () => undefined;
+  const promise = new Promise<void>((resolve, reject) => {
+    rejectPromise = reject;
+    resolvePromise = () => resolve();
+  });
+
+  return {
+    promise,
+    reject: rejectPromise,
+    resolve: resolvePromise,
+  };
+}
+
+function getPressHandler(instance: TestInstance): () => Promise<void> {
+  let fiber = instance.unstable_fiber;
+
+  while (fiber !== null) {
+    const props: unknown = fiber.memoizedProps;
+
+    if (typeof props === 'object' && props !== null && 'onPress' in props) {
+      const onPress = props.onPress;
+
+      if (typeof onPress === 'function') {
+        return async (): Promise<void> => {
+          await onPress();
+        };
+      }
+    }
+
+    fiber = fiber.return;
+  }
+
+  throw new Error('Press handler not found.');
+}
+
+beforeEach(() => {
+  jest.clearAllMocks();
+  markBossDefeated.mockResolvedValue();
+  markBossNotDefeated.mockResolvedValue();
+  mockAppState = {
+    markBossDefeated,
+    markBossNotDefeated,
+    theme: lightTheme,
+    translations,
+  };
+});
+
+afterEach(() => {
+  jest.restoreAllMocks();
+});
+
+describe('BossCard', () => {
+  it('shows the non-defeated state and action text accessibly', async () => {
+    await render(
+      <BossCard
+        id="test-boss"
+        isDefeated={false}
+        location="Test Location"
+        name="Test Boss"
+      />,
+    );
+
+    expect(screen.getByText('Test Boss')).toBeOnTheScreen();
+    expect(screen.getByText('Test Location')).toBeOnTheScreen();
+    expect(screen.getByText(translations.region.notDefeatedStatus)).toBeOnTheScreen();
+    expect(
+      screen.getByRole('button', {
+        name: translations.region.markAsDefeated,
+      }),
+    ).toBeEnabled();
+    expect(
+      screen.getByLabelText(
+        translations.region.bossCardAccessibility(
+          'Test Boss',
+          'Test Location',
+          translations.region.notDefeatedStatus,
+        ),
+      ),
+    ).toBeOnTheScreen();
+  });
+
+  it('shows the defeated state and undo action text', async () => {
+    await render(
+      <BossCard
+        id="test-boss"
+        isDefeated
+        location="Test Location"
+        name="Test Boss"
+      />,
+    );
+
+    expect(screen.getByText(translations.region.defeatedStatus)).toBeOnTheScreen();
+    expect(
+      screen.getByRole('button', {
+        name: translations.region.markAsNotDefeated,
+      }),
+    ).toBeEnabled();
+  });
+
+  it.each([
+    {
+      isDefeated: false,
+      actionLabel: translations.region.markAsDefeated,
+      expectedAction: markBossDefeated,
+      otherAction: markBossNotDefeated,
+    },
+    {
+      isDefeated: true,
+      actionLabel: translations.region.markAsNotDefeated,
+      expectedAction: markBossNotDefeated,
+      otherAction: markBossDefeated,
+    },
+  ])(
+    'calls the correct progress action when isDefeated is $isDefeated',
+    async ({ actionLabel, expectedAction, isDefeated, otherAction }) => {
+      await render(
+        <BossCard
+          id="test-boss"
+          isDefeated={isDefeated}
+          location="Test Location"
+          name="Test Boss"
+        />,
+      );
+
+      await fireEvent.press(screen.getByRole('button', { name: actionLabel }));
+
+      expect(expectedAction).toHaveBeenCalledWith('test-boss');
+      expect(otherAction).not.toHaveBeenCalled();
+    },
+  );
+
+  it('shows processing state and blocks repeated presses while pending', async () => {
+    const controlledAction = createControlledVoidPromise();
+    markBossDefeated.mockImplementation(() => controlledAction.promise);
+
+    await render(
+      <BossCard
+        id="test-boss"
+        isDefeated={false}
+        location="Test Location"
+        name="Test Boss"
+      />,
+    );
+    const button = screen.getByRole('button', {
+      name: translations.region.markAsDefeated,
+    });
+    const onPress = getPressHandler(button);
+
+    await act(() => {
+      void onPress();
+      void onPress();
+    });
+
+    expect(markBossDefeated).toHaveBeenCalledTimes(1);
+    expect(button).toBeDisabled();
+    expect(button.props.accessibilityState).toMatchObject({
+      busy: true,
+      disabled: true,
+    });
+    expect(screen.getByText(translations.region.saving)).toBeOnTheScreen();
+
+    await act(async () => {
+      controlledAction.resolve();
+      await controlledAction.promise;
+    });
+
+    expect(button).toBeEnabled();
+    expect(button.props.accessibilityState).toMatchObject({
+      busy: false,
+      disabled: false,
+    });
+  });
+
+  it('reports a rejected action and preserves the previous visual state', async () => {
+    const controlledAction = createControlledVoidPromise();
+    const alertSpy = jest.spyOn(Alert, 'alert').mockImplementation(() => undefined);
+    markBossDefeated.mockImplementation(() => controlledAction.promise);
+
+    await render(
+      <BossCard
+        id="test-boss"
+        isDefeated={false}
+        location="Test Location"
+        name="Test Boss"
+      />,
+    );
+    const button = screen.getByRole('button', {
+      name: translations.region.markAsDefeated,
+    });
+    const onPress = getPressHandler(button);
+
+    await act(() => {
+      void onPress();
+    });
+    await act(async () => {
+      controlledAction.reject(new Error('technical failure details'));
+      await controlledAction.promise.catch(() => undefined);
+    });
+
+    expect(alertSpy).toHaveBeenCalledWith(
+      translations.region.updateErrorTitle,
+      translations.region.updateErrorMessage,
+    );
+    expect(screen.getByText(translations.region.notDefeatedStatus)).toBeOnTheScreen();
+    expect(
+      screen.getByRole('button', {
+        name: translations.region.markAsDefeated,
+      }),
+    ).toBeEnabled();
+    expect(screen.queryByText('technical failure details')).toBeNull();
+  });
+});

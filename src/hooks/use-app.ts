@@ -1,0 +1,16 @@
+import { useContext } from 'react';
+
+import {
+  AppContext,
+  type AppContextValue,
+} from '../contexts/app-context';
+
+export function useApp(): AppContextValue {
+  const context = useContext(AppContext);
+
+  if (context === undefined) {
+    throw new Error('useApp must be used within an AppProvider.');
+  }
+
+  return context;
+}

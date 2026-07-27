@@ -1,0 +1,15 @@
+export const palette = {
+  agedGold: '#826B32',
+  lightGold: '#D2B765',
+  mossGreen: '#5F713B',
+  darkGreen: '#263520',
+  earthyBrown: '#76543A',
+  darkBrown: '#342A22',
+  parchmentBeige: '#E8DDC4',
+  lightBeige: '#F7F1E3',
+  gray: '#8A877F',
+  darkGray: '#24231F',
+  black: '#11100E',
+  white: '#FFFDF7',
+  mutedRed: '#9A443F',
+} as const;

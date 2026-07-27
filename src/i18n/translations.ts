@@ -1,0 +1,263 @@
+import type { Language } from '../types/settings';
+import type { TranslationDictionary } from './types';
+
+export const ptBRTranslations: TranslationDictionary = {
+  app: {
+    name: 'Elden Ring Companion',
+    description: 'Aplicativo não oficial para acompanhar o progresso dos chefes derrotados.',
+  },
+  navigation: {
+    home: 'Início',
+    bosses: 'Chefes',
+    settings: 'Configurações',
+    allRegions: 'Todas as regiões',
+    drawerDescription: 'Rastreador não oficial feito por fãs.',
+    expandBosses: 'Expandir regiões de chefes',
+    collapseBosses: 'Recolher regiões de chefes',
+    noRegions: 'Nenhuma região disponível.',
+    selected: 'Selecionado',
+  },
+  home: {
+    title: 'Progresso',
+    description: 'Acompanhe seu avanço pelos encontros de chefes.',
+    totalProgress: 'Progresso total',
+    defeatedBosses: 'Chefes derrotados',
+    progressByRegion: 'Progresso por região',
+    availableRegions: 'Regiões disponíveis',
+    noProgress: 'Nenhum progresso registrado.',
+    noRegions: 'Ainda não há regiões disponíveis.',
+    totalProgressAccessibility: (defeated, total, percentage) =>
+      `Progresso total: ${percentage}%. ${defeated} de ${total} chefes derrotados.`,
+    regionProgressAccessibility: (
+      regionName,
+      defeated,
+      total,
+      percentage,
+    ) =>
+      `${regionName}: ${percentage}%. ${defeated} de ${total} chefes derrotados.`,
+  },
+  bosses: {
+    title: 'Chefes',
+    description: 'Selecione uma região para consultar e atualizar seus encontros.',
+    regionList: 'Lista de regiões',
+    noRegions: 'Ainda não há regiões disponíveis.',
+    openRegion: (regionName) => `Abrir a região ${regionName}`,
+    regionProgress: (defeated, total, percentage) =>
+      `${defeated} de ${total} derrotados, ${percentage}%`,
+  },
+  region: {
+    progress: 'Progresso da região',
+    search: 'Buscar',
+    searchPlaceholder: 'Busque por nome ou localização',
+    all: 'Todos',
+    defeated: 'Derrotados',
+    notDefeated: 'Não derrotados',
+    markAsDefeated: 'Marcar como derrotado',
+    markAsNotDefeated: 'Marcar como não derrotado',
+    noBossesFound: 'Nenhum chefe encontrado.',
+    defeatedStatus: 'Derrotado',
+    notDefeatedStatus: 'Não derrotado',
+    saving: 'Salvando...',
+    updateErrorTitle: 'Não foi possível alterar o progresso',
+    updateErrorMessage: 'Tente novamente em alguns instantes.',
+    notFoundTitle: 'Região não encontrada',
+    notFoundMessage: 'A região solicitada não está disponível.',
+    back: 'Voltar',
+    resultCount: (count) =>
+      count === 1 ? '1 resultado encontrado' : `${count} resultados encontrados`,
+    progressAccessibility: (regionName, defeated, total, percentage) =>
+      `Progresso de ${regionName}: ${defeated} de ${total} chefes derrotados, ${percentage}%.`,
+    bossCardAccessibility: (bossName, location, status) =>
+      `${bossName}, localização ${location}, estado ${status}.`,
+  },
+  settings: {
+    title: 'Configurações',
+    description: 'Personalize o idioma e a aparência do aplicativo.',
+    language: 'Idioma',
+    languageDescription: 'Escolha o idioma usado em toda a interface.',
+    portuguese: 'Português',
+    portugueseDescription: 'Usar a interface em português do Brasil.',
+    english: 'English',
+    englishDescription: 'Usar a interface em inglês.',
+    theme: 'Tema',
+    themeDescription: 'Escolha como as cores do aplicativo serão exibidas.',
+    system: 'Sistema',
+    systemDescription: 'Acompanhar o tema claro ou escuro do aparelho.',
+    light: 'Claro',
+    lightDescription: 'Usar sempre o tema claro.',
+    dark: 'Escuro',
+    darkDescription: 'Usar sempre o tema escuro.',
+    selected: 'Selecionado',
+    saving: 'Salvando configuração...',
+    saveErrorTitle: 'Não foi possível salvar a configuração',
+    saveErrorMessage: 'Tente novamente em alguns instantes.',
+    progressManagement: 'Gerenciamento de progresso',
+    progressManagementDescription:
+      'Zere o progresso para marcar todos os chefes como não derrotados.',
+    defeatedBossCount: (count) =>
+      count === 1
+        ? '1 chefe derrotado atualmente'
+        : `${count} chefes derrotados atualmente`,
+    resetProgress: 'Zerar progresso',
+    resettingProgress: 'Zerando progresso...',
+    resetProgressDescription: 'Remove do aparelho todos os chefes marcados como derrotados.',
+  },
+  resetConfirmation: {
+    title: 'Zerar progresso?',
+    message:
+      'Todo o progresso dos chefes será removido. O idioma e o tema serão preservados. Esta ação não poderá ser desfeita.',
+    cancel: 'Cancelar',
+    confirm: 'Confirmar',
+    success: 'Progresso zerado com sucesso.',
+    errorTitle: 'Não foi possível zerar o progresso',
+    errorMessage: 'Seu progresso foi preservado. Tente novamente.',
+  },
+  placeholders: {
+    homeMessage: 'O resumo do progresso será implementado nas próximas etapas.',
+    bossesMessage: 'A lista de chefes e regiões será implementada nas próximas etapas.',
+    settingsMessage: 'Os controles de idioma, tema e progresso serão implementados nas próximas etapas.',
+    initializationErrorMessage: 'Não foi possível carregar os dados do aplicativo. Tente novamente.',
+  },
+  common: {
+    baseGame: 'Jogo base',
+    expansion: 'Shadow of the Erdtree',
+    loading: 'Carregando',
+    error: 'Ocorreu um erro',
+    tryAgain: 'Tentar novamente',
+    yes: 'Sim',
+    no: 'Não',
+  },
+};
+
+export const enTranslations: TranslationDictionary = {
+  app: {
+    name: 'Elden Ring Companion',
+    description: 'An unofficial app for tracking progress through defeated bosses.',
+  },
+  navigation: {
+    home: 'Home',
+    bosses: 'Bosses',
+    settings: 'Settings',
+    allRegions: 'All regions',
+    drawerDescription: 'Unofficial fan-made tracker.',
+    expandBosses: 'Expand boss regions',
+    collapseBosses: 'Collapse boss regions',
+    noRegions: 'No regions available.',
+    selected: 'Selected',
+  },
+  home: {
+    title: 'Progress',
+    description: 'Track your progress through boss encounters.',
+    totalProgress: 'Total progress',
+    defeatedBosses: 'Defeated bosses',
+    progressByRegion: 'Progress by region',
+    availableRegions: 'Available regions',
+    noProgress: 'No progress recorded.',
+    noRegions: 'There are no regions available yet.',
+    totalProgressAccessibility: (defeated, total, percentage) =>
+      `Total progress: ${percentage}%. ${defeated} of ${total} bosses defeated.`,
+    regionProgressAccessibility: (
+      regionName,
+      defeated,
+      total,
+      percentage,
+    ) =>
+      `${regionName}: ${percentage}%. ${defeated} of ${total} bosses defeated.`,
+  },
+  bosses: {
+    title: 'Bosses',
+    description: 'Select a region to review and update its encounters.',
+    regionList: 'Region list',
+    noRegions: 'There are no regions available yet.',
+    openRegion: (regionName) => `Open ${regionName}`,
+    regionProgress: (defeated, total, percentage) =>
+      `${defeated} of ${total} defeated, ${percentage}%`,
+  },
+  region: {
+    progress: 'Region progress',
+    search: 'Search',
+    searchPlaceholder: 'Search by name or location',
+    all: 'All',
+    defeated: 'Defeated',
+    notDefeated: 'Not defeated',
+    markAsDefeated: 'Mark as defeated',
+    markAsNotDefeated: 'Mark as not defeated',
+    noBossesFound: 'No bosses found.',
+    defeatedStatus: 'Defeated',
+    notDefeatedStatus: 'Not defeated',
+    saving: 'Saving...',
+    updateErrorTitle: 'Unable to update progress',
+    updateErrorMessage: 'Please try again in a moment.',
+    notFoundTitle: 'Region not found',
+    notFoundMessage: 'The requested region is not available.',
+    back: 'Go back',
+    resultCount: (count) =>
+      count === 1 ? '1 result found' : `${count} results found`,
+    progressAccessibility: (regionName, defeated, total, percentage) =>
+      `${regionName} progress: ${defeated} of ${total} bosses defeated, ${percentage}%.`,
+    bossCardAccessibility: (bossName, location, status) =>
+      `${bossName}, location ${location}, status ${status}.`,
+  },
+  settings: {
+    title: 'Settings',
+    description: 'Customize the application language and appearance.',
+    language: 'Language',
+    languageDescription: 'Choose the language used throughout the interface.',
+    portuguese: 'Portuguese',
+    portugueseDescription: 'Use the interface in Brazilian Portuguese.',
+    english: 'English',
+    englishDescription: 'Use the interface in English.',
+    theme: 'Theme',
+    themeDescription: 'Choose how the application colors are displayed.',
+    system: 'System',
+    systemDescription: 'Follow the device light or dark theme.',
+    light: 'Light',
+    lightDescription: 'Always use the light theme.',
+    dark: 'Dark',
+    darkDescription: 'Always use the dark theme.',
+    selected: 'Selected',
+    saving: 'Saving setting...',
+    saveErrorTitle: 'Unable to save setting',
+    saveErrorMessage: 'Please try again in a moment.',
+    progressManagement: 'Progress management',
+    progressManagementDescription:
+      'Reset progress to mark every boss as not defeated.',
+    defeatedBossCount: (count) =>
+      count === 1
+        ? '1 boss currently defeated'
+        : `${count} bosses currently defeated`,
+    resetProgress: 'Reset progress',
+    resettingProgress: 'Resetting progress...',
+    resetProgressDescription: 'Removes all bosses marked as defeated from this device.',
+  },
+  resetConfirmation: {
+    title: 'Reset progress?',
+    message:
+      'All boss progress will be removed. Language and theme will be preserved. This action cannot be undone.',
+    cancel: 'Cancel',
+    confirm: 'Confirm',
+    success: 'Progress reset successfully.',
+    errorTitle: 'Unable to reset progress',
+    errorMessage: 'Your progress was preserved. Please try again.',
+  },
+  placeholders: {
+    homeMessage: 'The progress overview will be implemented in the next steps.',
+    bossesMessage: 'The boss and region lists will be implemented in the next steps.',
+    settingsMessage: 'Language, theme, and progress controls will be implemented in the next steps.',
+    initializationErrorMessage: 'The application data could not be loaded. Please try again.',
+  },
+  common: {
+    baseGame: 'Base game',
+    expansion: 'Shadow of the Erdtree',
+    loading: 'Loading',
+    error: 'An error occurred',
+    tryAgain: 'Try again',
+    yes: 'Yes',
+    no: 'No',
+  },
+};
+
+export const translations: Record<Language, TranslationDictionary> = {
+  'pt-BR': ptBRTranslations,
+  en: enTranslations,
+};
