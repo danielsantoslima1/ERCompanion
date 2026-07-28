@@ -6,6 +6,7 @@ import {
   countBosses,
   countBossesByRegion,
   findBossById,
+  findBossWithRegion,
   findRegionById,
   getBossesByRegion,
   sortRegions,
@@ -77,6 +78,29 @@ describe('data selectors', () => {
 
   it('returns undefined for an unknown boss ID', () => {
     expect(findBossById(bosses, 'missing-boss')).toBeUndefined();
+  });
+
+  it('finds a boss together with its referenced region', () => {
+    expect(findBossWithRegion(bosses, regions, 'boss-b')).toEqual({
+      boss: bosses[1],
+      region: regions[1],
+    });
+  });
+
+  it('does not resolve a missing boss or a boss with an unknown region', () => {
+    const orphanBoss: BossEncounter = {
+      id: 'orphan-boss',
+      name: { 'pt-BR': 'Órfão', en: 'Orphan' },
+      location: { 'pt-BR': 'Local', en: 'Location' },
+      regionId: 'missing-region',
+    };
+
+    expect(
+      findBossWithRegion(bosses, regions, 'missing-boss'),
+    ).toBeUndefined();
+    expect(
+      findBossWithRegion([orphanBoss], regions, orphanBoss.id),
+    ).toBeUndefined();
   });
 
   it('gets only bosses from the requested region', () => {

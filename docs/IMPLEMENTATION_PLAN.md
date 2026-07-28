@@ -176,3 +176,15 @@ Concluída: o catálogo real passou a alimentar Drawer, Home, página geral e p�
 A revisão manual no Expo Go confirmou os 26 registros regionais, os 208 encontros, agrupamentos, navegação, busca, filtros, persistência, reset, idiomas, temas, estados vazios e unidades especiais de acompanhamento. Nenhuma correção visual ou funcional foi necessária. O progresso de teste foi removido, idioma e tema foram preservados e o servidor Expo foi encerrado.
 
 Próxima etapa: planejar a tela de detalhes dos encontros e, posteriormente, iniciar a pesquisa e modelagem dos itens do jogo.
+
+# Etapa da tela de detalhes dos encontros
+
+Implementação e revisão manual concluídas com sucesso no Expo Go. A rota `app/bosses/[bossId].tsx` exibe os dados estruturados já aprovados, mantém um único progresso por encontro e separa participantes, fases, summons e auxiliares. Os cartões regionais possuem uma ação explícita de detalhes independente do controle de progresso.
+
+Durante a revisão manual, o retorno do detalhe caiu na Home porque região e detalhe eram telas irmãs do Drawer, sem uma pilha entre elas. A navegação foi corrigida com uma Stack raiz e o Drawer em `(drawer)`. O detalhe agora é empilhado sobre a região; cabeçalho, botão físico e gesto retornam pela mesma pilha. A ação adicional de retorno regional foi removida, e acessos diretos usam a região do encontro como fallback seguro.
+
+Uma revisão seguinte encontrou `Unmatched Route` na sequência Bosses → All regions → Home. A causa era o uso de `/(drawer)/index` como caminho público. A correção substituiu URLs globais e `push` do menu pelos nomes registrados no Drawer: `index`, `bosses`, `settings` e `regions/[regionId]`. Home, All regions, Settings e os 26 destinos regionais foram validados sem novas ocorrências conhecidas de `Unmatched Route`.
+
+Foram validados manualmente os dados básicos e opcionais dos detalhes, o progresso e sua sincronização, os encontros especiais, os estados simples, os dois idiomas, os três temas, o retorno padrão e físico para a região e a preservação da lista. O progresso de revisão foi removido, deixando `0/208`. Catálogo, armazenamento e formato de progresso não foram alterados.
+
+Próxima etapa: planejar a pesquisa e a modelagem dos itens do jogo, reutilizando as 26 regiões já aprovadas.

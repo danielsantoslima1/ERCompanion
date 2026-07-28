@@ -33,6 +33,12 @@ O reset grava a mesma versão com uma lista vazia. Idioma e tema permanecem em s
 
 O Drawer contém Home, Bosses, All regions, os grupos expansíveis Base game e Shadow of the Erdtree, suas 16 e dez regiões dinâmicas, e Settings. Uma rota regional expande automaticamente Bosses e o grupo correspondente.
 
+Durante a revisão manual posterior à criação da Stack raiz, a sequência Bosses → All regions → Home abriu `Unmatched Route`. O componente usava `/(drawer)/index` como URL global, embora `(drawer)` seja apenas o grupo estrutural e `index` seja o nome interno da tela.
+
+Todos os itens passaram a usar o navegador Drawer diretamente: `index` para Home, `bosses` para All regions, `settings` para Settings e `regions/[regionId]` para cada região. Os destinos não são relativos, não dependem da rota atual e não empilham uma nova Home quando ela já está ativa.
+
+A correção foi validada no Expo Go a partir de Home, All regions, Settings, páginas regionais e detalhes. A sequência Bosses → All regions → Home abre diretamente a Home, os 26 destinos regionais são válidos e não existem ocorrências conhecidas de `Unmatched Route`.
+
 ## Home
 
 A Home calcula progresso total sobre 208 encontros e mostra as 26 regiões, separadas por conteúdo e ordenadas por `displayOrder`. IDs desconhecidos armazenados não entram nas contagens.
@@ -81,8 +87,12 @@ A revisão manual foi concluída com sucesso. Foram verificados:
 - Promised Consort Radahn como uma batalha única com fases;
 - independência dos dois Jagged Peak Drakes.
 
-Nenhuma correção visual ou funcional foi necessária. O progresso usado na revisão foi removido ao final, idioma e tema foram preservados e o servidor Expo foi encerrado. A migração versionada funcionou corretamente e os dados `sample-*` não fazem parte do fluxo de produção.
+Nenhuma correção visual ou funcional adicional foi necessária durante a revisão final. O progresso usado na revisão foi removido ao final, deixando `0/208`; idioma e tema foram preservados. A migração versionada funcionou corretamente e os dados `sample-*` não fazem parte do fluxo de produção.
+
+A tela de detalhes também foi validada manualmente, incluindo dados básicos, seções opcionais, progresso, casos especiais, idiomas e temas. O retorno padrão do cabeçalho e do Android volta para a região de origem. A Stack raiz contém o Drawer interno e empilha os detalhes sobre a região; a ação duplicada de retorno foi removida. Catálogo, armazenamento e formato de progresso permaneceram inalterados.
 
 ## Próxima etapa
 
-Planejar a tela de detalhes dos encontros e, posteriormente, iniciar a pesquisa e modelagem dos itens do jogo.
+A tela de detalhes está concluída sobre o catálogo integrado, sem adicionar dados externos nem alterar registros aprovados. Cada cartão regional oferece navegação explícita, e a rota resolve encontro e região por IDs permanentes. Seções opcionais são renderizadas apenas quando há dados.
+
+Próxima etapa: planejar a pesquisa e a modelagem dos itens do jogo, reutilizando as 26 regiões já aprovadas.

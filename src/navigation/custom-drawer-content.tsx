@@ -2,7 +2,7 @@ import {
   DrawerContentScrollView,
   type DrawerContentComponentProps,
 } from '@react-navigation/drawer';
-import { router, usePathname } from 'expo-router';
+import { usePathname } from 'expo-router';
 import {
   useCallback,
   useEffect,
@@ -12,7 +12,12 @@ import {
 } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { getRegionsByContentPack, regions } from '../data';
+import {
+  bosses,
+  findBossWithRegion,
+  getRegionsByContentPack,
+  regions,
+} from '../data';
 import { useApp } from '../hooks/use-app';
 import { getLocalizedText } from '../i18n';
 
@@ -86,11 +91,19 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
   const pathname = usePathname();
   const { language, theme, translations } = useApp();
   const isBossRoute =
-    pathname === '/bosses' || pathname.startsWith('/regions/');
+    pathname === '/bosses' ||
+    pathname.startsWith('/bosses/') ||
+    pathname.startsWith('/regions/');
   const [isBossesExpanded, setIsBossesExpanded] = useState(isBossRoute);
-  const activeRegion = regions.find(
+  const routeRegion = regions.find(
     (region) => pathname === `/regions/${region.id}`,
   );
+  const detailBossId = pathname.startsWith('/bosses/')
+    ? pathname.slice('/bosses/'.length)
+    : '';
+  const activeRegion =
+    routeRegion ??
+    findBossWithRegion(bosses, regions, detailBossId)?.region;
   const [isBaseGameExpanded, setIsBaseGameExpanded] = useState(
     activeRegion?.contentPack === 'base-game',
   );
@@ -129,13 +142,16 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
   }, [props.navigation]);
 
   const navigateTo = useCallback(
-    (destination: '/' | '/bosses' | '/settings') => {
+    (
+      routeName: 'index' | 'bosses' | 'settings',
+      destination: '/' | '/bosses' | '/settings',
+    ) => {
       if (pathname !== destination) {
-        router.navigate(destination);
+        props.navigation.navigate(routeName);
       }
       closeDrawer();
     },
-    [closeDrawer, pathname],
+    [closeDrawer, pathname, props.navigation],
   );
 
   const navigateToRegion = useCallback(
@@ -143,14 +159,11 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
       const destination = `/regions/${regionId}`;
 
       if (pathname !== destination) {
-        router.push({
-          pathname: '/regions/[regionId]',
-          params: { regionId },
-        });
+        props.navigation.navigate('regions/[regionId]', { regionId });
       }
       closeDrawer();
     },
-    [closeDrawer, pathname],
+    [closeDrawer, pathname, props.navigation],
   );
 
   const toggleBosses = useCallback(() => {
@@ -195,7 +208,7 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
         <DrawerItem
           isSelected={pathname === '/'}
           label={translations.navigation.home}
-          onPress={() => navigateTo('/')}
+          onPress={() => navigateTo('index', '/')}
         />
 
         <Pressable
@@ -265,7 +278,7 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
               isNested
               isSelected={pathname === '/bosses'}
               label={translations.navigation.allRegions}
-              onPress={() => navigateTo('/bosses')}
+              onPress={() => navigateTo('bosses', '/bosses')}
             />
 
             {regionGroups.baseGame.length + regionGroups.expansion.length ===
@@ -325,7 +338,7 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
         <DrawerItem
           isSelected={pathname === '/settings'}
           label={translations.navigation.settings}
-          onPress={() => navigateTo('/settings')}
+          onPress={() => navigateTo('settings', '/settings')}
         />
       </View>
     </DrawerContentScrollView>

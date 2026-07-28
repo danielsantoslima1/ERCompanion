@@ -75,6 +75,38 @@ export const ptBRTranslations: TranslationDictionary = {
     bossCardAccessibility: (bossName, location, status) =>
       `${bossName}, localização ${location}, estado ${status}.`,
   },
+  bossDetails: {
+    details: 'Detalhes',
+    viewDetails: 'Ver detalhes',
+    viewDetailsFor: (bossName) => `Ver detalhes de ${bossName}`,
+    region: 'Região',
+    location: 'Localização',
+    availability: 'Disponibilidade',
+    status: 'Status',
+    defeated: 'Derrotado',
+    notDefeated: 'Não derrotado',
+    bossBarNames: 'Nomes nas barras',
+    participants: 'Participantes',
+    phases: 'Fases',
+    summons: 'Summons',
+    supportingEnemies: 'Inimigos auxiliares',
+    encounterNotFound: 'Encontro não encontrado',
+    encounterNotFoundMessage:
+      'O encontro solicitado não está disponível.',
+    back: 'Voltar',
+    singleEncounter: 'Encontro único',
+    sameProgressUnit:
+      'Todas as fases pertencem à mesma unidade de progresso.',
+    variableComposition: 'Composição variável',
+    variableParticipantCount: (count) =>
+      count === 1
+        ? '1 participante variável'
+        : `${count} participantes variáveis`,
+    participantCount: (count) =>
+      count === 1 ? '1 participante principal' : `${count} participantes principais`,
+    participantRange: (minimum, maximum) =>
+      `${minimum} a ${maximum} participantes principais`,
+  },
   settings: {
     title: 'Configurações',
     description: 'Personalize o idioma e a aparência do aplicativo.',
@@ -207,6 +239,38 @@ export const enTranslations: TranslationDictionary = {
       `${regionName} progress: ${defeated} of ${total} bosses defeated, ${percentage}%.`,
     bossCardAccessibility: (bossName, location, status) =>
       `${bossName}, location ${location}, status ${status}.`,
+  },
+  bossDetails: {
+    details: 'Details',
+    viewDetails: 'View details',
+    viewDetailsFor: (bossName) => `View details for ${bossName}`,
+    region: 'Region',
+    location: 'Location',
+    availability: 'Availability',
+    status: 'Status',
+    defeated: 'Defeated',
+    notDefeated: 'Not defeated',
+    bossBarNames: 'Boss bar names',
+    participants: 'Participants',
+    phases: 'Phases',
+    summons: 'Summons',
+    supportingEnemies: 'Supporting enemies',
+    encounterNotFound: 'Encounter not found',
+    encounterNotFoundMessage:
+      'The requested encounter is not available.',
+    back: 'Go back',
+    singleEncounter: 'Single encounter',
+    sameProgressUnit:
+      'Every phase belongs to the same progress unit.',
+    variableComposition: 'Variable composition',
+    variableParticipantCount: (count) =>
+      count === 1
+        ? '1 variable participant'
+        : `${count} variable participants`,
+    participantCount: (count) =>
+      count === 1 ? '1 main participant' : `${count} main participants`,
+    participantRange: (minimum, maximum) =>
+      `${minimum} to ${maximum} main participants`,
   },
   settings: {
     title: 'Settings',

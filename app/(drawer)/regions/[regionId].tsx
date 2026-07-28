@@ -113,6 +113,12 @@ export default function RegionScreen() {
         location={item.localizedLocation}
         availability={item.localizedAvailability}
         name={item.localizedName}
+        onViewDetails={() =>
+          router.push({
+            pathname: '/bosses/[bossId]',
+            params: { bossId: item.id },
+          })
+        }
       />
     ),
     [],

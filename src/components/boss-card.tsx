@@ -1,14 +1,7 @@
-import { useCallback, useRef, useState } from 'react';
-import {
-  ActivityIndicator,
-  Alert,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { useApp } from '../hooks/use-app';
+import { BossProgressButton } from './boss-progress-button';
 
 interface BossCardProps {
   id: string;
@@ -16,6 +9,7 @@ interface BossCardProps {
   location: string;
   availability?: string;
   isDefeated: boolean;
+  onViewDetails?: () => void;
 }
 
 export function BossCard({
@@ -24,51 +18,12 @@ export function BossCard({
   location,
   availability,
   isDefeated,
+  onViewDetails,
 }: BossCardProps) {
-  const {
-    markBossDefeated,
-    markBossNotDefeated,
-    theme,
-    translations,
-  } = useApp();
-  const [isSaving, setIsSaving] = useState(false);
-  const savingRef = useRef(false);
+  const { theme, translations } = useApp();
   const status = isDefeated
     ? translations.region.defeatedStatus
     : translations.region.notDefeatedStatus;
-  const actionLabel = isDefeated
-    ? translations.region.markAsNotDefeated
-    : translations.region.markAsDefeated;
-
-  const handlePress = useCallback(async () => {
-    if (savingRef.current) {
-      return;
-    }
-
-    savingRef.current = true;
-    setIsSaving(true);
-    try {
-      if (isDefeated) {
-        await markBossNotDefeated(id);
-      } else {
-        await markBossDefeated(id);
-      }
-    } catch {
-      Alert.alert(
-        translations.region.updateErrorTitle,
-        translations.region.updateErrorMessage,
-      );
-    } finally {
-      savingRef.current = false;
-      setIsSaving(false);
-    }
-  }, [
-    id,
-    isDefeated,
-    markBossDefeated,
-    markBossNotDefeated,
-    translations,
-  ]);
 
   return (
     <View
@@ -116,63 +71,33 @@ export function BossCard({
         </Text>
       </View>
 
-      <Pressable
-        accessibilityLabel={actionLabel}
-        accessibilityRole="button"
-        accessibilityState={{ busy: isSaving, disabled: isSaving }}
-        disabled={isSaving}
-        onPress={handlePress}
-        style={({ pressed }) => [
-          styles.button,
-          {
-            backgroundColor: isDefeated
-              ? theme.colors.surfaceElevated
-              : theme.colors.primary,
-            borderColor: isDefeated
-              ? theme.colors.success
-              : theme.colors.primary,
-            borderRadius: theme.borderRadius.medium,
-            opacity: pressed || isSaving ? 0.7 : 1,
-            paddingHorizontal: theme.spacing.medium,
-            paddingVertical: theme.spacing.small,
-          },
-        ]}>
-        {isSaving ? (
-          <View style={styles.buttonContent}>
-            <ActivityIndicator
-              color={
-                isDefeated
-                  ? theme.colors.success
-                  : theme.colors.primaryContrast
-              }
-              size="small"
-            />
-            <Text
-              style={[
-                styles.buttonText,
-                {
-                  color: isDefeated
-                    ? theme.colors.success
-                    : theme.colors.primaryContrast,
-                },
-              ]}>
-              {translations.region.saving}
-            </Text>
-          </View>
-        ) : (
-          <Text
-            style={[
-              styles.buttonText,
+      <View style={{ gap: theme.spacing.small }}>
+        {onViewDetails ? (
+          <Pressable
+            accessibilityLabel={translations.bossDetails.viewDetailsFor(name)}
+            accessibilityRole="button"
+            onPress={onViewDetails}
+            style={({ pressed }) => [
+              styles.detailsButton,
               {
-                color: isDefeated
-                  ? theme.colors.success
-                  : theme.colors.primaryContrast,
+                borderColor: theme.colors.primary,
+                borderRadius: theme.borderRadius.medium,
+                opacity: pressed ? 0.7 : 1,
+                paddingHorizontal: theme.spacing.medium,
+                paddingVertical: theme.spacing.small,
               },
             ]}>
-            {actionLabel}
+          <Text
+            style={[
+                  styles.buttonText,
+                  { color: theme.colors.primary },
+            ]}>
+                {translations.bossDetails.viewDetails}
           </Text>
-        )}
-      </Pressable>
+          </Pressable>
+        ) : null}
+        <BossProgressButton id={id} isDefeated={isDefeated} />
+      </View>
     </View>
   );
 }
@@ -193,16 +118,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '700',
   },
-  button: {
+  detailsButton: {
     alignItems: 'center',
     borderWidth: 1,
     justifyContent: 'center',
     minHeight: 48,
-  },
-  buttonContent: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: 8,
   },
   buttonText: {
     fontSize: 15,

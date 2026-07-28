@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react-native';
 
-import HomeScreen from '../index';
+import HomeScreen from '../(drawer)/index';
 import type { AppContextValue } from '../../src/contexts/app-context';
 import { getTranslationDictionary } from '../../src/i18n';
 import { lightTheme } from '../../src/theme';

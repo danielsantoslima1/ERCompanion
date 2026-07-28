@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 
-import RegionScreen from '../regions/[regionId]';
+import RegionScreen from '../(drawer)/regions/[regionId]';
 import type { AppContextValue } from '../../src/contexts/app-context';
 import { getTranslationDictionary } from '../../src/i18n';
 import { lightTheme } from '../../src/theme';
@@ -50,6 +50,7 @@ interface MockDataControl {
 }
 
 const mockRouterBack = jest.mocked(router.back);
+const mockRouterPush = jest.mocked(router.push);
 const mockUseLocalSearchParams = jest.mocked(useLocalSearchParams);
 let mockAppState: Pick<
   AppContextValue,
@@ -71,6 +72,7 @@ let mockAppState: Pick<
 jest.mock('expo-router', () => ({
   router: {
     back: jest.fn(),
+    push: jest.fn(),
   },
   useLocalSearchParams: jest.fn(),
 }));
@@ -122,6 +124,24 @@ beforeEach(() => {
 });
 
 describe('RegionScreen', () => {
+  it('opens the selected boss details from its explicit card action', async () => {
+    const translations = getTranslationDictionary('pt-BR');
+    await render(<RegionScreen />);
+
+    await fireEvent.press(
+      screen.getByRole('button', {
+        name: translations.bossDetails.viewDetailsFor('Chefe Alfa'),
+      }),
+    );
+
+    expect(mockRouterPush).toHaveBeenCalledWith({
+      pathname: '/bosses/[bossId]',
+      params: { bossId: 'test-boss-alpha' },
+    });
+    expect(mockAppState.markBossDefeated).not.toHaveBeenCalled();
+    expect(mockAppState.markBossNotDefeated).not.toHaveBeenCalled();
+  });
+
   it('shows localized region progress and every initial boss in Portuguese', async () => {
     const translations = getTranslationDictionary('pt-BR');
 

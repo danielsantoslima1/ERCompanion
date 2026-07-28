@@ -83,6 +83,31 @@ export interface TranslationDictionary {
       status: string,
     ) => string;
   };
+  bossDetails: {
+    details: string;
+    viewDetails: string;
+    viewDetailsFor: (bossName: string) => string;
+    region: string;
+    location: string;
+    availability: string;
+    status: string;
+    defeated: string;
+    notDefeated: string;
+    bossBarNames: string;
+    participants: string;
+    phases: string;
+    summons: string;
+    supportingEnemies: string;
+    encounterNotFound: string;
+    encounterNotFoundMessage: string;
+    back: string;
+    singleEncounter: string;
+    sameProgressUnit: string;
+    variableComposition: string;
+    variableParticipantCount: (count: number) => string;
+    participantCount: (count: number) => string;
+    participantRange: (minimum: number, maximum: number) => string;
+  };
   settings: {
     title: string;
     description: string;

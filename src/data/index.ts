@@ -9,6 +9,7 @@ export {
   countBosses,
   countBossesByRegion,
   findBossById,
+  findBossWithRegion,
   findRegionById,
   getRegionsByContentPack,
   getValidDefeatedBossIds,
@@ -16,10 +17,11 @@ export {
   searchAndFilterBosses,
   sortRegions,
 } from './selectors';
-export type { BossFilter, ProgressSummary } from './selectors';
+export type { BossFilter, BossWithRegion, ProgressSummary } from './selectors';
 export type {
   BossEncounter,
   BossEncounterWithProgress,
   CatalogRegion,
   ContentPack,
+  ParticipantCountRange,
 } from './catalog';

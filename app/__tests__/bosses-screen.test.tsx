@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react-native';
 import { router } from 'expo-router';
 
-import BossesScreen from '../bosses';
+import BossesScreen from '../(drawer)/bosses';
 import type { AppContextValue } from '../../src/contexts/app-context';
 import { getTranslationDictionary } from '../../src/i18n';
 import { lightTheme } from '../../src/theme';

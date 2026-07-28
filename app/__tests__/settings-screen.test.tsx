@@ -6,7 +6,7 @@ import {
 } from '@testing-library/react-native';
 import { Alert } from 'react-native';
 
-import SettingsScreen from '../settings';
+import SettingsScreen from '../(drawer)/settings';
 import type { AppContextValue } from '../../src/contexts/app-context';
 import { getTranslationDictionary } from '../../src/i18n';
 import { lightTheme } from '../../src/theme';

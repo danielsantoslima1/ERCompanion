@@ -13,6 +13,11 @@ export interface ProgressSummary {
   percentage: number;
 }
 
+export interface BossWithRegion {
+  readonly boss: BossEncounter;
+  readonly region: CatalogRegion;
+}
+
 const CONTENT_PACK_ORDER: Readonly<Record<ContentPack, number>> = {
   'base-game': 0,
   'shadow-of-the-erdtree': 1,
@@ -55,6 +60,17 @@ export function findBossById(
   bossId: string,
 ): BossEncounter | undefined {
   return bossList.find((boss) => boss.id === bossId);
+}
+
+export function findBossWithRegion(
+  bossList: readonly BossEncounter[],
+  regionList: readonly CatalogRegion[],
+  bossId: string,
+): BossWithRegion | undefined {
+  const boss = findBossById(bossList, bossId);
+  if (!boss) return undefined;
+  const region = findRegionById(regionList, boss.regionId);
+  return region ? { boss, region } : undefined;
 }
 
 export function countBosses(bossList: readonly BossEncounter[]): number {

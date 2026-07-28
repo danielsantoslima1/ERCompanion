@@ -634,3 +634,17 @@ A revisão manual no Expo Go foi concluída com sucesso. Home, agrupamentos, Dra
 O progresso usado nos testes manuais foi removido, idioma e tema foram preservados e o servidor Expo foi encerrado. A integração está concluída com 26 regiões e 208 encontros ativos, migração versionada operacional e ausência de dados `sample-*` no fluxo de produção.
 
 Próxima etapa: planejar a tela de detalhes dos encontros e, posteriormente, iniciar a pesquisa e modelagem dos itens do jogo.
+
+## Tela de detalhes dos encontros
+
+Cada encontro possui uma rota baseada em seu ID permanente. A tela apresenta nome, região, localização, disponibilidade opcional, estado e controle único de progresso. Participantes, fases, summons, auxiliares e nomes de barra aparecem somente quando os campos aprovados do catálogo fornecerem informação relevante.
+
+A navegação parte de uma ação explícita no cartão regional, independente do botão de progresso. IDs inválidos recebem estado seguro e localizado. Nenhuma recompensa, estratégia, fraqueza, resistência, imagem ou descrição externa foi adicionada.
+
+A revisão manual da tela de detalhes foi concluída com sucesso no Expo Go. Nome, região, localização, disponibilidade, status, progresso, participantes, fases, summons, auxiliares, idiomas e temas foram validados. Spiritcaller Snail, Promised Consort Radahn, Demi-Human Chiefs, Needle Knight Leda and Allies e Fia's Champions mantêm as unidades de acompanhamento aprovadas.
+
+O retorno dos detalhes foi corrigido com uma Stack raiz que contém o Drawer e empilha o detalhe sobre a região. Cabeçalho, botão físico e gesto retornam à região de origem; o acesso direto usa fallback seguro e a ação duplicada de retorno foi removida. A sequência Bosses → All regions → Home também foi corrigida: o Drawer usa os nomes registrados `index`, `bosses`, `settings` e `regions/[regionId]`, sem tratar o grupo estrutural `(drawer)` como URL pública.
+
+Home, Settings, All regions e os 26 destinos regionais foram conferidos. Não existem ocorrências conhecidas de `Unmatched Route`. O progresso da revisão foi removido e o estado final ficou em `0/208`; catálogo, armazenamento e formato de progresso não foram alterados. A tela de detalhes está concluída.
+
+Próxima etapa: planejar a pesquisa e a modelagem dos itens do jogo, reutilizando as 26 regiões já aprovadas.

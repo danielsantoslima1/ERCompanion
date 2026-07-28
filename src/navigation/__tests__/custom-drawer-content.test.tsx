@@ -1,12 +1,12 @@
 import { fireEvent, render, screen } from '@testing-library/react-native';
 import type { DrawerContentComponentProps } from '@react-navigation/drawer';
-import { router, usePathname } from 'expo-router';
+import { usePathname } from 'expo-router';
 
 import { CustomDrawerContent } from '../custom-drawer-content';
 import type { AppContextValue } from '../../contexts/app-context';
-import { getTranslationDictionary } from '../../i18n';
+import { getLocalizedText, getTranslationDictionary } from '../../i18n';
 import { lightTheme } from '../../theme';
-import type { CatalogRegion } from '../../data/catalog';
+import { catalogRegions, type CatalogRegion } from '../../data/catalog';
 
 const testRegions: readonly CatalogRegion[] = [
   {
@@ -28,9 +28,8 @@ interface MockDataControl {
 }
 
 const closeDrawer = jest.fn<void, []>();
-const mockRouterNavigate = jest.mocked(router.navigate);
-const mockRouterPush = jest.mocked(router.push);
 const mockUsePathname = jest.mocked(usePathname);
+const navigateDrawer = jest.fn();
 let mockPathname = '/';
 let mockAppState: Pick<
   AppContextValue,
@@ -50,10 +49,6 @@ jest.mock('@react-navigation/drawer', () => {
 });
 
 jest.mock('expo-router', () => ({
-  router: {
-    navigate: jest.fn(),
-    push: jest.fn(),
-  },
   usePathname: jest.fn(() => mockPathname),
 }));
 
@@ -92,7 +87,7 @@ function createDrawerProps(): DrawerContentComponentProps {
     },
     navigation: {
       dispatch: jest.fn(),
-      navigate: jest.fn(),
+      navigate: navigateDrawer,
       navigateDeprecated: jest.fn(),
       goBack: jest.fn(),
       reset: jest.fn(),
@@ -127,6 +122,111 @@ beforeEach(() => {
 });
 
 describe('CustomDrawerContent', () => {
+  it('navigates from All regions directly to the Drawer Home route', async () => {
+    const translations = getTranslationDictionary('pt-BR');
+    const view = await render(
+      <CustomDrawerContent {...createDrawerProps()} />,
+    );
+
+    await fireEvent.press(
+      screen.getByRole('button', {
+        name: translations.navigation.expandBosses,
+      }),
+    );
+    await fireEvent.press(
+      screen.getByRole('button', {
+        name: translations.navigation.allRegions,
+      }),
+    );
+    expect(navigateDrawer).toHaveBeenLastCalledWith('bosses');
+
+    mockPathname = '/bosses';
+    await view.rerender(<CustomDrawerContent {...createDrawerProps()} />);
+    await fireEvent.press(
+      screen.getByRole('button', { name: translations.navigation.home }),
+    );
+
+    expect(navigateDrawer).toHaveBeenLastCalledWith('index');
+    expect(
+      navigateDrawer.mock.calls.every(([routeName]) =>
+        ['bosses', 'index'].includes(routeName as string),
+      ),
+    ).toBe(true);
+  });
+
+  it.each(['/regions/test-region-a', '/settings', '/bosses/test-boss'])(
+    'navigates Home from %s using the absolute Drawer route name',
+    async (pathname) => {
+      mockPathname = pathname;
+      const translations = getTranslationDictionary('pt-BR');
+      await render(<CustomDrawerContent {...createDrawerProps()} />);
+
+      await fireEvent.press(
+        screen.getByRole('button', { name: translations.navigation.home }),
+      );
+
+      expect(navigateDrawer).toHaveBeenCalledWith('index');
+    },
+  );
+
+  it('does not navigate again when Home is already active', async () => {
+    const translations = getTranslationDictionary('pt-BR');
+    mockPathname = '/';
+    await render(<CustomDrawerContent {...createDrawerProps()} />);
+
+    await fireEvent.press(
+      screen.getByRole('button', { name: translations.navigation.home }),
+    );
+
+    expect(navigateDrawer).not.toHaveBeenCalled();
+    expect(closeDrawer).toHaveBeenCalledTimes(1);
+  });
+
+  it('navigates from All regions to Settings through its registered route', async () => {
+    const translations = getTranslationDictionary('pt-BR');
+    mockPathname = '/bosses';
+    await render(<CustomDrawerContent {...createDrawerProps()} />);
+
+    await fireEvent.press(
+      screen.getByRole('button', { name: translations.navigation.settings }),
+    );
+
+    expect(navigateDrawer).toHaveBeenCalledWith('settings');
+  });
+
+  it('uses the registered dynamic Drawer route for all 26 regions', async () => {
+    const translations = getTranslationDictionary('pt-BR');
+    mockDataControl.setMockRegions(catalogRegions);
+    await render(<CustomDrawerContent {...createDrawerProps()} />);
+
+    await fireEvent.press(
+      screen.getByRole('button', {
+        name: translations.navigation.expandBosses,
+      }),
+    );
+    await fireEvent.press(
+      screen.getByRole('button', {
+        name: translations.navigation.expandBaseGame,
+      }),
+    );
+    await fireEvent.press(
+      screen.getByRole('button', {
+        name: translations.navigation.expandExpansion,
+      }),
+    );
+
+    for (const region of catalogRegions) {
+      await fireEvent.press(
+        screen.getByRole('button', {
+          name: getLocalizedText(region.name, 'pt-BR'),
+        }),
+      );
+      expect(navigateDrawer).toHaveBeenCalledWith('regions/[regionId]', {
+        regionId: region.id,
+      });
+    }
+  });
+
   it('shows app identity and the collapsed primary menu accessibly', async () => {
     const translations = getTranslationDictionary('pt-BR');
 
@@ -219,7 +319,9 @@ describe('CustomDrawerContent', () => {
       }),
     );
 
-    expect(mockRouterNavigate).toHaveBeenCalledWith(destination);
+    expect(navigateDrawer).toHaveBeenCalledWith(
+      destination === '/' ? 'index' : 'settings',
+    );
     expect(closeDrawer).toHaveBeenCalledTimes(1);
   });
 
@@ -238,7 +340,7 @@ describe('CustomDrawerContent', () => {
       }),
     );
 
-    expect(mockRouterNavigate).toHaveBeenCalledWith('/bosses');
+    expect(navigateDrawer).toHaveBeenCalledWith('bosses');
     expect(closeDrawer).toHaveBeenCalledTimes(1);
   });
 
@@ -260,9 +362,8 @@ describe('CustomDrawerContent', () => {
       screen.getByRole('button', { name: 'Região Teste B' }),
     );
 
-    expect(mockRouterPush).toHaveBeenCalledWith({
-      pathname: '/regions/[regionId]',
-      params: { regionId: 'test-region-b' },
+    expect(navigateDrawer).toHaveBeenCalledWith('regions/[regionId]', {
+      regionId: 'test-region-b',
     });
     expect(closeDrawer).toHaveBeenCalledTimes(1);
   });

@@ -95,6 +95,51 @@ afterEach(() => {
 });
 
 describe('BossCard', () => {
+  it('opens details without changing progress', async () => {
+    const onViewDetails = jest.fn();
+    await render(
+      <BossCard
+        id="test-boss"
+        isDefeated={false}
+        location="Test Location"
+        name="Test Boss"
+        onViewDetails={onViewDetails}
+      />,
+    );
+
+    await fireEvent.press(
+      screen.getByRole('button', {
+        name: translations.bossDetails.viewDetailsFor('Test Boss'),
+      }),
+    );
+
+    expect(onViewDetails).toHaveBeenCalledTimes(1);
+    expect(markBossDefeated).not.toHaveBeenCalled();
+    expect(markBossNotDefeated).not.toHaveBeenCalled();
+  });
+
+  it('changes progress without opening details', async () => {
+    const onViewDetails = jest.fn();
+    await render(
+      <BossCard
+        id="test-boss"
+        isDefeated={false}
+        location="Test Location"
+        name="Test Boss"
+        onViewDetails={onViewDetails}
+      />,
+    );
+
+    await fireEvent.press(
+      screen.getByRole('button', {
+        name: translations.region.markAsDefeated,
+      }),
+    );
+
+    expect(markBossDefeated).toHaveBeenCalledWith('test-boss');
+    expect(onViewDetails).not.toHaveBeenCalled();
+  });
+
   it('shows the non-defeated state and action text accessibly', async () => {
     await render(
       <BossCard
