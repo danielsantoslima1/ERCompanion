@@ -31,7 +31,7 @@ O reset grava a mesma versão com uma lista vazia. Idioma e tema permanecem em s
 
 ## Drawer
 
-O Drawer contém Home, Bosses, All regions, os grupos expansíveis Base game e Shadow of the Erdtree, suas 16 e dez regiões dinâmicas, e Settings. Uma rota regional expande automaticamente Bosses e o grupo correspondente.
+O Drawer contém Home, Bosses, os grupos Base game e Shadow of the Erdtree, All bosses em cada grupo, suas 16 e dez regiões dinâmicas, e Settings. Uma rota regional ou All bosses expande automaticamente Bosses e somente o grupo correspondente.
 
 Durante a revisão manual posterior à criação da Stack raiz, a sequência Bosses → All regions → Home abriu `Unmatched Route`. O componente usava `/(drawer)/index` como URL global, embora `(drawer)` seja apenas o grupo estrutural e `index` seja o nome interno da tela.
 
@@ -41,11 +41,11 @@ A correção foi validada no Expo Go a partir de Home, All regions, Settings, p�
 
 ## Home
 
-A Home calcula progresso total sobre 208 encontros e mostra as 26 regiões, separadas por conteúdo e ordenadas por `displayOrder`. IDs desconhecidos armazenados não entram nas contagens.
+A Home calcula progresso total sobre 208 encontros e mostra somente os cartões Base game e Shadow of the Erdtree, com progresso sobre 165 e 43 encontros. IDs desconhecidos armazenados não entram nas contagens.
 
-## Página geral
+## Todos os chefes
 
-A página geral mostra as 26 regiões agrupadas por conteúdo, com nome localizado, progresso e navegação regional.
+As telas por conteúdo substituem a antiga página geral de regiões. Elas apresentam uma lista única alfabetizada, busca, filtros, progresso e cartões compactos com região e localização.
 
 ## Página regional
 
@@ -96,3 +96,19 @@ A tela de detalhes também foi validada manualmente, incluindo dados básicos, s
 A tela de detalhes está concluída sobre o catálogo integrado, sem adicionar dados externos nem alterar registros aprovados. Cada cartão regional oferece navegação explícita, e a rota resolve encontro e região por IDs permanentes. Seções opcionais são renderizadas apenas quando há dados.
 
 Próxima etapa: planejar a pesquisa e a modelagem dos itens do jogo, reutilizando as 26 regiões já aprovadas.
+
+## Navegação alfabética e listas compactas
+
+A interface passou a ordenar regiões e encontros pelo nome localizado no idioma ativo. A comparação usa `pt-BR` ou `en`, reduz diferenças de caixa e acentos e desempata pelo ID. `displayOrder` continua preservado no catálogo, mas não controla mais a apresentação visual. Fases e demais sequências internas não são reordenadas.
+
+All regions foi removido. O Drawer usa acordeão exclusivo e cada grupo contém All bosses seguido das regiões alfabetizadas. As novas rotas por `contentPack` exibem 165 encontros do jogo base ou 43 da expansão em uma lista única.
+
+A Home apresenta somente dois cartões de conteúdo, além do progresso geral. Cartões regionais foram simplificados, enquanto a tela de detalhes preserva disponibilidade, fases, participantes, summons e auxiliares.
+
+A revisão manual desta etapa foi concluída com sucesso no Expo Go. Foram validados a Home com exatamente dois cards de conteúdo, o Drawer em acordeão, a ordenação localizada em português e inglês, as páginas regionais, as telas All bosses com 165 e 43 encontros, busca, filtros, detalhes, retorno preservado e sincronização do progresso.
+
+Os indicadores `⚔` e `✓` foram confirmados nas listas regionais e por conteúdo como elementos visuais não interativos, sem sobreposição em nomes longos. O padrão horizontal obrigatório de progresso foi validado na Home, nas regiões e nas telas All bosses. Temas Claro, Escuro e Sistema, Finger Ruins of Rhia com `0/0` e `0%` e ausência de rotas inválidas também foram confirmados.
+
+O reset final deixou `0/208`, `0/165` e `0/43`, preservando idioma e tema. Não há problemas conhecidos de navegação nem ocorrências de `Unmatched Route`.
+
+Próxima etapa: Planejar a pesquisa e a modelagem dos itens do jogo, reutilizando as 26 regiões aprovadas e a regra de ordenação alfabética.

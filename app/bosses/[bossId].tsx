@@ -166,7 +166,7 @@ export default function BossDetailScreen() {
           <PrimaryButton
             label={translations.bossDetails.back}
             onPress={() =>
-              router.canGoBack() ? router.back() : router.replace('/bosses')
+              router.canGoBack() ? router.back() : router.replace('/')
             }
           />
         </SafeAreaView>

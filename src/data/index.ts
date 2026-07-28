@@ -3,19 +3,25 @@ export {
   catalogRegions as regions,
 } from './catalog';
 export {
+  calculateContentPackProgress,
   calculateRegionProgress,
   calculateTotalProgress,
   combineBossesWithProgress,
+  compareLocalizedText,
   countBosses,
   countBossesByRegion,
   findBossById,
   findBossWithRegion,
   findRegionById,
+  getBossesByContentPack,
   getRegionsByContentPack,
   getValidDefeatedBossIds,
   getBossesByRegion,
+  isContentPack,
+  searchAndFilterBossesByContentPack,
   searchAndFilterBosses,
-  sortRegions,
+  sortBossesAlphabetically,
+  sortRegionsAlphabetically,
 } from './selectors';
 export type { BossFilter, BossWithRegion, ProgressSummary } from './selectors';
 export type {

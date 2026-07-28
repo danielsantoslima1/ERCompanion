@@ -17,6 +17,7 @@ import {
   findBossWithRegion,
   getRegionsByContentPack,
   regions,
+  type ContentPack,
 } from '../data';
 import { useApp } from '../hooks/use-app';
 import { getLocalizedText } from '../i18n';
@@ -91,9 +92,9 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
   const pathname = usePathname();
   const { language, theme, translations } = useApp();
   const isBossRoute =
-    pathname === '/bosses' ||
     pathname.startsWith('/bosses/') ||
-    pathname.startsWith('/regions/');
+    pathname.startsWith('/regions/') ||
+    pathname.startsWith('/all-bosses/');
   const [isBossesExpanded, setIsBossesExpanded] = useState(isBossRoute);
   const routeRegion = regions.find(
     (region) => pathname === `/regions/${region.id}`,
@@ -104,21 +105,29 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
   const activeRegion =
     routeRegion ??
     findBossWithRegion(bosses, regions, detailBossId)?.region;
+  const activeContentPack: ContentPack | undefined =
+    activeRegion?.contentPack ??
+    (pathname === '/all-bosses/base-game'
+      ? 'base-game'
+      : pathname === '/all-bosses/shadow-of-the-erdtree'
+        ? 'shadow-of-the-erdtree'
+        : undefined);
   const [isBaseGameExpanded, setIsBaseGameExpanded] = useState(
-    activeRegion?.contentPack === 'base-game',
+    activeContentPack === 'base-game',
   );
   const [isExpansionExpanded, setIsExpansionExpanded] = useState(
-    activeRegion?.contentPack === 'shadow-of-the-erdtree',
+    activeContentPack === 'shadow-of-the-erdtree',
   );
   const regionGroups = useMemo(
     () => ({
-      baseGame: getRegionsByContentPack(regions, 'base-game').map((region) => ({
+      baseGame: getRegionsByContentPack(regions, 'base-game', language).map((region) => ({
         id: region.id,
         name: getLocalizedText(region.name, language),
       })),
       expansion: getRegionsByContentPack(
         regions,
         'shadow-of-the-erdtree',
+        language,
       ).map((region) => ({
         id: region.id,
         name: getLocalizedText(region.name, language),
@@ -130,12 +139,10 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
   useEffect(() => {
     if (isBossRoute) {
       setIsBossesExpanded(true);
-      if (activeRegion?.contentPack === 'base-game') setIsBaseGameExpanded(true);
-      if (activeRegion?.contentPack === 'shadow-of-the-erdtree') {
-        setIsExpansionExpanded(true);
-      }
+      setIsBaseGameExpanded(activeContentPack === 'base-game');
+      setIsExpansionExpanded(activeContentPack === 'shadow-of-the-erdtree');
     }
-  }, [activeRegion?.contentPack, isBossRoute, pathname]);
+  }, [activeContentPack, isBossRoute, pathname]);
 
   const closeDrawer = useCallback(() => {
     props.navigation.closeDrawer();
@@ -143,9 +150,12 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
 
   const navigateTo = useCallback(
     (
-      routeName: 'index' | 'bosses' | 'settings',
-      destination: '/' | '/bosses' | '/settings',
+      routeName: 'index' | 'settings',
+      destination: '/' | '/settings',
     ) => {
+      setIsBossesExpanded(false);
+      setIsBaseGameExpanded(false);
+      setIsExpansionExpanded(false);
       if (pathname !== destination) {
         props.navigation.navigate(routeName);
       }
@@ -157,6 +167,12 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
   const navigateToRegion = useCallback(
     (regionId: string) => {
       const destination = `/regions/${regionId}`;
+      const targetRegion = regions.find((region) => region.id === regionId);
+      setIsBossesExpanded(true);
+      setIsBaseGameExpanded(targetRegion?.contentPack === 'base-game');
+      setIsExpansionExpanded(
+        targetRegion?.contentPack === 'shadow-of-the-erdtree',
+      );
 
       if (pathname !== destination) {
         props.navigation.navigate('regions/[regionId]', { regionId });
@@ -166,8 +182,38 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
     [closeDrawer, pathname, props.navigation],
   );
 
+  const navigateToAllBosses = useCallback(
+    (contentPack: ContentPack) => {
+      const destination = `/all-bosses/${contentPack}`;
+      setIsBossesExpanded(true);
+      setIsBaseGameExpanded(contentPack === 'base-game');
+      setIsExpansionExpanded(contentPack === 'shadow-of-the-erdtree');
+      if (pathname !== destination) {
+        props.navigation.navigate('all-bosses/[contentPack]', { contentPack });
+      }
+      closeDrawer();
+    },
+    [closeDrawer, pathname, props.navigation],
+  );
+
   const toggleBosses = useCallback(() => {
-    setIsBossesExpanded((currentValue) => !currentValue);
+    setIsBossesExpanded((currentValue) => {
+      if (currentValue) {
+        setIsBaseGameExpanded(false);
+        setIsExpansionExpanded(false);
+      }
+      return !currentValue;
+    });
+  }, []);
+
+  const toggleContentPack = useCallback((contentPack: ContentPack) => {
+    if (contentPack === 'base-game') {
+      setIsBaseGameExpanded((current) => !current);
+      setIsExpansionExpanded(false);
+    } else {
+      setIsExpansionExpanded((current) => !current);
+      setIsBaseGameExpanded(false);
+    }
   }, []);
 
   return (
@@ -274,13 +320,6 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
 
         {isBossesExpanded ? (
           <View style={{ gap: theme.spacing.small }}>
-            <DrawerItem
-              isNested
-              isSelected={pathname === '/bosses'}
-              label={translations.navigation.allRegions}
-              onPress={() => navigateTo('bosses', '/bosses')}
-            />
-
             {regionGroups.baseGame.length + regionGroups.expansion.length ===
             0 ? (
               <Text
@@ -300,7 +339,13 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
                   ? translations.navigation.collapseBaseGame
                   : translations.navigation.expandBaseGame
               }
-              onToggle={() => setIsBaseGameExpanded((value) => !value)}>
+              onToggle={() => toggleContentPack('base-game')}>
+              <DrawerItem
+                isNested
+                isSelected={pathname === '/all-bosses/base-game'}
+                label={translations.navigation.allBosses}
+                onPress={() => navigateToAllBosses('base-game')}
+              />
               {regionGroups.baseGame.map((region) => (
                 <DrawerItem
                   key={region.id}
@@ -319,7 +364,17 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
                   ? translations.navigation.collapseExpansion
                   : translations.navigation.expandExpansion
               }
-              onToggle={() => setIsExpansionExpanded((value) => !value)}>
+              onToggle={() => toggleContentPack('shadow-of-the-erdtree')}>
+              <DrawerItem
+                isNested
+                isSelected={
+                  pathname === '/all-bosses/shadow-of-the-erdtree'
+                }
+                label={translations.navigation.allBosses}
+                onPress={() =>
+                  navigateToAllBosses('shadow-of-the-erdtree')
+                }
+              />
               {regionGroups.expansion.map((region) => (
                 <DrawerItem
                   key={region.id}

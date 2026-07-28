@@ -18,27 +18,40 @@ export interface BossWithRegion {
   readonly region: CatalogRegion;
 }
 
-const CONTENT_PACK_ORDER: Readonly<Record<ContentPack, number>> = {
-  'base-game': 0,
-  'shadow-of-the-erdtree': 1,
-};
+export function compareLocalizedText(
+  firstText: string,
+  secondText: string,
+  language: Language,
+): number {
+  return firstText.localeCompare(secondText, language, {
+    sensitivity: 'base',
+    usage: 'sort',
+  });
+}
 
-export function sortRegions(
+export function sortRegionsAlphabetically(
   regionList: readonly CatalogRegion[],
+  language: Language,
 ): CatalogRegion[] {
   return [...regionList].sort((firstRegion, secondRegion) => {
-    const packDifference =
-      CONTENT_PACK_ORDER[firstRegion.contentPack] -
-      CONTENT_PACK_ORDER[secondRegion.contentPack];
-    return packDifference || firstRegion.displayOrder - secondRegion.displayOrder;
+    const nameDifference = compareLocalizedText(
+      getLocalizedText(firstRegion.name, language),
+      getLocalizedText(secondRegion.name, language),
+      language,
+    );
+    return nameDifference || firstRegion.id.localeCompare(secondRegion.id);
   });
 }
 
 export function getRegionsByContentPack(
   regionList: readonly CatalogRegion[],
   contentPack: ContentPack,
+  language: Language,
 ): CatalogRegion[] {
-  return sortRegions(regionList.filter((region) => region.contentPack === contentPack));
+  return sortRegionsAlphabetically(
+    regionList.filter((region) => region.contentPack === contentPack),
+    language,
+  );
 }
 
 export function findRegionById(
@@ -53,6 +66,37 @@ export function getBossesByRegion(
   regionId: string,
 ): BossEncounter[] {
   return bossList.filter((boss) => boss.regionId === regionId);
+}
+
+export function getBossesByContentPack(
+  bossList: readonly BossEncounter[],
+  regionList: readonly CatalogRegion[],
+  contentPack: ContentPack,
+): BossEncounter[] {
+  const regionIds = new Set(
+    regionList
+      .filter((region) => region.contentPack === contentPack)
+      .map((region) => region.id),
+  );
+  return bossList.filter((boss) => regionIds.has(boss.regionId));
+}
+
+export function isContentPack(value: string): value is ContentPack {
+  return value === 'base-game' || value === 'shadow-of-the-erdtree';
+}
+
+export function sortBossesAlphabetically<T extends BossEncounter>(
+  bossList: readonly T[],
+  language: Language,
+): T[] {
+  return [...bossList].sort((firstBoss, secondBoss) => {
+    const nameDifference = compareLocalizedText(
+      getLocalizedText(firstBoss.name, language),
+      getLocalizedText(secondBoss.name, language),
+      language,
+    );
+    return nameDifference || firstBoss.id.localeCompare(secondBoss.id);
+  });
 }
 
 export function findBossById(
@@ -101,7 +145,7 @@ export function searchAndFilterBosses(
   language: Language,
 ): BossEncounterWithProgress[] {
   const normalizedQuery = query.trim().toLocaleLowerCase(language);
-  return bossList.filter((boss) => {
+  return sortBossesAlphabetically(bossList.filter((boss) => {
     const matchesFilter =
       filter === 'all' ||
       (filter === 'defeated' && boss.isDefeated) ||
@@ -120,7 +164,41 @@ export function searchAndFilterBosses(
         .toLocaleLowerCase(language)
         .includes(normalizedQuery),
     );
-  });
+  }), language);
+}
+
+export function searchAndFilterBossesByContentPack(
+  bossList: readonly BossEncounterWithProgress[],
+  regionList: readonly CatalogRegion[],
+  query: string,
+  filter: BossFilter,
+  language: Language,
+): BossEncounterWithProgress[] {
+  const normalizedQuery = query.trim().toLocaleLowerCase(language);
+  const regionById = new Map(regionList.map((region) => [region.id, region]));
+
+  return sortBossesAlphabetically(
+    bossList.filter((boss) => {
+      const matchesFilter =
+        filter === 'all' ||
+        (filter === 'defeated' && boss.isDefeated) ||
+        (filter === 'not-defeated' && !boss.isDefeated);
+      if (!matchesFilter || normalizedQuery === '') return matchesFilter;
+      const region = regionById.get(boss.regionId);
+      const searchable = [
+        boss.name,
+        boss.location,
+        boss.availability,
+        region?.name,
+      ].filter((value) => value !== undefined);
+      return searchable.some((value) =>
+        getLocalizedText(value, language)
+          .toLocaleLowerCase(language)
+          .includes(normalizedQuery),
+      );
+    }),
+    language,
+  );
 }
 
 export function combineBossesWithProgress(
@@ -166,4 +244,16 @@ export function calculateRegionProgress(
 ): ProgressSummary {
   const regionBosses = getBossesByRegion(bossList, regionId);
   return createProgressSummary(regionBosses, defeatedBossIds);
+}
+
+export function calculateContentPackProgress(
+  bossList: readonly BossEncounter[],
+  regionList: readonly CatalogRegion[],
+  contentPack: ContentPack,
+  defeatedBossIds: ReadonlySet<string>,
+): ProgressSummary {
+  return createProgressSummary(
+    getBossesByContentPack(bossList, regionList, contentPack),
+    defeatedBossIds,
+  );
 }

@@ -16,11 +16,11 @@ Durante a revisão manual, foi identificado que região e detalhe eram telas irm
 
 A ação adicional `Voltar para a região` / `Back to region` foi removida. Para acesso direto sem uma página regional anterior, a saída do detalhe usa como fallback a região obtida do encontro pelo catálogo. O fallback é aplicado uma única vez e não altera progresso.
 
-Uma segunda revisão manual encontrou `Unmatched Route` ao seguir Drawer → Bosses → All regions → Drawer → Home. A causa era o destino `/(drawer)/index`, usado pelo componente customizado como se fosse uma URL pública. `(drawer)` é um grupo estrutural do Expo Router, e `index` é o nome registrado da tela interna; essa combinação não deve ser enviada ao roteador global como caminho público.
+Uma revisão manual anterior encontrou `Unmatched Route` em uma sequência que usava a antiga tela geral de regiões. A causa era tratar o grupo estrutural `(drawer)` como URL pública; essa combinação não deve ser enviada ao roteador global.
 
-O Drawer agora navega exclusivamente pelos nomes registrados no próprio navegador: `index`, `bosses`, `settings` e `regions/[regionId]`. A Home abre diretamente por `index`, independentemente da rota atual, sem redirecionamento ou tela intermediária. Os 26 destinos regionais usam o mesmo nome dinâmico com o `regionId` do catálogo.
+O Drawer agora navega exclusivamente pelos nomes registrados no próprio navegador: `index`, `settings`, `regions/[regionId]` e `all-bosses/[contentPack]`. A Home abre diretamente por `index`, independentemente da rota atual, sem redirecionamento ou tela intermediária. Os 26 destinos regionais usam o mesmo nome dinâmico com o `regionId` do catálogo.
 
-Na revisão manual final, o retorno padrão do cabeçalho, o botão físico do Android e a navegação pelo Drawer foram validados. A região e o estado da lista permanecem preservados ao fechar os detalhes. A sequência Bosses → All regions → Home abre a Home diretamente, sem `Unmatched Route`, inclusive depois de retornar de uma tela de detalhes.
+Na revisão manual final, o retorno padrão do cabeçalho, o botão físico do Android e a navegação pelo Drawer foram validados. A região, a busca, o filtro e a posição das listas permanecem preservados ao fechar os detalhes. Home, regiões e as duas telas All bosses navegam sem `Unmatched Route`, inclusive depois de retornar de uma tela de detalhes.
 
 ## Dados exibidos
 
@@ -73,7 +73,7 @@ A revisão manual foi concluída com sucesso. Foram validados:
 - Fia's Champions como uma única unidade;
 - encontros simples sem seções opcionais vazias;
 - português do Brasil, inglês e temas Sistema, Claro e Escuro;
-- destinos Home, Settings, All regions e as 26 regiões do Drawer;
+- destinos Home, Settings, as duas telas All bosses e as 26 regiões do Drawer;
 - ausência de ocorrências conhecidas de `Unmatched Route`.
 
 O progresso usado na revisão foi removido ao final, deixando o total em `0/208`. Catálogo, armazenamento e formato de progresso não foram alterados.
@@ -88,4 +88,12 @@ O progresso usado na revisão foi removido ao final, deixando o total em `0/208`
 
 ## Próxima etapa
 
-Planejar a pesquisa e a modelagem dos itens do jogo, reutilizando as 26 regiões já aprovadas.
+Planejar a pesquisa e a modelagem dos itens do jogo, reutilizando as 26 regiões aprovadas e a regra de ordenação alfabética.
+
+## Compatibilidade com listas compactas
+
+As listas regionais e por conteúdo agora exibem cartões compactos. Disponibilidade, nomes de barra, participantes, fases, summons, auxiliares e composição variável continuam disponíveis nesta tela e não foram removidos nem reordenados.
+
+Os encontros são alfabetizados nas listas pelo idioma ativo, mas fases, participantes, summons e auxiliares preservam a ordem aprovada. A rota de detalhes e seu controle único de progresso permanecem inalterados.
+
+A revisão manual das listas alfabéticas, telas Todos os chefes, Home simplificada, indicadores de status e padrão horizontal de progresso foi concluída com sucesso. Não há problemas conhecidos de navegação.

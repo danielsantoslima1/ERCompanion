@@ -10,7 +10,7 @@ export const ptBRTranslations: TranslationDictionary = {
     home: 'Início',
     bosses: 'Chefes',
     settings: 'Configurações',
-    allRegions: 'Todas as regiões',
+    allBosses: 'Todos os chefes',
     drawerDescription: 'Rastreador não oficial feito por fãs.',
     expandBosses: 'Expandir regiões de chefes',
     collapseBosses: 'Recolher regiões de chefes',
@@ -30,6 +30,10 @@ export const ptBRTranslations: TranslationDictionary = {
     availableRegions: 'Regiões disponíveis',
     noProgress: 'Nenhum progresso registrado.',
     noRegions: 'Ainda não há regiões disponíveis.',
+    baseGameProgress: 'Progresso do Jogo Base',
+    expansionProgress: 'Progresso da expansão',
+    openAllBosses: (contentName) =>
+      `Abrir todos os chefes de ${contentName}`,
     totalProgressAccessibility: (defeated, total, percentage) =>
       `Progresso total: ${percentage}%. ${defeated} de ${total} chefes derrotados.`,
     regionProgressAccessibility: (
@@ -49,8 +53,19 @@ export const ptBRTranslations: TranslationDictionary = {
     regionProgress: (defeated, total, percentage) =>
       `${defeated} de ${total} derrotados, ${percentage}%`,
   },
+  allBosses: {
+    baseGameTitle: 'Todos os chefes — Jogo base',
+    expansionTitle: 'Todos os chefes — Shadow of the Erdtree',
+    baseGameProgress: 'Progresso do Jogo Base',
+    expansionProgress: 'Progresso da expansão',
+    invalidTitle: 'Conteúdo inválido',
+    invalidMessage: 'O conteúdo solicitado não está disponível.',
+    boss: 'Chefe',
+    region: 'Região',
+    location: 'Localização',
+  },
   region: {
-    progress: 'Progresso da região',
+    progress: 'Progresso da Região',
     search: 'Buscar',
     searchPlaceholder: 'Busque por nome ou localização',
     all: 'Todos',
@@ -175,7 +190,7 @@ export const enTranslations: TranslationDictionary = {
     home: 'Home',
     bosses: 'Bosses',
     settings: 'Settings',
-    allRegions: 'All regions',
+    allBosses: 'All bosses',
     drawerDescription: 'Unofficial fan-made tracker.',
     expandBosses: 'Expand boss regions',
     collapseBosses: 'Collapse boss regions',
@@ -195,6 +210,9 @@ export const enTranslations: TranslationDictionary = {
     availableRegions: 'Available regions',
     noProgress: 'No progress recorded.',
     noRegions: 'There are no regions available yet.',
+    baseGameProgress: 'Base Game Progress',
+    expansionProgress: 'Expansion Progress',
+    openAllBosses: (contentName) => `Open all ${contentName} bosses`,
     totalProgressAccessibility: (defeated, total, percentage) =>
       `Total progress: ${percentage}%. ${defeated} of ${total} bosses defeated.`,
     regionProgressAccessibility: (
@@ -214,8 +232,19 @@ export const enTranslations: TranslationDictionary = {
     regionProgress: (defeated, total, percentage) =>
       `${defeated} of ${total} defeated, ${percentage}%`,
   },
+  allBosses: {
+    baseGameTitle: 'All bosses — Base game',
+    expansionTitle: 'All bosses — Shadow of the Erdtree',
+    baseGameProgress: 'Base Game Progress',
+    expansionProgress: 'Expansion Progress',
+    invalidTitle: 'Invalid content',
+    invalidMessage: 'The requested content is not available.',
+    boss: 'Boss',
+    region: 'Region',
+    location: 'Location',
+  },
   region: {
-    progress: 'Region progress',
+    progress: 'Region Progress',
     search: 'Search',
     searchPlaceholder: 'Search by name or location',
     all: 'All',

@@ -1,15 +1,20 @@
 import type { BossEncounter, CatalogRegion } from '../catalog';
 import {
+  calculateContentPackProgress,
   calculateRegionProgress,
   calculateTotalProgress,
   combineBossesWithProgress,
+  compareLocalizedText,
   countBosses,
   countBossesByRegion,
   findBossById,
   findBossWithRegion,
   findRegionById,
+  getBossesByContentPack,
   getBossesByRegion,
-  sortRegions,
+  isContentPack,
+  sortBossesAlphabetically,
+  sortRegionsAlphabetically,
 } from '../selectors';
 
 const regions: readonly CatalogRegion[] = [
@@ -49,8 +54,8 @@ const bosses: readonly BossEncounter[] = [
 ];
 
 describe('data selectors', () => {
-  it('sorts regions by displayOrder', () => {
-    expect(sortRegions(regions).map((region) => region.id)).toEqual([
+  it('sorts regions alphabetically by localized name instead of displayOrder', () => {
+    expect(sortRegionsAlphabetically(regions, 'pt-BR').map((region) => region.id)).toEqual([
       'region-first',
       'region-late',
     ]);
@@ -59,9 +64,76 @@ describe('data selectors', () => {
   it('does not modify the original region array while sorting', () => {
     const originalOrder = regions.map((region) => region.id);
 
-    sortRegions(regions);
+    sortRegionsAlphabetically(regions, 'pt-BR');
 
     expect(regions.map((region) => region.id)).toEqual(originalOrder);
+  });
+
+  it('uses locale-aware, accent-insensitive comparison', () => {
+    expect(compareLocalizedText('Árvore', 'arvore', 'pt-BR')).toBe(0);
+    expect(compareLocalizedText('boss', 'Boss', 'en')).toBe(0);
+  });
+
+  it('reorders regions when localized names differ by language', () => {
+    const localizedRegions: readonly CatalogRegion[] = [
+      { ...regions[0], name: { 'pt-BR': 'Abadia', en: 'Zoo' } },
+      { ...regions[1], name: { 'pt-BR': 'Zoológico', en: 'Abbey' } },
+    ];
+    expect(sortRegionsAlphabetically(localizedRegions, 'pt-BR').map(({ id }) => id))
+      .toEqual(['region-late', 'region-first']);
+    expect(sortRegionsAlphabetically(localizedRegions, 'en').map(({ id }) => id))
+      .toEqual(['region-first', 'region-late']);
+  });
+
+  it('sorts bosses alphabetically and breaks equal names by ID', () => {
+    const equalNameBosses = [
+      { ...bosses[1], name: bosses[0].name },
+      bosses[0],
+      bosses[2],
+    ];
+    expect(sortBossesAlphabetically(equalNameBosses, 'en').map(({ id }) => id))
+      .toEqual(['boss-a', 'boss-b', 'boss-c']);
+  });
+
+  it('does not reorder phases, participants, summons, or auxiliaries', () => {
+    const structuredBoss: BossEncounter = {
+      ...bosses[0],
+      phases: [
+        { name: { 'pt-BR': 'Segunda', en: 'Second' } },
+        { name: { 'pt-BR': 'Primeira', en: 'First' } },
+      ],
+      mainParticipants: [
+        { 'pt-BR': 'Zeta', en: 'Zeta' },
+        { 'pt-BR': 'Alfa', en: 'Alpha' },
+      ],
+      summons: [
+        { 'pt-BR': 'Summon Z', en: 'Summon Z' },
+        { 'pt-BR': 'Summon A', en: 'Summon A' },
+      ],
+      auxiliaryEnemies: [
+        { 'pt-BR': 'Auxiliar Z', en: 'Auxiliary Z' },
+        { 'pt-BR': 'Auxiliar A', en: 'Auxiliary A' },
+      ],
+    };
+    const [sortedBoss] = sortBossesAlphabetically([structuredBoss], 'pt-BR');
+    expect(sortedBoss.phases).toBe(structuredBoss.phases);
+    expect(sortedBoss.mainParticipants).toBe(structuredBoss.mainParticipants);
+    expect(sortedBoss.summons).toBe(structuredBoss.summons);
+    expect(sortedBoss.auxiliaryEnemies).toBe(structuredBoss.auxiliaryEnemies);
+  });
+
+  it('selects and calculates progress by content pack', () => {
+    expect(getBossesByContentPack(bosses, regions, 'base-game')).toHaveLength(3);
+    expect(
+      calculateContentPackProgress(
+        bosses,
+        regions,
+        'base-game',
+        new Set(['boss-a']),
+      ),
+    ).toEqual({ defeated: 1, total: 3, percentage: 33 });
+    expect(isContentPack('base-game')).toBe(true);
+    expect(isContentPack('invalid')).toBe(false);
   });
 
   it('finds a region by ID', () => {

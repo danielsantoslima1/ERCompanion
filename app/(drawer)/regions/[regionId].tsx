@@ -35,7 +35,6 @@ import { getLocalizedText } from '@/src/i18n';
 interface LocalizedBoss extends BossEncounterWithProgress {
   localizedName: string;
   localizedLocation: string;
-  localizedAvailability?: string;
 }
 
 function getRegionId(parameter: string | string[] | undefined): string {
@@ -98,9 +97,6 @@ export default function RegionScreen() {
         ...boss,
         localizedName: getLocalizedText(boss.name, language),
         localizedLocation: getLocalizedText(boss.location, language),
-        localizedAvailability: boss.availability
-          ? getLocalizedText(boss.availability, language)
-          : undefined,
       })),
     [bossesWithProgress, filter, language, query],
   );
@@ -111,7 +107,6 @@ export default function RegionScreen() {
         id={item.id}
         isDefeated={item.isDefeated}
         location={item.localizedLocation}
-        availability={item.localizedAvailability}
         name={item.localizedName}
         onViewDetails={() =>
           router.push({
@@ -193,16 +188,11 @@ export default function RegionScreen() {
         <Text
           accessibilityRole="header"
           style={[styles.title, { color: theme.colors.textPrimary }]}>
-          {regionName}
-        </Text>
-        <Text
-          style={[styles.sectionLabel, { color: theme.colors.textSecondary }]}>
           {translations.region.progress}
         </Text>
         <RegionProgressItem
           defeated={progress.defeated}
           percentage={progress.percentage}
-          regionName={regionName}
           total={progress.total}
         />
       </View>
@@ -349,9 +339,6 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 17,
     lineHeight: 25,
-  },
-  sectionLabel: {
-    fontSize: 15,
   },
   inputLabel: {
     fontSize: 16,

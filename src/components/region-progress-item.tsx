@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { useApp } from '../hooks/use-app';
 
 interface RegionProgressItemProps {
-  regionName: string;
+  regionName?: string;
   defeated: number;
   total: number;
   percentage: number;
@@ -26,13 +26,14 @@ export function RegionProgressItem({
   const { theme, translations } = useApp();
   const visiblePercentage = clampPercentage(percentage);
   const progressWidth: `${number}%` = `${visiblePercentage}%`;
-  const accessibilityLabel =
-    translations.home.regionProgressAccessibility(
-      regionName,
-      defeated,
-      total,
-      visiblePercentage,
-    );
+  const accessibilityLabel = regionName
+    ? translations.home.regionProgressAccessibility(
+        regionName,
+        defeated,
+        total,
+        visiblePercentage,
+      )
+    : `${defeated}/${total}, ${visiblePercentage}%`;
 
   return (
     <View
@@ -49,27 +50,30 @@ export function RegionProgressItem({
           padding: theme.spacing.medium,
         },
       ]}>
-      <View style={styles.labels}>
+      {regionName ? (
         <Text
           accessible={false}
           numberOfLines={2}
           style={[styles.name, { color: theme.colors.textPrimary }]}>
           {regionName}
         </Text>
-        <View style={styles.values}>
-          <Text
-            accessible={false}
-            style={[styles.count, { color: theme.colors.textSecondary }]}>
-            {defeated}/{total}
-          </Text>
-          <Text
-            accessible={false}
-            style={[styles.percentage, { color: theme.colors.primary }]}>
-            {visiblePercentage}%
-          </Text>
-        </View>
+      ) : null}
+      <View testID="progress-values" style={styles.values}>
+        <Text
+          accessible={false}
+          numberOfLines={1}
+          style={[styles.count, { color: theme.colors.textSecondary }]}>
+          {defeated}/{total}
+        </Text>
+        <Text
+          accessible={false}
+          numberOfLines={1}
+          style={[styles.percentage, { color: theme.colors.primary }]}>
+          {visiblePercentage}%
+        </Text>
       </View>
       <View
+        testID="progress-track"
         style={[
           styles.track,
           {
@@ -96,24 +100,22 @@ const styles = StyleSheet.create({
   container: {
     borderWidth: 1,
   },
-  labels: {
+  name: {
+    fontSize: 17,
+    fontWeight: '600',
+  },
+  values: {
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-  },
-  name: {
-    flex: 1,
-    fontSize: 17,
-    fontWeight: '600',
-    marginRight: 16,
-  },
-  values: {
-    alignItems: 'flex-end',
+    width: '100%',
   },
   count: {
+    flexShrink: 0,
     fontSize: 14,
   },
   percentage: {
+    flexShrink: 0,
     fontSize: 16,
     fontWeight: '700',
   },

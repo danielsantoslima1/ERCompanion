@@ -7,7 +7,7 @@ export interface TranslationDictionary {
     home: string;
     bosses: string;
     settings: string;
-    allRegions: string;
+    allBosses: string;
     drawerDescription: string;
     expandBosses: string;
     collapseBosses: string;
@@ -27,6 +27,9 @@ export interface TranslationDictionary {
     availableRegions: string;
     noProgress: string;
     noRegions: string;
+    baseGameProgress: string;
+    expansionProgress: string;
+    openAllBosses: (contentName: string) => string;
     totalProgressAccessibility: (
       defeated: number,
       total: number,
@@ -50,6 +53,17 @@ export interface TranslationDictionary {
       total: number,
       percentage: number,
     ) => string;
+  };
+  allBosses: {
+    baseGameTitle: string;
+    expansionTitle: string;
+    baseGameProgress: string;
+    expansionProgress: string;
+    invalidTitle: string;
+    invalidMessage: string;
+    boss: string;
+    region: string;
+    location: string;
   };
   region: {
     progress: string;

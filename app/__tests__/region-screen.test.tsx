@@ -26,6 +26,15 @@ const testBosses: readonly BossEncounter[] = [
     id: 'test-boss-alpha',
     name: { 'pt-BR': 'Chefe Alfa', en: 'Alpha Boss' },
     location: { 'pt-BR': 'Torre Clara', en: 'Bright Tower' },
+    availability: { 'pt-BR': 'Somente à noite', en: 'Night only' },
+    phases: [
+      { name: { 'pt-BR': 'Fase Alfa', en: 'Alpha Phase' } },
+    ],
+    mainParticipants: [
+      { 'pt-BR': 'Participante Alfa', en: 'Alpha Participant' },
+    ],
+    summons: [{ 'pt-BR': 'Summon Alfa', en: 'Alpha Summon' }],
+    auxiliaryEnemies: [{ 'pt-BR': 'Auxiliar Alfa', en: 'Alpha Auxiliary' }],
     regionId: 'test-region-a',
   },
   {
@@ -77,11 +86,16 @@ jest.mock('expo-router', () => ({
   useLocalSearchParams: jest.fn(),
 }));
 
-jest.mock('expo-router/drawer', () => ({
-  Drawer: {
-    Screen: () => null,
-  },
-}));
+jest.mock('expo-router/drawer', () => {
+  const { Text } = jest.requireActual('react-native');
+  return {
+    Drawer: {
+      Screen: ({ options }: { options: { title: string } }) => (
+        <Text testID="drawer-title">{options.title}</Text>
+      ),
+    },
+  };
+});
 
 jest.mock('../../src/data', () => {
   const actualData = jest.requireActual('../../src/data');
@@ -147,10 +161,11 @@ describe('RegionScreen', () => {
 
     await render(<RegionScreen />);
 
+    expect(screen.getByTestId('drawer-title')).toHaveTextContent('Região Teste');
     expect(
-      screen.getByRole('header', { name: 'Região Teste' }),
+      screen.getByRole('header', { name: translations.region.progress }),
     ).toBeOnTheScreen();
-    expect(screen.getByText(translations.region.progress)).toBeOnTheScreen();
+    expect(screen.getAllByText('Região Teste')).toHaveLength(1);
     expect(screen.getByText('1/2')).toBeOnTheScreen();
     expect(screen.getByText('50%')).toBeOnTheScreen();
     expect(screen.getByText('Chefe Alfa')).toBeOnTheScreen();
@@ -158,6 +173,17 @@ describe('RegionScreen', () => {
     expect(screen.getByText('Chefe Beta')).toBeOnTheScreen();
     expect(screen.getByText('Caverna Escura')).toBeOnTheScreen();
     expect(screen.getByText(translations.region.resultCount(2))).toBeOnTheScreen();
+    expect(
+      screen.getAllByText(/⚔|✓/, { includeHiddenElements: true }),
+    ).toHaveLength(2);
+    expect(
+      screen.getByTestId('progress-values'),
+    ).toHaveStyle({ flexDirection: 'row' });
+    expect(screen.queryByText('Somente à noite')).toBeNull();
+    expect(screen.queryByText('Fase Alfa')).toBeNull();
+    expect(screen.queryByText('Participante Alfa')).toBeNull();
+    expect(screen.queryByText('Summon Alfa')).toBeNull();
+    expect(screen.queryByText('Auxiliar Alfa')).toBeNull();
   });
 
   it('localizes the region, bosses, locations, and result count in English', async () => {
@@ -170,9 +196,7 @@ describe('RegionScreen', () => {
 
     await render(<RegionScreen />);
 
-    expect(
-      screen.getByRole('header', { name: 'Test Region' }),
-    ).toBeOnTheScreen();
+    expect(screen.getByTestId('drawer-title')).toHaveTextContent('Test Region');
     expect(screen.getByText('Alpha Boss')).toBeOnTheScreen();
     expect(screen.getByText('Bright Tower')).toBeOnTheScreen();
     expect(screen.getByText('Beta Boss')).toBeOnTheScreen();
@@ -276,14 +300,9 @@ describe('RegionScreen', () => {
     expect(screen.getByText(translations.region.resultCount(0))).toBeOnTheScreen();
   });
 
-  it('updates defeated presentation after context progress changes', async () => {
+  it('updates defeated filtering after context progress changes without reordering cards', async () => {
     const translations = getTranslationDictionary('pt-BR');
     const renderResult = await render(<RegionScreen />);
-
-    expect(screen.getByText(translations.region.defeatedStatus)).toBeOnTheScreen();
-    expect(
-      screen.getByText(translations.region.notDefeatedStatus),
-    ).toBeOnTheScreen();
 
     mockAppState = {
       ...mockAppState,

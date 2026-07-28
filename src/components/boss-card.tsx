@@ -6,8 +6,8 @@ import { BossProgressButton } from './boss-progress-button';
 interface BossCardProps {
   id: string;
   name: string;
+  regionName?: string;
   location: string;
-  availability?: string;
   isDefeated: boolean;
   onViewDetails?: () => void;
 }
@@ -15,8 +15,8 @@ interface BossCardProps {
 export function BossCard({
   id,
   name,
+  regionName,
   location,
-  availability,
   isDefeated,
   onViewDetails,
 }: BossCardProps) {
@@ -47,27 +47,37 @@ export function BossCard({
         )}
         accessible
         style={{ gap: theme.spacing.extraSmall }}>
-        <Text style={[styles.name, { color: theme.colors.textPrimary }]}>
-          {name}
-        </Text>
-        <Text style={[styles.location, { color: theme.colors.textSecondary }]}>
-          {location}
-        </Text>
-        {availability ? (
-          <Text style={[styles.location, { color: theme.colors.textSecondary }]}>
-            {availability}
+        <View style={[styles.heading, { gap: theme.spacing.small }]}>
+          <Text style={[styles.name, { color: theme.colors.textPrimary }]}>
+            {name}
+          </Text>
+          <Text
+            accessibilityElementsHidden
+            importantForAccessibility="no-hide-descendants"
+            pointerEvents="none"
+            style={[
+              styles.statusIcon,
+              {
+                color: isDefeated
+                  ? theme.colors.success
+                  : theme.colors.textSecondary,
+              },
+            ]}
+            testID={
+              isDefeated
+                ? 'boss-status-icon-defeated'
+                : 'boss-status-icon-not-defeated'
+            }>
+            {isDefeated ? '✓' : '⚔'}
+          </Text>
+        </View>
+        {regionName ? (
+          <Text style={[styles.region, { color: theme.colors.accent }]}>
+            {regionName}
           </Text>
         ) : null}
-        <Text
-          style={[
-            styles.status,
-            {
-              color: isDefeated
-                ? theme.colors.success
-                : theme.colors.textSecondary,
-            },
-          ]}>
-          {status}
+        <Text style={[styles.location, { color: theme.colors.textSecondary }]}>
+          {location}
         </Text>
       </View>
 
@@ -107,16 +117,30 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   name: {
+    flex: 1,
     fontSize: 18,
     fontWeight: '700',
+    flexShrink: 1,
+  },
+  heading: {
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  statusIcon: {
+    fontSize: 22,
+    fontWeight: '700',
+    lineHeight: 26,
+    textAlign: 'center',
+    width: 28,
   },
   location: {
     fontSize: 15,
     lineHeight: 21,
   },
-  status: {
+  region: {
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: '600',
   },
   detailsButton: {
     alignItems: 'center',

@@ -152,7 +152,22 @@ describe('BossCard', () => {
 
     expect(screen.getByText('Test Boss')).toBeOnTheScreen();
     expect(screen.getByText('Test Location')).toBeOnTheScreen();
-    expect(screen.getByText(translations.region.notDefeatedStatus)).toBeOnTheScreen();
+    expect(screen.queryByText(translations.region.notDefeatedStatus)).toBeNull();
+    expect(
+      screen.getByTestId('boss-status-icon-not-defeated', {
+        includeHiddenElements: true,
+      }),
+    ).toBeOnTheScreen();
+    expect(
+      screen.getByTestId('boss-status-icon-not-defeated', {
+        includeHiddenElements: true,
+      }),
+    ).toBeOnTheScreen();
+    expect(
+      screen.queryByTestId('boss-status-icon-defeated', {
+        includeHiddenElements: true,
+      }),
+    ).toBeNull();
     expect(
       screen.getByRole('button', {
         name: translations.region.markAsDefeated,
@@ -179,12 +194,85 @@ describe('BossCard', () => {
       />,
     );
 
-    expect(screen.getByText(translations.region.defeatedStatus)).toBeOnTheScreen();
+    expect(screen.queryByText(translations.region.defeatedStatus)).toBeNull();
+    expect(
+      screen.getByTestId('boss-status-icon-defeated', {
+        includeHiddenElements: true,
+      }),
+    ).toBeOnTheScreen();
+    expect(
+      screen.queryByTestId('boss-status-icon-not-defeated', {
+        includeHiddenElements: true,
+      }),
+    ).toBeNull();
     expect(
       screen.getByRole('button', {
         name: translations.region.markAsNotDefeated,
       }),
     ).toBeEnabled();
+  });
+
+  it('updates and restores the decorative icon from the progress prop', async () => {
+    const view = await render(
+      <BossCard
+        id="test-boss"
+        isDefeated={false}
+        location="Test Location"
+        name="Test Boss"
+      />,
+    );
+    expect(
+      screen.getByTestId('boss-status-icon-not-defeated', {
+        includeHiddenElements: true,
+      }),
+    ).toBeOnTheScreen();
+
+    await view.rerender(
+      <BossCard
+        id="test-boss"
+        isDefeated
+        location="Test Location"
+        name="Test Boss"
+      />,
+    );
+    expect(
+      screen.getByTestId('boss-status-icon-defeated', {
+        includeHiddenElements: true,
+      }),
+    ).toBeOnTheScreen();
+
+    await view.rerender(
+      <BossCard
+        id="test-boss"
+        isDefeated={false}
+        location="Test Location"
+        name="Test Boss"
+      />,
+    );
+    expect(
+      screen.getByTestId('boss-status-icon-not-defeated', {
+        includeHiddenElements: true,
+      }),
+    ).toBeOnTheScreen();
+  });
+
+  it('keeps the icon decorative and long names untruncated', async () => {
+    const longName =
+      'A very long encounter name that must wrap without destructive truncation';
+    await render(
+      <BossCard
+        id="test-boss"
+        isDefeated={false}
+        location="Test Location"
+        name={longName}
+      />,
+    );
+    const icon = screen.getByTestId('boss-status-icon-not-defeated', {
+      includeHiddenElements: true,
+    });
+    expect(icon.props.accessibilityElementsHidden).toBe(true);
+    expect(icon.props.pointerEvents).toBe('none');
+    expect(screen.getByText(longName).props.numberOfLines).toBeUndefined();
   });
 
   it.each([
@@ -291,7 +379,12 @@ describe('BossCard', () => {
       translations.region.updateErrorTitle,
       translations.region.updateErrorMessage,
     );
-    expect(screen.getByText(translations.region.notDefeatedStatus)).toBeOnTheScreen();
+    expect(screen.queryByText(translations.region.notDefeatedStatus)).toBeNull();
+    expect(
+      screen.getByTestId('boss-status-icon-not-defeated', {
+        includeHiddenElements: true,
+      }),
+    ).toBeOnTheScreen();
     expect(
       screen.getByRole('button', {
         name: translations.region.markAsDefeated,

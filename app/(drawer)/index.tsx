@@ -1,26 +1,26 @@
+import { router } from 'expo-router';
 import { useMemo } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ProgressCircle } from '@/src/components/progress-circle';
 import { RegionProgressItem } from '@/src/components/region-progress-item';
 import {
   bosses,
-  calculateRegionProgress,
+  calculateContentPackProgress,
   calculateTotalProgress,
   regions,
-  sortRegions,
+  type ContentPack,
 } from '@/src/data';
 import { useApp } from '@/src/hooks/use-app';
-import { getLocalizedText } from '@/src/i18n';
+
+const CONTENT_PACKS: readonly ContentPack[] = [
+  'base-game',
+  'shadow-of-the-erdtree',
+];
 
 export default function HomeScreen() {
-  const {
-    defeatedBossIds,
-    language,
-    theme,
-    translations,
-  } = useApp();
+  const { defeatedBossIds, theme, translations } = useApp();
   const defeatedBossIdSet = useMemo(
     () => new Set(defeatedBossIds),
     [defeatedBossIds],
@@ -29,41 +29,36 @@ export default function HomeScreen() {
     () => calculateTotalProgress(bosses, defeatedBossIdSet),
     [defeatedBossIdSet],
   );
-  const regionProgress = useMemo(
+  const contentProgress = useMemo(
     () =>
-      sortRegions(regions).map((region) => ({
-        id: region.id,
-        contentPack: region.contentPack,
-        name: getLocalizedText(region.name, language),
-        progress: calculateRegionProgress(
+      CONTENT_PACKS.map((contentPack) => ({
+        contentPack,
+        label:
+          contentPack === 'base-game'
+            ? translations.common.baseGame
+            : translations.common.expansion,
+        title:
+          contentPack === 'base-game'
+            ? translations.home.baseGameProgress
+            : translations.home.expansionProgress,
+        progress: calculateContentPackProgress(
           bosses,
-          region.id,
+          regions,
+          contentPack,
           defeatedBossIdSet,
         ),
       })),
-    [defeatedBossIdSet, language],
+    [defeatedBossIdSet, translations],
   );
-  const totalAccessibilityLabel =
-    translations.home.totalProgressAccessibility(
-      totalProgress.defeated,
-      totalProgress.total,
-      totalProgress.percentage,
-    );
 
   return (
     <SafeAreaView
       edges={['left', 'right', 'bottom']}
-      style={[
-        styles.safeArea,
-        { backgroundColor: theme.colors.background },
-      ]}>
+      style={[styles.safeArea, { backgroundColor: theme.colors.background }]}>
       <ScrollView
         contentContainerStyle={[
           styles.content,
-          {
-            gap: theme.spacing.extraLarge,
-            padding: theme.spacing.large,
-          },
+          { gap: theme.spacing.extraLarge, padding: theme.spacing.large },
         ]}
         contentInsetAdjustmentBehavior="automatic">
         <View style={{ gap: theme.spacing.small }}>
@@ -72,11 +67,7 @@ export default function HomeScreen() {
             style={[styles.title, { color: theme.colors.textPrimary }]}>
             {translations.home.title}
           </Text>
-          <Text
-            style={[
-              styles.description,
-              { color: theme.colors.textSecondary },
-            ]}>
+          <Text style={[styles.description, { color: theme.colors.textSecondary }]}>
             {translations.home.description}
           </Text>
         </View>
@@ -92,12 +83,15 @@ export default function HomeScreen() {
               padding: theme.spacing.large,
             },
           ]}>
-          <Text
-            style={[styles.sectionTitle, { color: theme.colors.textPrimary }]}>
+          <Text style={[styles.sectionTitle, { color: theme.colors.textPrimary }]}>
             {translations.home.totalProgress}
           </Text>
           <ProgressCircle
-            accessibilityLabel={totalAccessibilityLabel}
+            accessibilityLabel={translations.home.totalProgressAccessibility(
+              totalProgress.defeated,
+              totalProgress.total,
+              totalProgress.percentage,
+            )}
             defeated={totalProgress.defeated}
             percentage={totalProgress.percentage}
             total={totalProgress.total}
@@ -105,63 +99,41 @@ export default function HomeScreen() {
         </View>
 
         <View style={{ gap: theme.spacing.medium }}>
-          <View style={{ gap: theme.spacing.extraSmall }}>
-            <Text
-              style={[
-                styles.sectionTitle,
-                { color: theme.colors.textPrimary },
-              ]}>
-              {translations.home.progressByRegion}
-            </Text>
-            <Text
-              style={[
-                styles.sectionDescription,
-                { color: theme.colors.textSecondary },
-              ]}>
-              {translations.home.availableRegions}
-            </Text>
-          </View>
-
-          {regionProgress.length === 0 ? (
-            <Text
-              style={[
-                styles.emptyMessage,
+          {contentProgress.map(({ contentPack, label, progress, title }) => (
+            <Pressable
+              key={contentPack}
+              accessibilityLabel={translations.home.openAllBosses(label)}
+              accessibilityRole="button"
+              onPress={() =>
+                router.push({
+                  pathname: '/all-bosses/[contentPack]',
+                  params: { contentPack },
+                })
+              }
+              style={({ pressed }) => [
+                styles.contentCard,
                 {
                   backgroundColor: theme.colors.surface,
                   borderColor: theme.colors.border,
-                  borderRadius: theme.borderRadius.medium,
-                  color: theme.colors.textSecondary,
-                  padding: theme.spacing.medium,
+                  borderRadius: theme.borderRadius.large,
+                  gap: theme.spacing.medium,
+                  opacity: pressed ? 0.7 : 1,
+                  padding: theme.spacing.large,
                 },
               ]}>
-              {translations.home.noRegions}
-            </Text>
-          ) : (
-            <View style={{ gap: theme.spacing.large }}>
-              {(['base-game', 'shadow-of-the-erdtree'] as const).map(
-                (contentPack) => (
-                  <View key={contentPack} style={{ gap: theme.spacing.medium }}>
-                    <Text style={[styles.groupTitle, { color: theme.colors.accent }]}>
-                      {contentPack === 'base-game'
-                        ? translations.common.baseGame
-                        : translations.common.expansion}
-                    </Text>
-                    {regionProgress
-                      .filter((region) => region.contentPack === contentPack)
-                      .map((region) => (
-                        <RegionProgressItem
-                          key={region.id}
-                          defeated={region.progress.defeated}
-                          percentage={region.progress.percentage}
-                          regionName={region.name}
-                          total={region.progress.total}
-                        />
-                      ))}
-                  </View>
-                ),
-              )}
-            </View>
-          )}
+              <Text style={[styles.contentTitle, { color: theme.colors.textPrimary }]}>
+                {label}
+              </Text>
+              <Text style={[styles.contentSubtitle, { color: theme.colors.accent }]}>
+                {title}
+              </Text>
+              <RegionProgressItem
+                defeated={progress.defeated}
+                percentage={progress.percentage}
+                total={progress.total}
+              />
+            </Pressable>
+          ))}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -169,39 +141,13 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-  },
-  content: {
-    flexGrow: 1,
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: '700',
-  },
-  description: {
-    fontSize: 17,
-    lineHeight: 25,
-  },
-  totalCard: {
-    alignItems: 'center',
-    borderWidth: 1,
-  },
-  sectionTitle: {
-    alignSelf: 'stretch',
-    fontSize: 21,
-    fontWeight: '700',
-  },
-  sectionDescription: {
-    fontSize: 15,
-  },
-  groupTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-  },
-  emptyMessage: {
-    borderWidth: 1,
-    fontSize: 16,
-    lineHeight: 23,
-  },
+  safeArea: { flex: 1 },
+  content: { flexGrow: 1 },
+  title: { fontSize: 32, fontWeight: '700' },
+  description: { fontSize: 17, lineHeight: 25 },
+  totalCard: { alignItems: 'center', borderWidth: 1 },
+  sectionTitle: { fontSize: 21, fontWeight: '700' },
+  contentCard: { borderWidth: 1 },
+  contentTitle: { fontSize: 21, fontWeight: '700' },
+  contentSubtitle: { fontSize: 15, fontWeight: '600' },
 });

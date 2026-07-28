@@ -188,3 +188,31 @@ Uma revisão seguinte encontrou `Unmatched Route` na sequência Bosses → All r
 Foram validados manualmente os dados básicos e opcionais dos detalhes, o progresso e sua sincronização, os encontros especiais, os estados simples, os dois idiomas, os três temas, o retorno padrão e físico para a região e a preservação da lista. O progresso de revisão foi removido, deixando `0/208`. Catálogo, armazenamento e formato de progresso não foram alterados.
 
 Próxima etapa: planejar a pesquisa e a modelagem dos itens do jogo, reutilizando as 26 regiões já aprovadas.
+
+# Etapa de navegação alfabética e listas compactas
+
+Implementação e revisão manual concluídas com sucesso. Regiões e chefes agora são ordenados alfabeticamente pelo nome localizado em `pt-BR` ou `en`, com desempate estável pelo ID. `displayOrder` permanece como metadado, mas deixou de controlar a ordem visual. Fases, participantes, summons, auxiliares e demais sequências significativas preservam sua ordem.
+
+O Drawer passou a funcionar como acordeão, removeu All regions e oferece All bosses como primeiro item de cada grupo. As rotas `/all-bosses/base-game` e `/all-bosses/shadow-of-the-erdtree` mostram, respectivamente, 165 e 43 encontros.
+
+A Home mantém o progresso geral dos 208 encontros e apresenta somente os cartões Base game e Shadow of the Erdtree. A página regional usa o título Progresso da Região sem repetir o nome do cabeçalho, e seus cartões exibem somente nome, localização, detalhes e controle de progresso.
+
+A revisão no Expo Go confirmou a Home simplificada, o acordeão do Drawer, as listas e páginas regionais, as duas telas Todos os chefes, busca, filtros, detalhes, retorno preservado, sincronização de progresso, temas e ausência de rotas inválidas.
+
+## Ajustes visuais de progresso e status
+
+O progresso da página regional passou a exibir `derrotados/total` à esquerda e percentual à direita na mesma linha, mantendo a barra abaixo. Regiões sem encontros continuam mostrando `0/0` e `0%`.
+
+Todos os cards de chefes das páginas regionais e das telas All bosses receberam indicadores decorativos de estado: `⚔` para não derrotado e `✓` para derrotado. O botão de progresso continua sendo a única ação de alteração, e os cards permanecem compactos sem reintroduzir dados detalhados.
+
+A revisão manual confirmou os indicadores `⚔` e `✓` como elementos visuais não interativos, ocultos da árvore de acessibilidade, sincronizados com atualização otimista, persistência e rollback, sem sobreposição em nomes longos.
+
+## Padronização horizontal de todos os cards de progresso
+
+O componente compartilhado de progresso agora torna obrigatório o seguinte layout: `concluído/total` à esquerda, porcentagem à direita, ambos na mesma linha, e barra abaixo. A Home e as duas telas Todos os chefes foram corrigidas; as páginas regionais já seguiam o padrão e permanecem visualmente consistentes.
+
+O padrão cobre total zero, progresso parcial, conclusão integral, telas estreitas e fontes ampliadas. Razão e porcentagem empilhadas ou centralizadas em conjunto não devem ser reintroduzidas em cards futuros. A opção de layout empilhado foi removida, e a revisão manual confirmou o alinhamento em todas as telas e a barra abaixo dos valores.
+
+O reset final deixou o progresso em `0/208`, `0/165` e `0/43`, preservando idioma e tema. Não há problemas conhecidos de navegação nem ocorrências de `Unmatched Route`.
+
+Próxima etapa: Planejar a pesquisa e a modelagem dos itens do jogo, reutilizando as 26 regiões aprovadas e a regra de ordenação alfabética.

@@ -39,13 +39,6 @@ export default function DrawerLayout() {
         }}
       />
       <Drawer.Screen
-        name="bosses"
-        options={{
-          drawerLabel: translations.navigation.bosses,
-          title: translations.navigation.bosses,
-        }}
-      />
-      <Drawer.Screen
         name="settings"
         options={{
           drawerLabel: translations.navigation.settings,
@@ -54,6 +47,16 @@ export default function DrawerLayout() {
       />
       <Drawer.Screen
         name="regions/[regionId]"
+        options={{
+          drawerItemStyle: { display: 'none' },
+          headerLeft: () => (
+            <DrawerToggleButton tintColor={theme.colors.textPrimary} />
+          ),
+          title: translations.navigation.bosses,
+        }}
+      />
+      <Drawer.Screen
+        name="all-bosses/[contentPack]"
         options={{
           drawerItemStyle: { display: 'none' },
           headerLeft: () => (

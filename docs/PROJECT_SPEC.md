@@ -170,25 +170,26 @@ A estrutura geral do Drawer deverá ser:
 ```text
 Home
 Bosses
-  All regions
   Jogo base / Base game
+    Todos os chefes / All bosses
     regiões do jogo base
   Shadow of the Erdtree
+    Todos os chefes / All bosses
     regiões da expansão
 Settings
 ```
 
-`All regions` continuará abrindo a página geral com todas as regiões.
+`All regions` foi removido. Cada grupo oferece `Todos os chefes` / `All bosses` como primeiro item.
 
 Cada região continuará possuindo o campo que indica se pertence ao jogo base ou a `Shadow of the Erdtree`. O Drawer deverá usar esse campo para separar automaticamente as regiões entre os dois grupos. As regiões não deverão ser escritas manualmente no componente do Drawer.
 
-Dentro de cada grupo, as regiões deverão seguir uma ordem geográfica e progressiva representada pelo campo `displayOrder`. A ordem não deverá ser alfabética.
+Dentro de cada grupo, as regiões deverão seguir ordem alfabética pelo nome localizado no idioma ativo. `displayOrder` permanece preservado como metadado aprovado, mas não controla a ordem visual.
 
 A página de locais da Fextralife será usada como referência inicial para essa organização:
 
 `https://eldenring.wiki.fextralife.com/Locations`
 
-A sequência deverá refletir a organização natural das áreas e uma progressão razoável pelo mapa, sem representar uma rota obrigatória para o jogador. As regiões subterrâneas também deverão receber seu próprio `displayOrder` dentro do grupo do jogo base. As regiões da expansão deverão formar uma sequência própria dentro do grupo `Shadow of the Erdtree`.
+A sequência visual será recalculada ao trocar o idioma. Os valores de `displayOrder` continuam documentando a organização geográfica aprovada, sem impor uma rota ao jogador.
 
 As ordens definitivas e os valores de `displayOrder` dos dois grupos estão registrados nas taxonomias aprovadas abaixo. Se uma fonte futura apresentar organização ambígua ou divergente:
 
@@ -196,9 +197,9 @@ As ordens definitivas e os valores de `displayOrder` dos dois grupos estão regi
 - a ordem escolhida e sua justificativa deverão ser documentadas;
 - o caso deverá ser encaminhado para revisão manual quando necessário.
 
-O Drawer, a página geral de regiões e a Home deverão obter a ordem exclusivamente de `displayOrder`. A sequência não deverá ser escrita manualmente nos componentes visuais.
+Drawer e listas regionais deverão usar exclusivamente o comparador alfabético localizado centralizado. A sequência não deverá ser escrita manualmente nos componentes visuais.
 
-Cada grupo poderá ser expandido e recolhido independentemente.
+Os grupos funcionam como acordeão: somente um poderá permanecer expandido.
 
 Quando uma região estiver ativa:
 
@@ -623,7 +624,7 @@ Na etapa anterior, as 26 regiões e os 208 encontros aprovados foram modelados e
 
 ## Integração do catálogo real
 
-O catálogo real é a fonte ativa do aplicativo: 26 regiões e 208 encontros. Drawer, Home, página geral e páginas regionais usam os dados aprovados, agrupados por `contentPack` e ordenados por `displayOrder`. Finger Ruins of Rhia permanece visível com progresso `0/0`.
+O catálogo real é a fonte ativa do aplicativo: 26 regiões e 208 encontros. Drawer e listas usam os dados aprovados, agrupados por `contentPack` e ordenados alfabeticamente pelo idioma ativo. Finger Ruins of Rhia permanece válida com progresso regional `0/0`.
 
 O progresso persistido usa o esquema versionado 1 (`schemaVersion` e `defeatedBossIds`). A hidratação aceita o array legado, remove exclusivamente IDs com prefixo `sample-*`, elimina duplicatas e preserva IDs reais desconhecidos. Os cálculos da interface consideram somente IDs ativos do catálogo. Reset de progresso preserva a versão do esquema, idioma, tema e demais chaves.
 
@@ -648,3 +649,37 @@ O retorno dos detalhes foi corrigido com uma Stack raiz que contém o Drawer e e
 Home, Settings, All regions e os 26 destinos regionais foram conferidos. Não existem ocorrências conhecidas de `Unmatched Route`. O progresso da revisão foi removido e o estado final ficou em `0/208`; catálogo, armazenamento e formato de progresso não foram alterados. A tela de detalhes está concluída.
 
 Próxima etapa: planejar a pesquisa e a modelagem dos itens do jogo, reutilizando as 26 regiões já aprovadas.
+
+## Ordenação alfabética e navegação por conteúdo
+
+A regra visual anterior baseada em `displayOrder` foi substituída. Regiões e chefes deverão aparecer alfabeticamente pelo nome localizado no idioma ativo, usando comparação `pt-BR` ou `en`, tratamento equilibrado de caixa e acentos e desempate estável pelo ID. `displayOrder` permanece como metadado aprovado.
+
+A regra aplica-se somente às listas de regiões e chefes. Fases, ondas, participantes, summons, auxiliares e qualquer sequência interna com significado preservam a ordem aprovada. Novas regiões e chefes seguirão a ordenação localizada; novas sequências de batalha não serão reordenadas automaticamente.
+
+O Drawer remove All regions, funciona como acordeão e contém All bosses como primeiro item de Base game e Shadow of the Erdtree. As telas `/all-bosses/base-game` e `/all-bosses/shadow-of-the-erdtree` apresentam listas únicas de 165 e 43 encontros com progresso, busca e filtros.
+
+A Home mantém o progresso geral de 208 encontros e mostra somente dois cartões, Base game e Shadow of the Erdtree. A página regional mantém o nome apenas no cabeçalho, usa Progresso da Região no conteúdo e apresenta cartões compactos com nome, localização, detalhes e controle de progresso. Dados estruturais completos permanecem na tela de detalhes.
+
+A implementação e a revisão manual no Expo Go foram concluídas com sucesso.
+
+## Indicadores visuais dos cards e progresso regional
+
+O quadro Progresso da Região apresenta a razão à esquerda e o percentual à direita na mesma linha horizontal, com a barra abaixo. O cálculo continua seguro para total zero.
+
+Cards de encontros exibem um indicador decorativo no canto superior direito: símbolo de combate `⚔` enquanto não derrotado e símbolo de conclusão `✓` quando derrotado. O indicador não é botão, não altera progresso e acompanha o estado fornecido pelo contexto, incluindo atualização e rollback.
+
+O estado permanece acessível no rótulo do card e no botão de progresso. Os cards regionais continuam contendo somente nome, localização e controles; cards All bosses acrescentam somente a região. O indicador foi validado como elemento visual não interativo, oculto da árvore de acessibilidade e sem sobreposição em nomes longos.
+
+## Padrão horizontal dos cards de progresso
+
+Todo card de progresso deve apresentar `concluído/total` à esquerda e a porcentagem à direita, na mesma linha, com a barra de progresso abaixo. Razão e porcentagem não devem voltar a ser empilhadas, centralizadas em conjunto nem quebradas em linhas separadas.
+
+O componente compartilhado aplica esse padrão à Home, às páginas regionais e às telas Todos os chefes. Os cálculos permanecem seguros para `0/0`, progresso parcial e `100%`, sem `NaN` ou `Infinity`. Esse é o padrão obrigatório para cards atuais e futuros, e a opção de layout empilhado não permanece disponível.
+
+## Conclusão da etapa de listas alfabéticas e compactas
+
+A revisão manual no Expo Go validou a Home com exatamente dois cards de conteúdo, o Drawer em acordeão, a ordenação localizada em português e inglês, as páginas regionais, as duas telas Todos os chefes, busca, filtros, detalhes e retorno com estado e posição preservados. Também foram validados a sincronização de progresso, os indicadores `⚔` e `✓`, nomes longos, os três temas e Finger Ruins of Rhia com `0/0` e `0%`.
+
+Não foram encontrados cortes, sobreposições, rotas inválidas ou ocorrências conhecidas de `Unmatched Route`. O reset de progresso foi concluído, deixando `0/208`, `0/165` e `0/43`; idioma e tema permaneceram preservados.
+
+Próxima etapa: Planejar a pesquisa e a modelagem dos itens do jogo, reutilizando as 26 regiões aprovadas e a regra de ordenação alfabética.
