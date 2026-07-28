@@ -3,10 +3,16 @@ import {
   type DrawerContentComponentProps,
 } from '@react-navigation/drawer';
 import { router, usePathname } from 'expo-router';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { regions, sortRegions } from '../data';
+import { getRegionsByContentPack, regions } from '../data';
 import { useApp } from '../hooks/use-app';
 import { getLocalizedText } from '../i18n';
 
@@ -82,20 +88,41 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
   const isBossRoute =
     pathname === '/bosses' || pathname.startsWith('/regions/');
   const [isBossesExpanded, setIsBossesExpanded] = useState(isBossRoute);
-  const orderedRegions = useMemo(
-    () =>
-      sortRegions(regions).map((region) => ({
+  const activeRegion = regions.find(
+    (region) => pathname === `/regions/${region.id}`,
+  );
+  const [isBaseGameExpanded, setIsBaseGameExpanded] = useState(
+    activeRegion?.contentPack === 'base-game',
+  );
+  const [isExpansionExpanded, setIsExpansionExpanded] = useState(
+    activeRegion?.contentPack === 'shadow-of-the-erdtree',
+  );
+  const regionGroups = useMemo(
+    () => ({
+      baseGame: getRegionsByContentPack(regions, 'base-game').map((region) => ({
         id: region.id,
         name: getLocalizedText(region.name, language),
       })),
+      expansion: getRegionsByContentPack(
+        regions,
+        'shadow-of-the-erdtree',
+      ).map((region) => ({
+        id: region.id,
+        name: getLocalizedText(region.name, language),
+      })),
+    }),
     [language],
   );
 
   useEffect(() => {
     if (isBossRoute) {
       setIsBossesExpanded(true);
+      if (activeRegion?.contentPack === 'base-game') setIsBaseGameExpanded(true);
+      if (activeRegion?.contentPack === 'shadow-of-the-erdtree') {
+        setIsExpansionExpanded(true);
+      }
     }
-  }, [isBossRoute, pathname]);
+  }, [activeRegion?.contentPack, isBossRoute, pathname]);
 
   const closeDrawer = useCallback(() => {
     props.navigation.closeDrawer();
@@ -241,21 +268,27 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
               onPress={() => navigateTo('/bosses')}
             />
 
-            {orderedRegions.length === 0 ? (
+            {regionGroups.baseGame.length + regionGroups.expansion.length ===
+            0 ? (
               <Text
                 style={[
                   styles.emptyMessage,
-                  {
-                    color: theme.colors.textSecondary,
-                    marginLeft: theme.spacing.large,
-                    paddingHorizontal: theme.spacing.medium,
-                    paddingVertical: theme.spacing.small,
-                  },
+                  { color: theme.colors.textSecondary },
                 ]}>
                 {translations.navigation.noRegions}
               </Text>
             ) : (
-              orderedRegions.map((region) => (
+              <>
+            <DrawerGroup
+              expanded={isBaseGameExpanded}
+              label={translations.common.baseGame}
+              accessibilityLabel={
+                isBaseGameExpanded
+                  ? translations.navigation.collapseBaseGame
+                  : translations.navigation.expandBaseGame
+              }
+              onToggle={() => setIsBaseGameExpanded((value) => !value)}>
+              {regionGroups.baseGame.map((region) => (
                 <DrawerItem
                   key={region.id}
                   isNested
@@ -263,7 +296,28 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
                   label={region.name}
                   onPress={() => navigateToRegion(region.id)}
                 />
-              ))
+              ))}
+            </DrawerGroup>
+            <DrawerGroup
+              expanded={isExpansionExpanded}
+              label={translations.common.expansion}
+              accessibilityLabel={
+                isExpansionExpanded
+                  ? translations.navigation.collapseExpansion
+                  : translations.navigation.expandExpansion
+              }
+              onToggle={() => setIsExpansionExpanded((value) => !value)}>
+              {regionGroups.expansion.map((region) => (
+                <DrawerItem
+                  key={region.id}
+                  isNested
+                  isSelected={pathname === `/regions/${region.id}`}
+                  label={region.name}
+                  onPress={() => navigateToRegion(region.id)}
+                />
+              ))}
+            </DrawerGroup>
+              </>
             )}
           </View>
         ) : null}
@@ -275,6 +329,40 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
         />
       </View>
     </DrawerContentScrollView>
+  );
+}
+
+function DrawerGroup({
+  accessibilityLabel,
+  children,
+  expanded,
+  label,
+  onToggle,
+}: {
+  accessibilityLabel: string;
+  children: ReactNode;
+  expanded: boolean;
+  label: string;
+  onToggle: () => void;
+}) {
+  const { theme } = useApp();
+  return (
+    <View style={{ gap: theme.spacing.small }}>
+      <Pressable
+        accessibilityLabel={accessibilityLabel}
+        accessibilityRole="button"
+        accessibilityState={{ expanded }}
+        onPress={onToggle}
+        style={[styles.group, { marginLeft: theme.spacing.large }]}>
+        <Text style={[styles.itemLabel, { color: theme.colors.textPrimary }]}>
+          {label}
+        </Text>
+        <Text style={{ color: theme.colors.textSecondary }}>
+          {expanded ? '−' : '+'}
+        </Text>
+      </Pressable>
+      {expanded ? children : null}
+    </View>
   );
 }
 
@@ -323,6 +411,12 @@ const styles = StyleSheet.create({
   emptyMessage: {
     fontSize: 14,
     lineHeight: 20,
+  },
+  group: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    minHeight: 44,
+    paddingHorizontal: 12,
   },
   screenReaderText: {
     height: 1,

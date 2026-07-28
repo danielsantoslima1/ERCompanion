@@ -6,25 +6,25 @@ import { CustomDrawerContent } from '../custom-drawer-content';
 import type { AppContextValue } from '../../contexts/app-context';
 import { getTranslationDictionary } from '../../i18n';
 import { lightTheme } from '../../theme';
-import type { Region } from '../../types';
+import type { CatalogRegion } from '../../data/catalog';
 
-const testRegions: readonly Region[] = [
+const testRegions: readonly CatalogRegion[] = [
   {
     id: 'test-region-b',
     name: { 'pt-BR': 'Região Teste B', en: 'Test Region B' },
-    game: 'shadow-of-the-erdtree',
+    contentPack: 'shadow-of-the-erdtree',
     displayOrder: 2,
   },
   {
     id: 'test-region-a',
     name: { 'pt-BR': 'Região Teste A', en: 'Test Region A' },
-    game: 'base-game',
+    contentPack: 'base-game',
     displayOrder: 1,
   },
 ];
 
 interface MockDataControl {
-  setMockRegions: (regions: readonly Region[]) => void;
+  setMockRegions: (regions: readonly CatalogRegion[]) => void;
 }
 
 const closeDrawer = jest.fn<void, []>();
@@ -174,6 +174,16 @@ describe('CustomDrawerContent', () => {
     expect(
       screen.getByText('−', { includeHiddenElements: true }),
     ).toBeOnTheScreen();
+    await fireEvent.press(
+      screen.getByRole('button', {
+        name: translations.navigation.expandBaseGame,
+      }),
+    );
+    await fireEvent.press(
+      screen.getByRole('button', {
+        name: translations.navigation.expandExpansion,
+      }),
+    );
     const submenuButtons = [
       screen.getByRole('button', {
         name: translations.navigation.allRegions,
@@ -238,6 +248,11 @@ describe('CustomDrawerContent', () => {
     await fireEvent.press(
       screen.getByRole('button', {
         name: translations.navigation.expandBosses,
+      }),
+    );
+    await fireEvent.press(
+      screen.getByRole('button', {
+        name: translations.navigation.expandExpansion,
       }),
     );
 
@@ -332,6 +347,16 @@ describe('CustomDrawerContent', () => {
     await fireEvent.press(
       screen.getByRole('button', {
         name: translations.navigation.expandBosses,
+      }),
+    );
+    await fireEvent.press(
+      screen.getByRole('button', {
+        name: translations.navigation.expandBaseGame,
+      }),
+    );
+    await fireEvent.press(
+      screen.getByRole('button', {
+        name: translations.navigation.expandExpansion,
       }),
     );
     expect(screen.getByText('Test Region A')).toBeOnTheScreen();

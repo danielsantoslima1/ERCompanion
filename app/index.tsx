@@ -33,6 +33,7 @@ export default function HomeScreen() {
     () =>
       sortRegions(regions).map((region) => ({
         id: region.id,
+        contentPack: region.contentPack,
         name: getLocalizedText(region.name, language),
         progress: calculateRegionProgress(
           bosses,
@@ -136,16 +137,29 @@ export default function HomeScreen() {
               {translations.home.noRegions}
             </Text>
           ) : (
-            <View style={{ gap: theme.spacing.medium }}>
-              {regionProgress.map((region) => (
-                <RegionProgressItem
-                  key={region.id}
-                  defeated={region.progress.defeated}
-                  percentage={region.progress.percentage}
-                  regionName={region.name}
-                  total={region.progress.total}
-                />
-              ))}
+            <View style={{ gap: theme.spacing.large }}>
+              {(['base-game', 'shadow-of-the-erdtree'] as const).map(
+                (contentPack) => (
+                  <View key={contentPack} style={{ gap: theme.spacing.medium }}>
+                    <Text style={[styles.groupTitle, { color: theme.colors.accent }]}>
+                      {contentPack === 'base-game'
+                        ? translations.common.baseGame
+                        : translations.common.expansion}
+                    </Text>
+                    {regionProgress
+                      .filter((region) => region.contentPack === contentPack)
+                      .map((region) => (
+                        <RegionProgressItem
+                          key={region.id}
+                          defeated={region.progress.defeated}
+                          percentage={region.progress.percentage}
+                          regionName={region.name}
+                          total={region.progress.total}
+                        />
+                      ))}
+                  </View>
+                ),
+              )}
             </View>
           )}
         </View>
@@ -180,6 +194,10 @@ const styles = StyleSheet.create({
   },
   sectionDescription: {
     fontSize: 15,
+  },
+  groupTitle: {
+    fontSize: 18,
+    fontWeight: '700',
   },
   emptyMessage: {
     borderWidth: 1,

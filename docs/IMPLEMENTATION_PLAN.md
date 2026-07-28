@@ -165,3 +165,14 @@ Este plano divide o desenvolvimento do Elden Ring Companion em incrementos peque
 ## Entrada dos dados reais
 
 A lista completa de regiões e encontros reais não faz parte destas 16 etapas iniciais. Ela deverá ser planejada e revisada somente depois que navegação, armazenamento, internacionalização e interface estiverem estáveis. A inclusão exigirá fontes verificáveis, revisão das traduções, IDs permanentes, validação de duplicidades por localização e cuidado para não incorporar conteúdo protegido além de informações factuais necessárias.
+# Etapa do catálogo real isolado
+
+Histórico concluído: geração validada de 26 regiões e 208 encontros em `src/data/catalog`, inicialmente paralela aos dados temporários. As pendências daquele momento foram resolvidas na etapa de integração abaixo.
+
+# Etapa de integração do catálogo real
+
+Concluída: o catálogo real passou a alimentar Drawer, Home, página geral e páginas regionais. Os módulos temporários de produção foram removidos, e a migração versionada do progresso descarta IDs `sample-*` sem remover IDs reais desconhecidos nem modificar idioma ou tema.
+
+A revisão manual no Expo Go confirmou os 26 registros regionais, os 208 encontros, agrupamentos, navegação, busca, filtros, persistência, reset, idiomas, temas, estados vazios e unidades especiais de acompanhamento. Nenhuma correção visual ou funcional foi necessária. O progresso de teste foi removido, idioma e tema foram preservados e o servidor Expo foi encerrado.
+
+Próxima etapa: planejar a tela de detalhes dos encontros e, posteriormente, iniciar a pesquisa e modelagem dos itens do jogo.

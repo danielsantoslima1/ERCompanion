@@ -1,4 +1,4 @@
-import type { BossEncounter, Region } from '../../types';
+import type { BossEncounter, CatalogRegion } from '../catalog';
 import {
   calculateRegionProgress,
   calculateTotalProgress,
@@ -11,17 +11,17 @@ import {
   sortRegions,
 } from '../selectors';
 
-const regions: readonly Region[] = [
+const regions: readonly CatalogRegion[] = [
   {
     id: 'region-late',
     name: { 'pt-BR': 'Região tardia', en: 'Late region' },
-    game: 'base-game',
+    contentPack: 'base-game',
     displayOrder: 20,
   },
   {
     id: 'region-first',
     name: { 'pt-BR': 'Primeira região', en: 'First region' },
-    game: 'base-game',
+    contentPack: 'base-game',
     displayOrder: 10,
   },
 ];
@@ -32,21 +32,18 @@ const bosses: readonly BossEncounter[] = [
     name: { 'pt-BR': 'Chefe A', en: 'Boss A' },
     location: { 'pt-BR': 'Local A', en: 'Location A' },
     regionId: 'region-first',
-    game: 'base-game',
   },
   {
     id: 'boss-b',
     name: { 'pt-BR': 'Chefe B', en: 'Boss B' },
     location: { 'pt-BR': 'Local B', en: 'Location B' },
     regionId: 'region-first',
-    game: 'base-game',
   },
   {
     id: 'boss-c',
     name: { 'pt-BR': 'Chefe C', en: 'Boss C' },
     location: { 'pt-BR': 'Local C', en: 'Location C' },
     regionId: 'region-late',
-    game: 'base-game',
   },
 ];
 

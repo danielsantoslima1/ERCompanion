@@ -117,11 +117,11 @@ function TestConsumer() {
       />
       <Pressable
         testID="mark-a"
-        onPress={() => runAction(() => app.markBossDefeated('boss-a'))}
+        onPress={() => runAction(() => app.markBossDefeated('tree-sentinel-limgrave-road'))}
       />
       <Pressable
         testID="mark-b"
-        onPress={() => runAction(() => app.markBossDefeated('boss-b'))}
+        onPress={() => runAction(() => app.markBossDefeated('beastman-of-farum-azula-groveside-cave'))}
       />
       <Pressable
         testID="mark-empty"
@@ -129,7 +129,7 @@ function TestConsumer() {
       />
       <Pressable
         testID="unmark-a"
-        onPress={() => runAction(() => app.markBossNotDefeated('boss-a'))}
+        onPress={() => runAction(() => app.markBossNotDefeated('tree-sentinel-limgrave-road'))}
       />
       <Pressable
         testID="unmark-empty"
@@ -137,13 +137,13 @@ function TestConsumer() {
       />
       <Pressable
         testID="toggle-a"
-        onPress={() => runAction(() => app.toggleBossDefeated('boss-a'))}
+        onPress={() => runAction(() => app.toggleBossDefeated('tree-sentinel-limgrave-road'))}
       />
       <Pressable
         testID="toggle-empty"
         onPress={() => runAction(() => app.toggleBossDefeated('   '))}
       />
-      <Pressable testID="check-a" onPress={() => checkBoss('boss-a')} />
+      <Pressable testID="check-a" onPress={() => checkBoss('tree-sentinel-limgrave-road')} />
       <Pressable
         testID="reset-progress"
         onPress={() => runAction(app.resetProgress)}
@@ -202,7 +202,7 @@ beforeEach(() => {
 describe('AppProvider hydration', () => {
   it('hydrates saved settings, progress, theme, and translations', async () => {
     mockedLoadSettings.mockResolvedValue({ language: 'en', theme: 'light' });
-    mockedLoadDefeatedBossIds.mockResolvedValue(['boss-a', 'boss-b']);
+    mockedLoadDefeatedBossIds.mockResolvedValue(['tree-sentinel-limgrave-road', 'beastman-of-farum-azula-groveside-cave']);
 
     await renderProvider();
     await screen.findByTestId('consumer');
@@ -212,7 +212,7 @@ describe('AppProvider hydration', () => {
     expectText('resolved-theme', 'light');
     expectText('theme-mode', 'light');
     expectText('dictionary-description', getTranslationDictionary('en').app.description);
-    expectText('defeated-ids', 'boss-a,boss-b');
+    expectText('defeated-ids', 'tree-sentinel-limgrave-road,beastman-of-farum-azula-groveside-cave');
     expectText('defeated-count', '2');
     expectText('hydrated', 'true');
     expectText('initialization-error', 'none');
@@ -237,7 +237,7 @@ describe('AppProvider hydration', () => {
 
     await act(async () => {
       settingsDeferred.resolve({ language: 'en', theme: 'light' });
-      progressDeferred.resolve(['boss-a']);
+      progressDeferred.resolve(['tree-sentinel-limgrave-road']);
       await Promise.all([settingsDeferred.promise, progressDeferred.promise]);
     });
 
@@ -284,7 +284,7 @@ describe('AppProvider hydration', () => {
 
     await act(async () => {
       settingsDeferred.resolve({ language: 'en', theme: 'dark' });
-      progressDeferred.resolve(['boss-a', 'boss-b']);
+      progressDeferred.resolve(['tree-sentinel-limgrave-road', 'beastman-of-farum-azula-groveside-cave']);
       await Promise.all([settingsDeferred.promise, progressDeferred.promise]);
     });
 
@@ -292,7 +292,7 @@ describe('AppProvider hydration', () => {
     expectText('initialization-error', 'none');
     expectText('language', 'en');
     expectText('theme-preference', 'dark');
-    expectText('defeated-ids', 'boss-a,boss-b');
+    expectText('defeated-ids', 'tree-sentinel-limgrave-road,beastman-of-farum-azula-groveside-cave');
   });
 
   it('does not update state after unmounting during hydration', async () => {
@@ -325,7 +325,7 @@ describe('AppProvider hydration', () => {
 
 describe('AppProvider settings actions', () => {
   it('changes language, persists the complete settings, and updates translations', async () => {
-    mockedLoadDefeatedBossIds.mockResolvedValue(['boss-a']);
+    mockedLoadDefeatedBossIds.mockResolvedValue(['tree-sentinel-limgrave-road']);
     await renderHydratedProvider();
 
     await fireEvent.press(screen.getByTestId('language-en'));
@@ -338,12 +338,12 @@ describe('AppProvider settings actions', () => {
     );
     expectText('language', 'en');
     expectText('dictionary-description', getTranslationDictionary('en').app.description);
-    expectText('defeated-ids', 'boss-a');
+    expectText('defeated-ids', 'tree-sentinel-limgrave-road');
   });
 
   it('rolls language and translations back when persistence fails', async () => {
     mockedLoadSettings.mockResolvedValue({ language: 'pt-BR', theme: 'dark' });
-    mockedLoadDefeatedBossIds.mockResolvedValue(['boss-a']);
+    mockedLoadDefeatedBossIds.mockResolvedValue(['tree-sentinel-limgrave-road']);
     mockedSaveSettings.mockRejectedValue(new Error('write failed'));
     await renderHydratedProvider();
 
@@ -358,7 +358,7 @@ describe('AppProvider settings actions', () => {
       getTranslationDictionary('pt-BR').app.description,
     );
     expectText('theme-preference', 'dark');
-    expectText('defeated-ids', 'boss-a');
+    expectText('defeated-ids', 'tree-sentinel-limgrave-road');
   });
 
   it.each([
@@ -401,7 +401,7 @@ describe('AppProvider settings actions', () => {
 
   it('rolls the theme back when persistence fails', async () => {
     mockedLoadSettings.mockResolvedValue({ language: 'en', theme: 'dark' });
-    mockedLoadDefeatedBossIds.mockResolvedValue(['boss-a']);
+    mockedLoadDefeatedBossIds.mockResolvedValue(['tree-sentinel-limgrave-road']);
     mockedSaveSettings.mockRejectedValue(new Error('write failed'));
     await renderHydratedProvider();
 
@@ -413,12 +413,12 @@ describe('AppProvider settings actions', () => {
     expectText('language', 'en');
     expectText('theme-preference', 'dark');
     expectText('resolved-theme', 'dark');
-    expectText('defeated-ids', 'boss-a');
+    expectText('defeated-ids', 'tree-sentinel-limgrave-road');
   });
 
   it('restores default settings while preserving progress', async () => {
     mockedLoadSettings.mockResolvedValue({ language: 'en', theme: 'light' });
-    mockedLoadDefeatedBossIds.mockResolvedValue(['boss-a', 'boss-b']);
+    mockedLoadDefeatedBossIds.mockResolvedValue(['tree-sentinel-limgrave-road', 'beastman-of-farum-azula-groveside-cave']);
     await renderHydratedProvider();
 
     await fireEvent.press(screen.getByTestId('reset-settings'));
@@ -426,13 +426,13 @@ describe('AppProvider settings actions', () => {
     await waitFor(() => expect(mockedRestoreDefaultSettings).toHaveBeenCalledTimes(1));
     expectText('language', 'pt-BR');
     expectText('theme-preference', 'system');
-    expectText('defeated-ids', 'boss-a,boss-b');
+    expectText('defeated-ids', 'tree-sentinel-limgrave-road,beastman-of-farum-azula-groveside-cave');
     expectText('defeated-count', '2');
   });
 
   it('keeps previous settings when restoring defaults fails', async () => {
     mockedLoadSettings.mockResolvedValue({ language: 'en', theme: 'light' });
-    mockedLoadDefeatedBossIds.mockResolvedValue(['boss-a']);
+    mockedLoadDefeatedBossIds.mockResolvedValue(['tree-sentinel-limgrave-road']);
     mockedRestoreDefaultSettings.mockRejectedValue(new Error('write failed'));
     await renderHydratedProvider();
 
@@ -443,7 +443,7 @@ describe('AppProvider settings actions', () => {
     );
     expectText('language', 'en');
     expectText('theme-preference', 'light');
-    expectText('defeated-ids', 'boss-a');
+    expectText('defeated-ids', 'tree-sentinel-limgrave-road');
   });
 });
 
@@ -452,8 +452,8 @@ describe('AppProvider progress actions', () => {
     await renderHydratedProvider();
 
     await fireEvent.press(screen.getByTestId('mark-a'));
-    await waitFor(() => expect(mockedAddDefeatedBossId).toHaveBeenCalledWith('boss-a'));
-    expectText('defeated-ids', 'boss-a');
+    await waitFor(() => expect(mockedAddDefeatedBossId).toHaveBeenCalledWith('tree-sentinel-limgrave-road'));
+    expectText('defeated-ids', 'tree-sentinel-limgrave-road');
     expectText('defeated-count', '1');
 
     await fireEvent.press(screen.getByTestId('check-a'));
@@ -461,7 +461,7 @@ describe('AppProvider progress actions', () => {
   });
 
   it('does not duplicate or persist an already defeated boss', async () => {
-    mockedLoadDefeatedBossIds.mockResolvedValue(['boss-a']);
+    mockedLoadDefeatedBossIds.mockResolvedValue(['tree-sentinel-limgrave-road']);
     await renderHydratedProvider();
 
     await fireEvent.press(screen.getByTestId('mark-a'));
@@ -470,12 +470,12 @@ describe('AppProvider progress actions', () => {
       await Promise.resolve();
     });
     expect(mockedAddDefeatedBossId).not.toHaveBeenCalled();
-    expectText('defeated-ids', 'boss-a');
+    expectText('defeated-ids', 'tree-sentinel-limgrave-road');
     expectText('defeated-count', '1');
   });
 
   it('rolls a failed mark back while preserving existing IDs', async () => {
-    mockedLoadDefeatedBossIds.mockResolvedValue(['boss-b']);
+    mockedLoadDefeatedBossIds.mockResolvedValue(['beastman-of-farum-azula-groveside-cave']);
     mockedAddDefeatedBossId.mockRejectedValue(new Error('write failed'));
     await renderHydratedProvider();
 
@@ -484,27 +484,27 @@ describe('AppProvider progress actions', () => {
     await waitFor(() =>
       expectText('action-error', 'Failed to update boss progress.'),
     );
-    expectText('defeated-ids', 'boss-b');
+    expectText('defeated-ids', 'beastman-of-farum-azula-groveside-cave');
     expectText('defeated-count', '1');
   });
 
   it('unmarks a defeated boss and preserves other IDs', async () => {
-    mockedLoadDefeatedBossIds.mockResolvedValue(['boss-a', 'boss-b']);
+    mockedLoadDefeatedBossIds.mockResolvedValue(['tree-sentinel-limgrave-road', 'beastman-of-farum-azula-groveside-cave']);
     await renderHydratedProvider();
 
     await fireEvent.press(screen.getByTestId('unmark-a'));
 
     await waitFor(() =>
-      expect(mockedRemoveDefeatedBossId).toHaveBeenCalledWith('boss-a'),
+      expect(mockedRemoveDefeatedBossId).toHaveBeenCalledWith('tree-sentinel-limgrave-road'),
     );
-    expectText('defeated-ids', 'boss-b');
+    expectText('defeated-ids', 'beastman-of-farum-azula-groveside-cave');
     expectText('defeated-count', '1');
     await fireEvent.press(screen.getByTestId('check-a'));
     await waitFor(() => expectText('boss-check', 'false'));
   });
 
   it('rolls a failed unmark back while preserving all IDs', async () => {
-    mockedLoadDefeatedBossIds.mockResolvedValue(['boss-a', 'boss-b']);
+    mockedLoadDefeatedBossIds.mockResolvedValue(['tree-sentinel-limgrave-road', 'beastman-of-farum-azula-groveside-cave']);
     mockedRemoveDefeatedBossId.mockRejectedValue(new Error('write failed'));
     await renderHydratedProvider();
 
@@ -513,7 +513,7 @@ describe('AppProvider progress actions', () => {
     await waitFor(() =>
       expectText('action-error', 'Failed to update boss progress.'),
     );
-    expectText('defeated-ids', 'boss-a,boss-b');
+    expectText('defeated-ids', 'tree-sentinel-limgrave-road,beastman-of-farum-azula-groveside-cave');
     expectText('defeated-count', '2');
   });
 
@@ -521,19 +521,19 @@ describe('AppProvider progress actions', () => {
     await renderHydratedProvider();
 
     await fireEvent.press(screen.getByTestId('toggle-a'));
-    await waitFor(() => expect(mockedAddDefeatedBossId).toHaveBeenCalledWith('boss-a'));
+    await waitFor(() => expect(mockedAddDefeatedBossId).toHaveBeenCalledWith('tree-sentinel-limgrave-road'));
     expectText('defeated-count', '1');
 
     await fireEvent.press(screen.getByTestId('toggle-a'));
     await waitFor(() =>
-      expect(mockedRemoveDefeatedBossId).toHaveBeenCalledWith('boss-a'),
+      expect(mockedRemoveDefeatedBossId).toHaveBeenCalledWith('tree-sentinel-limgrave-road'),
     );
     expectText('defeated-ids', '');
     expectText('defeated-count', '0');
   });
 
   it('rejects empty and whitespace-only IDs without persistence or state changes', async () => {
-    mockedLoadDefeatedBossIds.mockResolvedValue(['boss-b']);
+    mockedLoadDefeatedBossIds.mockResolvedValue(['beastman-of-farum-azula-groveside-cave']);
     await renderHydratedProvider();
 
     await fireEvent.press(screen.getByTestId('mark-empty'));
@@ -545,12 +545,12 @@ describe('AppProvider progress actions', () => {
 
     expect(mockedAddDefeatedBossId).not.toHaveBeenCalled();
     expect(mockedRemoveDefeatedBossId).not.toHaveBeenCalled();
-    expectText('defeated-ids', 'boss-b');
+    expectText('defeated-ids', 'beastman-of-farum-azula-groveside-cave');
   });
 
   it('resets progress only after storage succeeds and preserves settings', async () => {
     mockedLoadSettings.mockResolvedValue({ language: 'en', theme: 'light' });
-    mockedLoadDefeatedBossIds.mockResolvedValue(['boss-a', 'boss-b']);
+    mockedLoadDefeatedBossIds.mockResolvedValue(['tree-sentinel-limgrave-road', 'beastman-of-farum-azula-groveside-cave']);
     await renderHydratedProvider();
 
     await fireEvent.press(screen.getByTestId('reset-progress'));
@@ -564,7 +564,7 @@ describe('AppProvider progress actions', () => {
 
   it('keeps progress and settings when reset fails', async () => {
     mockedLoadSettings.mockResolvedValue({ language: 'en', theme: 'light' });
-    mockedLoadDefeatedBossIds.mockResolvedValue(['boss-a']);
+    mockedLoadDefeatedBossIds.mockResolvedValue(['tree-sentinel-limgrave-road']);
     mockedClearProgress.mockRejectedValue(new Error('remove failed'));
     await renderHydratedProvider();
 
@@ -573,7 +573,7 @@ describe('AppProvider progress actions', () => {
     await waitFor(() =>
       expectText('action-error', 'Failed to reset boss progress.'),
     );
-    expectText('defeated-ids', 'boss-a');
+    expectText('defeated-ids', 'tree-sentinel-limgrave-road');
     expectText('defeated-count', '1');
     expectText('language', 'en');
     expectText('theme-preference', 'light');
@@ -633,7 +633,7 @@ describe('AppProvider action concurrency', () => {
       secondAdd.resolve();
       await secondAdd.promise;
     });
-    await waitFor(() => expectText('defeated-ids', 'boss-a,boss-b'));
+    await waitFor(() => expectText('defeated-ids', 'tree-sentinel-limgrave-road,beastman-of-farum-azula-groveside-cave'));
     expectText('defeated-count', '2');
   });
 
@@ -659,7 +659,7 @@ describe('AppProvider action concurrency', () => {
     });
 
     await waitFor(() => expectText('language', 'en'));
-    expectText('defeated-ids', 'boss-a');
+    expectText('defeated-ids', 'tree-sentinel-limgrave-road');
     expectText('defeated-count', '1');
   });
 });

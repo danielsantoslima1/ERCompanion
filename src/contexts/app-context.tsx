@@ -12,6 +12,7 @@ import {
   getTranslationDictionary,
   type TranslationDictionary,
 } from '../i18n';
+import { bosses, getValidDefeatedBossIds } from '../data';
 import {
   addDefeatedBossId,
   clearProgress,
@@ -373,6 +374,10 @@ export function AppProvider({ children }: AppProviderProps) {
     () => getTranslationDictionary(language),
     [language],
   );
+  const validDefeatedBossCount = useMemo(
+    () => getValidDefeatedBossIds(bosses, new Set(defeatedBossIds)).size,
+    [defeatedBossIds],
+  );
 
   const contextValue = useMemo<AppContextValue>(
     () => ({
@@ -383,7 +388,7 @@ export function AppProvider({ children }: AppProviderProps) {
       theme,
       translations: translationDictionary,
       defeatedBossIds,
-      defeatedBossCount: defeatedBossIds.length,
+        defeatedBossCount: validDefeatedBossCount,
       isHydrated,
       initializationError,
       setLanguage,
@@ -397,7 +402,8 @@ export function AppProvider({ children }: AppProviderProps) {
       retryInitialization,
     }),
     [
-      defeatedBossIds,
+        defeatedBossIds,
+        validDefeatedBossCount,
       initializationError,
       isBossDefeated,
       isHydrated,

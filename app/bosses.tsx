@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { useCallback, useMemo } from 'react';
+import { Fragment, useCallback, useMemo } from 'react';
 import {
   Pressable,
   ScrollView,
@@ -33,9 +33,10 @@ export default function BossesScreen() {
     () =>
       sortRegions(regions).map((region) => ({
         id: region.id,
+        contentPack: region.contentPack,
         name: getLocalizedText(region.name, language),
         contentLabel:
-          region.game === 'base-game'
+          region.contentPack === 'base-game'
             ? translations.common.baseGame
             : translations.common.expansion,
         progress: calculateRegionProgress(
@@ -102,16 +103,24 @@ export default function BossesScreen() {
               {translations.bosses.noRegions}
             </Text>
           ) : (
-            regionItems.map((region) => {
+            regionItems.map((region, index) => {
               const progressLabel = translations.bosses.regionProgress(
                 region.progress.defeated,
                 region.progress.total,
                 region.progress.percentage,
               );
 
+              const startsGroup =
+                index === 0 ||
+                regionItems[index - 1].contentPack !== region.contentPack;
               return (
-                <Pressable
-                  key={region.id}
+                <Fragment key={region.id}>
+                  {startsGroup ? (
+                    <Text style={[styles.groupTitle, { color: theme.colors.accent }]}>
+                      {region.contentLabel}
+                    </Text>
+                  ) : null}
+                  <Pressable
                   accessibilityHint={progressLabel}
                   accessibilityLabel={translations.bosses.openRegion(
                     region.name,
@@ -159,7 +168,8 @@ export default function BossesScreen() {
                       {region.progress.percentage}%
                     </Text>
                   </View>
-                </Pressable>
+                  </Pressable>
+                </Fragment>
               );
             })
           )}
@@ -195,6 +205,11 @@ const styles = StyleSheet.create({
   contentLabel: {
     fontSize: 14,
     fontWeight: '600',
+  },
+  groupTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    marginTop: 8,
   },
   progressRow: {
     alignItems: 'center',

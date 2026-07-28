@@ -4,6 +4,12 @@ import { storageKeys } from './keys';
 import { normalizeBossId, validateDefeatedBossIds } from './validators';
 
 let progressMutationQueue: Promise<void> = Promise.resolve();
+export const PROGRESS_SCHEMA_VERSION = 1;
+
+interface StoredProgress {
+  readonly schemaVersion: typeof PROGRESS_SCHEMA_VERSION;
+  readonly defeatedBossIds: readonly string[];
+}
 
 function enqueueProgressMutation<Result>(
   operation: () => Promise<Result>,
@@ -14,6 +20,10 @@ function enqueueProgressMutation<Result>(
     () => undefined,
   );
   return result;
+}
+
+function createStoredProgress(ids: readonly string[]): StoredProgress {
+  return { schemaVersion: PROGRESS_SCHEMA_VERSION, defeatedBossIds: ids };
 }
 
 async function readDefeatedBossIds(): Promise<string[]> {
@@ -39,12 +49,41 @@ async function readDefeatedBossIds(): Promise<string[]> {
     return [];
   }
 
-  return validateDefeatedBossIds(parsedValue) ?? [];
+  const legacyIds = validateDefeatedBossIds(parsedValue);
+  const currentIds =
+    typeof parsedValue === 'object' &&
+    parsedValue !== null &&
+    !Array.isArray(parsedValue) &&
+    'schemaVersion' in parsedValue &&
+    parsedValue.schemaVersion === PROGRESS_SCHEMA_VERSION &&
+    'defeatedBossIds' in parsedValue
+      ? validateDefeatedBossIds(parsedValue.defeatedBossIds)
+      : null;
+  const sourceIds = currentIds ?? legacyIds;
+
+  if (sourceIds === null) {
+    return [];
+  }
+
+  const migratedIds = sourceIds.filter((id) => !id.startsWith('sample-'));
+  const requiresWrite =
+    currentIds === null ||
+    migratedIds.length !== sourceIds.length ||
+    JSON.stringify(parsedValue) !== JSON.stringify(createStoredProgress(migratedIds));
+
+  if (requiresWrite) {
+    await writeDefeatedBossIds(migratedIds);
+  }
+
+  return migratedIds;
 }
 
 async function writeDefeatedBossIds(ids: readonly string[]): Promise<void> {
   try {
-    await AsyncStorage.setItem(storageKeys.defeatedBossIds, JSON.stringify(ids));
+    await AsyncStorage.setItem(
+      storageKeys.defeatedBossIds,
+      JSON.stringify(createStoredProgress(ids)),
+    );
   } catch (error: unknown) {
     throw new Error('Failed to save defeated boss IDs to local storage.', {
       cause: error,
@@ -120,13 +159,5 @@ export async function isBossDefeated(id: string): Promise<boolean> {
 }
 
 export async function clearProgress(): Promise<void> {
-  return enqueueProgressMutation(async () => {
-    try {
-      await AsyncStorage.removeItem(storageKeys.defeatedBossIds);
-    } catch (error: unknown) {
-      throw new Error('Failed to clear progress from local storage.', {
-        cause: error,
-      });
-    }
-  });
+  return enqueueProgressMutation(() => writeDefeatedBossIds([]));
 }

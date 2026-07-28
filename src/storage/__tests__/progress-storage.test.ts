@@ -19,6 +19,8 @@ jest.mock(
 
 const SETTINGS_KEY = '@elden-ring-companion/settings:v1';
 const PROGRESS_KEY = '@elden-ring-companion/defeated-boss-ids:v1';
+const versionedProgress = (ids: readonly string[]) =>
+  JSON.stringify({ schemaVersion: 1, defeatedBossIds: ids });
 const mockedGetItem = jest.mocked(AsyncStorage.getItem);
 const mockedSetItem = jest.mocked(AsyncStorage.setItem);
 const mockedRemoveItem = jest.mocked(AsyncStorage.removeItem);
@@ -45,6 +47,64 @@ describe('progress storage', () => {
         'boss-a',
         'boss-b',
       ]);
+    });
+
+    it('migrates legacy progress, removes sample IDs, deduplicates, and preserves unknown real IDs', async () => {
+      await AsyncStorage.setItem(
+        PROGRESS_KEY,
+        JSON.stringify([
+          'sample-base-training-guardian',
+          'tree-sentinel-limgrave-road',
+          'future-real-boss',
+          'tree-sentinel-limgrave-road',
+        ]),
+      );
+
+      await expect(loadDefeatedBossIds()).resolves.toEqual([
+        'tree-sentinel-limgrave-road',
+        'future-real-boss',
+      ]);
+      await expect(AsyncStorage.getItem(PROGRESS_KEY)).resolves.toBe(
+        versionedProgress([
+          'tree-sentinel-limgrave-road',
+          'future-real-boss',
+        ]),
+      );
+    });
+
+    it('reads current versioned progress idempotently without rewriting it', async () => {
+      await AsyncStorage.setItem(
+        PROGRESS_KEY,
+        versionedProgress(['tree-sentinel-limgrave-road']),
+      );
+      jest.clearAllMocks();
+
+      await expect(loadDefeatedBossIds()).resolves.toEqual([
+        'tree-sentinel-limgrave-road',
+      ]);
+      expect(mockedSetItem).not.toHaveBeenCalled();
+    });
+
+    it('returns an empty list for an unknown schema version', async () => {
+      await AsyncStorage.setItem(
+        PROGRESS_KEY,
+        JSON.stringify({ schemaVersion: 99, defeatedBossIds: ['boss-a'] }),
+      );
+
+      await expect(loadDefeatedBossIds()).resolves.toEqual([]);
+    });
+
+    it('does not modify settings while migrating progress', async () => {
+      const settings = JSON.stringify({ language: 'en', theme: 'dark' });
+      await AsyncStorage.setItem(SETTINGS_KEY, settings);
+      await AsyncStorage.setItem(
+        PROGRESS_KEY,
+        JSON.stringify(['sample-old', 'real-id']),
+      );
+
+      await loadDefeatedBossIds();
+
+      await expect(AsyncStorage.getItem(SETTINGS_KEY)).resolves.toBe(settings);
     });
 
     it('normalizes stored IDs with trim', async () => {
@@ -126,7 +186,7 @@ describe('progress storage', () => {
     });
 
     it('does not modify AsyncStorage during a read', async () => {
-      await AsyncStorage.setItem(PROGRESS_KEY, JSON.stringify(['boss-a']));
+      await AsyncStorage.setItem(PROGRESS_KEY, versionedProgress(['boss-a']));
       jest.clearAllMocks();
 
       await loadDefeatedBossIds();
@@ -143,7 +203,7 @@ describe('progress storage', () => {
       await saveDefeatedBossIds(['boss-a', 'boss-b']);
 
       await expect(AsyncStorage.getItem(PROGRESS_KEY)).resolves.toBe(
-        JSON.stringify(['boss-a', 'boss-b']),
+        versionedProgress(['boss-a', 'boss-b']),
       );
     });
 
@@ -330,7 +390,7 @@ describe('progress storage', () => {
   });
 
   describe('clearProgress', () => {
-    it('removes only the progress key', async () => {
+    it('resets only the progress payload while preserving its schema', async () => {
       await AsyncStorage.setItem(PROGRESS_KEY, JSON.stringify(['boss-a']));
       await AsyncStorage.setItem(
         SETTINGS_KEY,
@@ -340,9 +400,10 @@ describe('progress storage', () => {
 
       await clearProgress();
 
-      expect(mockedRemoveItem).toHaveBeenCalledTimes(1);
-      expect(mockedRemoveItem).toHaveBeenCalledWith(PROGRESS_KEY);
-      await expect(AsyncStorage.getItem(PROGRESS_KEY)).resolves.toBeNull();
+      expect(mockedRemoveItem).not.toHaveBeenCalled();
+      await expect(AsyncStorage.getItem(PROGRESS_KEY)).resolves.toBe(
+        versionedProgress([]),
+      );
     });
 
     it('does not use AsyncStorage.clear', async () => {
@@ -366,11 +427,11 @@ describe('progress storage', () => {
       );
     });
 
-    it('propagates a contextualized removal failure', async () => {
-      mockedRemoveItem.mockRejectedValueOnce(new Error('remove failure'));
+    it('propagates a contextualized reset write failure', async () => {
+      mockedSetItem.mockRejectedValueOnce(new Error('write failure'));
 
       await expect(clearProgress()).rejects.toThrow(
-        'Failed to clear progress from local storage.',
+        'Failed to save defeated boss IDs to local storage.',
       );
     });
   });

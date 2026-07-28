@@ -11,6 +11,10 @@ export interface TranslationDictionary {
     drawerDescription: string;
     expandBosses: string;
     collapseBosses: string;
+    expandBaseGame: string;
+    collapseBaseGame: string;
+    expandExpansion: string;
+    collapseExpansion: string;
     noRegions: string;
     selected: string;
   };
@@ -57,6 +61,7 @@ export interface TranslationDictionary {
     markAsDefeated: string;
     markAsNotDefeated: string;
     noBossesFound: string;
+    noBossesInRegion: string;
     defeatedStatus: string;
     notDefeatedStatus: string;
     saving: string;

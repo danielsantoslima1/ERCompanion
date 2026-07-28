@@ -14,6 +14,7 @@ interface BossCardProps {
   id: string;
   name: string;
   location: string;
+  availability?: string;
   isDefeated: boolean;
 }
 
@@ -21,6 +22,7 @@ export function BossCard({
   id,
   name,
   location,
+  availability,
   isDefeated,
 }: BossCardProps) {
   const {
@@ -96,6 +98,11 @@ export function BossCard({
         <Text style={[styles.location, { color: theme.colors.textSecondary }]}>
           {location}
         </Text>
+        {availability ? (
+          <Text style={[styles.location, { color: theme.colors.textSecondary }]}>
+            {availability}
+          </Text>
+        ) : null}
         <Text
           style={[
             styles.status,

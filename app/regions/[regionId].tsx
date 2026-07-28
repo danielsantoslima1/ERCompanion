@@ -25,16 +25,17 @@ import {
   findRegionById,
   getBossesByRegion,
   regions,
+  searchAndFilterBosses,
+  type BossFilter,
   type BossEncounterWithProgress,
 } from '@/src/data';
 import { useApp } from '@/src/hooks/use-app';
 import { getLocalizedText } from '@/src/i18n';
 
-type BossFilter = 'all' | 'defeated' | 'not-defeated';
-
 interface LocalizedBoss extends BossEncounterWithProgress {
   localizedName: string;
   localizedLocation: string;
+  localizedAvailability?: string;
 }
 
 function getRegionId(parameter: string | string[] | undefined): string {
@@ -78,39 +79,31 @@ export default function RegionScreen() {
       ),
     [defeatedBossIdSet, regionId],
   );
-  const localizedBosses = useMemo<LocalizedBoss[]>(
+  const bossesWithProgress = useMemo(
     () =>
       combineBossesWithProgress(
         regionBosses,
         defeatedBossIdSet,
+      ),
+    [defeatedBossIdSet, regionBosses],
+  );
+  const visibleBosses = useMemo<LocalizedBoss[]>(
+    () =>
+      searchAndFilterBosses(
+        bossesWithProgress,
+        query,
+        filter,
+        language,
       ).map((boss) => ({
         ...boss,
         localizedName: getLocalizedText(boss.name, language),
         localizedLocation: getLocalizedText(boss.location, language),
+        localizedAvailability: boss.availability
+          ? getLocalizedText(boss.availability, language)
+          : undefined,
       })),
-    [defeatedBossIdSet, language, regionBosses],
+    [bossesWithProgress, filter, language, query],
   );
-  const visibleBosses = useMemo(() => {
-    const normalizedQuery = query.trim().toLocaleLowerCase(language);
-
-    return localizedBosses.filter((boss) => {
-      const matchesFilter =
-        filter === 'all' ||
-        (filter === 'defeated' && boss.isDefeated) ||
-        (filter === 'not-defeated' && !boss.isDefeated);
-
-      if (!matchesFilter || normalizedQuery.length === 0) {
-        return matchesFilter;
-      }
-
-      return (
-        boss.localizedName.toLocaleLowerCase(language).includes(normalizedQuery) ||
-        boss.localizedLocation
-          .toLocaleLowerCase(language)
-          .includes(normalizedQuery)
-      );
-    });
-  }, [filter, language, localizedBosses, query]);
 
   const renderBoss = useCallback<ListRenderItem<LocalizedBoss>>(
     ({ item }) => (
@@ -118,6 +111,7 @@ export default function RegionScreen() {
         id={item.id}
         isDefeated={item.isDefeated}
         location={item.localizedLocation}
+        availability={item.localizedAvailability}
         name={item.localizedName}
       />
     ),
@@ -299,7 +293,9 @@ export default function RegionScreen() {
           padding: theme.spacing.medium,
         },
       ]}>
-      {translations.region.noBossesFound}
+      {regionBosses.length === 0
+        ? translations.region.noBossesInRegion
+        : translations.region.noBossesFound}
     </Text>
   );
 

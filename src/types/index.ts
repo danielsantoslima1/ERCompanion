@@ -1,8 +1,9 @@
+export type { LocalizedText } from './boss';
 export type {
   BossEncounter,
   BossEncounterWithProgress,
-  GameContent,
-  LocalizedText,
-} from './boss';
-export type { Region } from './region';
+  CatalogRegion,
+  ContentPack,
+} from '../data/catalog/types';
+export type { CatalogRegion as Region } from '../data/catalog/types';
 export type { Language, Settings, ThemePreference } from './settings';

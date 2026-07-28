@@ -3,6 +3,7 @@ export {
   clearProgress,
   isBossDefeated,
   loadDefeatedBossIds,
+  PROGRESS_SCHEMA_VERSION,
   removeDefeatedBossId,
   saveDefeatedBossIds,
 } from './progress-storage';

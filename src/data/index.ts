@@ -1,5 +1,7 @@
-export { bosses } from './bosses';
-export { regions } from './regions';
+export {
+  bossEncounters as bosses,
+  catalogRegions as regions,
+} from './catalog';
 export {
   calculateRegionProgress,
   calculateTotalProgress,
@@ -8,15 +10,16 @@ export {
   countBossesByRegion,
   findBossById,
   findRegionById,
+  getRegionsByContentPack,
+  getValidDefeatedBossIds,
   getBossesByRegion,
+  searchAndFilterBosses,
   sortRegions,
 } from './selectors';
-export type { ProgressSummary } from './selectors';
-export { isDataValid, validateData } from './validation';
+export type { BossFilter, ProgressSummary } from './selectors';
 export type {
   BossEncounter,
   BossEncounterWithProgress,
-  GameContent,
-  LocalizedText,
-  Region,
-} from '../types';
+  CatalogRegion,
+  ContentPack,
+} from './catalog';

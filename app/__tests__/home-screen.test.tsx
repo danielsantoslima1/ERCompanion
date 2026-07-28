@@ -4,19 +4,19 @@ import HomeScreen from '../index';
 import type { AppContextValue } from '../../src/contexts/app-context';
 import { getTranslationDictionary } from '../../src/i18n';
 import { lightTheme } from '../../src/theme';
-import type { BossEncounter, Region } from '../../src/types';
+import type { BossEncounter, CatalogRegion } from '../../src/data/catalog';
 
-const testRegions: readonly Region[] = [
+const testRegions: readonly CatalogRegion[] = [
   {
     id: 'test-region-b',
     name: { 'pt-BR': 'Região Teste B', en: 'Test Region B' },
-    game: 'shadow-of-the-erdtree',
+    contentPack: 'shadow-of-the-erdtree',
     displayOrder: 2,
   },
   {
     id: 'test-region-a',
     name: { 'pt-BR': 'Região Teste A', en: 'Test Region A' },
-    game: 'base-game',
+    contentPack: 'base-game',
     displayOrder: 1,
   },
 ];
@@ -26,27 +26,24 @@ const testBosses: readonly BossEncounter[] = [
     name: { 'pt-BR': 'Chefe Teste A', en: 'Test Boss A' },
     location: { 'pt-BR': 'Local Teste A', en: 'Test Location A' },
     regionId: 'test-region-a',
-    game: 'base-game',
   },
   {
     id: 'test-boss-b',
     name: { 'pt-BR': 'Chefe Teste B', en: 'Test Boss B' },
     location: { 'pt-BR': 'Local Teste B', en: 'Test Location B' },
     regionId: 'test-region-a',
-    game: 'base-game',
   },
   {
     id: 'test-boss-c',
     name: { 'pt-BR': 'Chefe Teste C', en: 'Test Boss C' },
     location: { 'pt-BR': 'Local Teste C', en: 'Test Location C' },
     regionId: 'test-region-b',
-    game: 'shadow-of-the-erdtree',
   },
 ];
 
 interface MockDataControl {
   setMockData: (
-    regions: readonly Region[],
+    regions: readonly CatalogRegion[],
     bosses: readonly BossEncounter[],
   ) => void;
 }
