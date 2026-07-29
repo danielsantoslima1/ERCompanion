@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="640" viewBox="0 0 512 640">
+  <title>Elden Ring Companion original tree and sword emblem</title>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <ellipse cx="256" cy="302" rx="190" ry="254" stroke="#927A45" stroke-width="12"/>
+    <ellipse cx="256" cy="302" rx="174" ry="238" stroke="#E2B34A" stroke-width="4"/>
+    <path d="M108 172C78 207 65 250 65 302s13 95 43 130M404 172c30 35 43 78 43 130s-13 95-43 130"
+      stroke="#927A45" stroke-width="5"/>
+    <path d="M102 151l-20-23m328 23 20-23M102 454l-20 23m328-23 20 23"
+      stroke="#E2B34A" stroke-width="6"/>
+
+    <path d="M256 116v312" stroke="#927A45" stroke-width="20"/>
+    <path d="M256 116v312" stroke="#E2B34A" stroke-width="10"/>
+    <path d="M256 116l-17 34h34z" fill="#F9C043" stroke="#E2B34A" stroke-width="4"/>
+
+    <path d="M256 196c-29-44-65-62-106-67m106 103c-50-37-92-43-133-27m133 65c-48-18-91-12-126 17m126-91c29-44 65-62 106-67m-106 103c50-37 92-43 133-27m-133 65c48-18 91-12 126 17"
+      stroke="#E2B34A" stroke-width="8"/>
+    <path d="M256 222c-23-25-46-33-72-31m72 65c-28-13-54-12-78 3m78-37c23-25 46-33 72-31m-72 65c28-13 54-12 78 3"
+      stroke="#F9C043" stroke-width="3"/>
+
+    <g fill="#E2B34A" stroke="#927A45" stroke-width="2">
+      <ellipse cx="150" cy="129" rx="8" ry="14" transform="rotate(-57 150 129)"/>
+      <ellipse cx="123" cy="205" rx="8" ry="14" transform="rotate(-78 123 205)"/>
+      <ellipse cx="130" cy="287" rx="8" ry="14" transform="rotate(-101 130 287)"/>
+      <ellipse cx="184" cy="191" rx="7" ry="12" transform="rotate(-48 184 191)"/>
+      <ellipse cx="178" cy="259" rx="7" ry="12" transform="rotate(-76 178 259)"/>
+      <ellipse cx="362" cy="129" rx="8" ry="14" transform="rotate(57 362 129)"/>
+      <ellipse cx="389" cy="205" rx="8" ry="14" transform="rotate(78 389 205)"/>
+      <ellipse cx="382" cy="287" rx="8" ry="14" transform="rotate(101 382 287)"/>
+      <ellipse cx="328" cy="191" rx="7" ry="12" transform="rotate(48 328 191)"/>
+      <ellipse cx="334" cy="259" rx="7" ry="12" transform="rotate(76 334 259)"/>
+    </g>
+
+    <path d="M211 412h90M224 430h64" stroke="#E2B34A" stroke-width="12"/>
+    <path d="M256 428v96l-23-18 23 70 23-70-23 18" fill="#927A45" stroke="#E2B34A" stroke-width="7"/>
+    <path d="M256 473l11 18-11 19-11-19z" fill="#1E4A3A" stroke="#F9C043" stroke-width="4"/>
+    <circle cx="252" cy="485" r="3" fill="#F9C043" stroke="none"/>
+  </g>
+</svg>

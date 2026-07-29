@@ -796,3 +796,20 @@ profundo domina headers, Drawer, ações, seleção, progresso e foco; dourado �
 reservado a identidade e pequenos destaques. Combinações críticas possuem
 validação automatizada de contraste. A especificação completa está em
 `docs/PHASE_2_COLOR_PALETTE.md`; a revisão manual no Expo Go está pendente.
+
+## Splash e identidade gráfica da Phase 2
+
+O aplicativo possui emblema original com árvore dourada transformada em espada,
+moldura oval e joia verde. A splash nativa usa fundo `#07130F`, composição
+centralizada em modo `contain` e permanece visível por no mínimo 3.000 ms desde
+o bootstrap JavaScript. Quando a inicialização termina antes desse limite, apenas
+o tempo restante é aguardado; inicializações mais lentas saem imediatamente.
+Depois ocorre a transição React Native de 500 ms. A identidade é fixa durante a
+inicialização e não depende do tema. Redução de movimento preserva os 3.000 ms e
+usa saída de 100 ms; erros de fonte e nova tentativa são preservados. O ícone
+do aplicativo permanece inalterado. Após revisão visual, o plugin passou a usar
+largura 260. O overlay separa emblema e `AppText`, respeita áreas seguras, aplica
+24 dp de padding lateral e calcula responsivamente emblema de aproximadamente
+176–220 dp e título de 22–28 dp, considerando a escala máxima de 1,015.
+A revisão manual no Expo Go foi concluída e aprovada; a splash nativa ainda
+deverá ser validada futuramente em build Android instalado.

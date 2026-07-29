@@ -326,3 +326,23 @@ continua seguindo a preferência do sistema sem mudança de persistência. Teste
 de contraste e contrato do tema protegem a implementação. Revisão manual no
 Expo Go pendente; splash visual, Index e demais etapas da Phase 2 não fazem
 parte deste incremento.
+
+## Phase 2 — splash e identidade gráfica
+
+Implementados o emblema vetorial original, PNGs transparentes, configuração
+nativa pelo `expo-splash-screen` e overlay animado coordenado com fontes e
+hidratação. A splash permanece visível por no mínimo 3.000 ms desde o bootstrap;
+somente o restante é aguardado quando a inicialização termina cedo e nenhuma
+espera extra é adicionada quando ela demora mais. Depois, a saída usa opacidade e
+escala discreta por 500 ms e respeita redução de movimento com fade de 100 ms.
+O temporizador centralizado é cancelado ao desmontar. Erros de fonte continuam
+oferecendo nova tentativa, que reinicia o ciclo previsivelmente. A splash nativa
+deverá ser validada posteriormente em build Android instalado.
+
+A revisão manual encontrou corte bilateral do título, emblema excessivo e grupo
+deslocado para cima. O ativo nativo foi recomposto de forma compacta e passou a
+usar `imageWidth` 260 com `contain`. O overlay agora separa emblema e `AppText`
+em grupo centralizado dentro da área segura, com limites responsivos de largura,
+altura, título e escala máxima de 1,015. A revisão manual no Expo Go foi
+concluída e aprovada. A validação nativa permanece planejada para um build
+Android instalado.
