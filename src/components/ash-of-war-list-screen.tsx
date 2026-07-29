@@ -16,9 +16,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import {
   calculateAshOfWarProgressByContentPack,
-  getAshOfWarSearchableText,
   getSortedAshesOfWarByContentPack,
   resolveLocalizedValue,
+  searchAndSortAshesOfWar,
   type AshOfWar,
   type AshOfWarContentPack,
   type CompletionProgress,
@@ -95,31 +95,28 @@ export function AshOfWarListScreen({
 
   const resolveEntries = useCallback(
     (entries: readonly AshOfWar[]): ResolvedAshOfWar[] => {
-      const normalizedQuery = query.trim().toLocaleLowerCase(language);
-      return entries.flatMap((entry) => {
+      const filteredEntries = entries.filter((entry) => {
         const isCollected = collectedIds.has(entry.id);
-        const matchesFilter =
+        return (
           filter === 'all' ||
           (filter === 'collected' && isCollected) ||
-          (filter === 'not-collected' && !isCollected);
-        const matchesQuery =
-          normalizedQuery.length === 0 ||
-          getAshOfWarSearchableText(entry, language).some((value) =>
-            value.toLocaleLowerCase(language).includes(normalizedQuery),
-          );
-        return matchesFilter && matchesQuery
-          ? [{
-              entry,
-              id: entry.id,
-              isCollected,
-              location: resolveLocalizedValue(
-                entry.primaryLocation,
-                language,
-              ).value,
-              name: resolveLocalizedValue(entry.name, language).value,
-            }]
-          : [];
+          (filter === 'not-collected' && !isCollected)
+        );
       });
+      return searchAndSortAshesOfWar(
+        filteredEntries,
+        query,
+        language,
+      ).map((entry) => ({
+        entry,
+        id: entry.id,
+        isCollected: collectedIds.has(entry.id),
+        location: resolveLocalizedValue(
+          entry.primaryLocation,
+          language,
+        ).value,
+        name: resolveLocalizedValue(entry.name, language).value,
+      }));
     },
     [collectedIds, filter, language, query],
   );

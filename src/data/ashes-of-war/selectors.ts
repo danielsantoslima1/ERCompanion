@@ -1,4 +1,8 @@
 import { compareLocalizedText } from '../selectors';
+import {
+  searchAndSortByRelevance,
+  type SearchRelevanceFields,
+} from '../../utils/search-relevance';
 import { ashesOfWar } from './ashesOfWar';
 import type {
   AshOfWar,
@@ -189,6 +193,73 @@ export function getAshOfWarSearchableText(
   }
 
   return [...values];
+}
+
+function getLocalizedSearchValues(
+  value: LocalizedRequiredValue | null,
+): string[] {
+  if (!value) return [];
+  return [value.en, value.ptBR].filter(
+    (candidate): candidate is string => Boolean(candidate?.trim()),
+  );
+}
+
+function getAshOfWarSearchFields(
+  entry: AshOfWar,
+  locale: AshOfWarLocale,
+): SearchRelevanceFields {
+  const displayedName = resolveLocalizedValue(entry.name, locale).value;
+  return {
+    displayedName,
+    alternateNames: getLocalizedSearchValues(entry.name).filter(
+      (value) => value !== displayedName,
+    ),
+    locations: [
+      ...getLocalizedSearchValues(entry.primaryLocation),
+      ...entry.acquisitionMethods.flatMap((method) =>
+        getLocalizedSearchValues(method.location),
+      ),
+    ],
+    sources: [
+      ...getLocalizedSearchValues(entry.primaryAcquisition),
+      ...entry.acquisitionMethods.flatMap((method) =>
+        getLocalizedSearchValues(method.method),
+      ),
+    ],
+    metadata: [
+      ...getLocalizedSearchValues(entry.skillName),
+      ...getLocalizedSearchValues(entry.summary),
+      ...getLocalizedSearchValues(entry.skillType),
+      ...getLocalizedSearchValues(entry.affinity),
+      ...getLocalizedSearchValues(entry.specialEffects),
+      ...getLocalizedSearchValues(entry.limitations),
+      ...getLocalizedSearchValues(entry.relevantNotes),
+      ...entry.acquisitionMethods.flatMap((method) =>
+        getLocalizedSearchValues(method.notes ?? null),
+      ),
+      ...entry.compatibleEquipment.en,
+      ...(entry.compatibleEquipment.ptBR ?? []),
+    ],
+  };
+}
+
+export function searchAndSortAshesOfWar(
+  entries: readonly AshOfWar[],
+  query: string,
+  locale: AshOfWarLocale,
+): AshOfWar[] {
+  return searchAndSortByRelevance(
+    entries,
+    query,
+    (entry) => getAshOfWarSearchFields(entry, locale),
+    (first, second) =>
+      compareLocalizedText(
+        resolveLocalizedValue(first.name, locale).value,
+        resolveLocalizedValue(second.name, locale).value,
+        locale,
+      ),
+    (entry) => entry.id,
+  );
 }
 
 export function getAshOfWarIndexSize(): number {

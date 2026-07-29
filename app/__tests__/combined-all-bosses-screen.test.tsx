@@ -240,6 +240,66 @@ describe('CombinedAllBossesScreen progress', () => {
 });
 
 describe('CombinedAllBossesScreen ordering, search, and filters', () => {
+  it('ranks a displayed-name prefix above Royal matches in metadata', async () => {
+    mockDataControl.setMockData(
+      [
+        {
+          id: 'royal-region',
+          name: {
+            'pt-BR': 'Leyndell, Capital Real',
+            en: 'Leyndell, Royal Capital',
+          },
+          contentPack: 'base-game',
+          displayOrder: 1,
+        },
+      ],
+      [
+        {
+          id: 'esgar',
+          name: { 'pt-BR': 'Esgar', en: 'Esgar' },
+          location: {
+            'pt-BR': 'Leyndell, Capital Real',
+            en: 'Leyndell, Royal Capital',
+          },
+          regionId: 'royal-region',
+        },
+        {
+          id: 'royal-revenant',
+          name: { 'pt-BR': 'Royal Revenant', en: 'Royal Revenant' },
+          location: { 'pt-BR': 'Ruínas', en: 'Ruins' },
+          regionId: 'royal-region',
+        },
+        {
+          id: 'onyx',
+          name: { 'pt-BR': 'Onyx Lord', en: 'Onyx Lord' },
+          location: {
+            'pt-BR': 'Cárcere Perpétuo do Túmulo Real',
+            en: 'Royal Grave Evergaol',
+          },
+          regionId: 'royal-region',
+        },
+      ],
+    );
+    mockAppState = {
+      ...mockAppState,
+      language: 'en',
+      translations: getTranslationDictionary('en'),
+    };
+
+    await render(<CombinedAllBossesScreen />);
+    await fireEvent.changeText(screen.getByLabelText('Search'), 'royal');
+
+    const cards = screen.getAllByLabelText(/status/i);
+    expect(cards[0].props.accessibilityLabel).toContain('Royal Revenant');
+    expect(cards.map((card) => card.props.accessibilityLabel)).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining('Esgar'),
+        expect.stringContaining('Onyx Lord'),
+        expect.stringContaining('Royal Revenant'),
+      ]),
+    );
+  });
+
   it('sorts each section in Portuguese and changes to English', async () => {
     const view = await render(<CombinedAllBossesScreen />);
     let cards = screen.getAllByLabelText(/estado/i);

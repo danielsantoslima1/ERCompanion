@@ -20,10 +20,9 @@ import {
   getAllIncantations,
   getAllSorceries,
   matchesSpellFilters,
-  matchesSpellQuery,
   queryMatchesOnlyProtectedContent,
   resolveSpellValue,
-  sortSpells,
+  searchAndSortSpells,
   type CompletionProgress,
   type Spell,
   type SpellCategory,
@@ -98,9 +97,11 @@ export function SpellListScreen({ category, mode }: Props) {
   }, [category, categoryProgress, collected, mode, originFilter]);
 
   const resolveEntries = useCallback((entries: readonly Spell[]) =>
-    sortSpells(entries, language).flatMap((entry) => {
-      if (!matchesSpellQuery(entry, query) || !matchesSpellFilters(entry, filters)) return [];
-      return [{
+    searchAndSortSpells(
+      entries.filter((entry) => matchesSpellFilters(entry, filters)),
+      query,
+      language,
+    ).map((entry) => ({
         entry,
         id: entry.id,
         isCollected: collectedSet.has(entry.id),
@@ -108,8 +109,7 @@ export function SpellListScreen({ category, mode }: Props) {
           ?? translations.spells.locationPending,
         name: resolveSpellValue(entry.name, language).value ?? entry.name.en,
         spoilerMatch: queryMatchesOnlyProtectedContent(entry, query),
-      }];
-    }), [collectedSet, filters, language, query, translations.spells.locationPending]);
+      })), [collectedSet, filters, language, query, translations.spells.locationPending]);
 
   const sections = useMemo<SpellSection[]>(() => {
     if (mode !== 'all') return [];

@@ -1,4 +1,9 @@
 import type { Language } from '../../types';
+import {
+  normalizeSearchText,
+  searchAndSortByRelevance,
+  type SearchRelevanceFields,
+} from '../../utils/search-relevance';
 import { compareLocalizedText } from '../selectors';
 import { incantations } from './incantations';
 import { sorceries } from './sorceries';
@@ -31,12 +36,7 @@ export function resolveSpellValue(
 }
 
 export function normalizeSpellSearchText(value: string): string {
-  return value
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .trim()
-    .replace(/\s+/g, ' ')
-    .toLocaleLowerCase('en');
+  return normalizeSearchText(value);
 }
 
 function compareSpellNames(a: Spell, b: Spell, language: Language): number {
@@ -111,6 +111,65 @@ export function getSpellSearchableText(entry: Spell): readonly string[] {
     );
   }
   return [...new Set(values.filter((value): value is string => Boolean(value?.trim())))];
+}
+
+function getLocalizedSearchValues(value: SpellLocalizedValue): string[] {
+  return [value.en, value.ptBR].filter(
+    (candidate): candidate is string => Boolean(candidate?.trim()),
+  );
+}
+
+function getSpellSearchFields(
+  entry: Spell,
+  language: Language,
+): SearchRelevanceFields {
+  const displayedName = resolveSpellValue(entry.name, language).value
+    ?? entry.name.en;
+  return {
+    displayedName,
+    alternateNames: [
+      ...getLocalizedSearchValues(entry.name).filter(
+        (value) => value !== displayedName,
+      ),
+      ...entry.searchAliases,
+    ],
+    locations: [
+      ...getLocalizedSearchValues(entry.primaryLocation),
+      ...entry.acquisitionMethods.flatMap((method) =>
+        getLocalizedSearchValues(method.location),
+      ),
+    ],
+    sources: [
+      ...getLocalizedSearchValues(entry.primarySource),
+      ...entry.acquisitionMethods.flatMap((method) => [
+        ...getLocalizedSearchValues(method.source),
+        ...getLocalizedSearchValues(method.method),
+      ]),
+    ],
+    npcs: entry.acquisitionMethods.flatMap((method) =>
+      getLocalizedSearchValues(method.npc),
+    ),
+    requiredItems: entry.acquisitionMethods.flatMap((method) =>
+      getLocalizedSearchValues(method.requiredItem),
+    ),
+    metadata: entry.acquisitionMethods.flatMap(
+      (method) => method.protectedSearchTerms,
+    ),
+  };
+}
+
+export function searchAndSortSpells<T extends Spell>(
+  entries: readonly T[],
+  query: string,
+  language: Language,
+): T[] {
+  return searchAndSortByRelevance(
+    entries,
+    query,
+    (entry) => getSpellSearchFields(entry, language),
+    (first, second) => compareSpellNames(first, second, language),
+    (entry) => entry.id,
+  );
 }
 
 export function matchesSpellQuery(entry: Spell, query: string): boolean {
