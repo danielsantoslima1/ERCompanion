@@ -90,3 +90,27 @@ provisoriamente aprovado para a interface. Nomes e campos pt-BR pendentes e
 custos de FP desconhecidos continuam explicitamente pendentes; custos nulos são
 omitidos na interface. Nenhuma nova pesquisa de localização foi executada nesta
 finalização.
+
+## Encerramento da pesquisa pt-BR das Cinzas da Guerra
+
+Em 2026-07-28, o usuário decidiu encerrar esta linha de pesquisa sem autorizar
+instalação ou download de ferramentas, extração dos arquivos do jogo ou
+capturas iniciando o Elden Ring. A instalação Steam/Windows foi identificada
+com App ID `1245620`, Build ID `22984413` e executável `2.6.2.0`, mas
+nenhuma ferramenta adequada para BHD/BDT, DCX/BND/FMG e regulation estava
+instalada.
+
+Nenhum campo pt-BR foi confirmado por evidência direta. Os 91 candidatos de
+nome do jogo base permanecem `probable`; habilidades, afinidades, tipos e
+compatibilidades permanecem `pending`. A pesquisa não deve ser apresentada
+como concluída ou oficialmente validada. O catálogo de produção, IDs e
+progresso não foram alterados, o fallback inglês permanece ativo e nenhuma
+alteração funcional é necessária. O aplicativo permanece estável com os dados
+atuais.
+
+O checklist de 455 capturas fica arquivado somente como referência, sem trabalho
+pendente imediato. A pesquisa só poderá ser retomada mediante nova autorização
+explícita.
+
+Próxima etapa:
+`Manter o fallback em inglês para as Cinzas da Guerra e retomar a validação oficial pt-BR somente mediante nova autorização explícita do usuário.`

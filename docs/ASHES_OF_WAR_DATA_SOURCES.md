@@ -1,5 +1,38 @@
 # Fontes — Cinzas da Guerra
 
+## Encerramento por decisão do usuário
+
+Em 2026-07-28, o usuário decidiu não autorizar instalação ou download de ferramentas, extração de arquivos do jogo ou capturas iniciando o Elden Ring. A fonte primária local permaneceu somente em modo leitura e nenhum texto pt-BR pôde ser associado diretamente aos registros ativos. Os 91 nomes anteriores continuam `probable`; os demais grupos continuam `pending`. A pesquisa fica encerrada e só poderá ser retomada mediante nova autorização explícita. O fallback inglês do catálogo de produção permanece inalterado.
+
+
+## Instalação local Steam — evidência direta pt-BR
+
+- **Fonte:** instalação local legítima do Elden Ring, somente leitura.
+- **Plataforma:** Steam/Windows; App ID `1245620`; Build ID `22984413`; executável versão `2.6.2.0`; análise em 2026-07-28.
+- **Manifesto:** `<STEAM_LIBRARY>/steamapps/appmanifest_1245620.acf`; SHA-256 `E5384064022F93E94683862D7810086D1BBADB5630D38C035A41009880C4100F`.
+- **Arquivos relevantes:** `<ELDEN_RING_INSTALL>/Game/Data0.bhd` (SHA-256 `FBE82E31C36B7A58258A9D318D0A20D8AE626BEDA952811106C2B0029194981A`) e `regulation.bin` (SHA-256 `7B6D07C357B639C902D48403FFE3612DB35E0CF8D6FCC82D3FB24EA6EB6CF30A`).
+- **Ferramentas:** PowerShell apenas para metadados e hashes. Nenhum leitor confiável de BHD/BDT, DCX/BND/FMG e regulation foi encontrado instalado.
+- **Resultado:** fonte primária localizada, mas conteúdo de localização não extraído; nenhum campo foi confirmado diretamente.
+- **Limitações:** manifesto configurado em inglês; pacotes multilíngues não puderam ser enumerados; associação entre mensagens e registros ativos depende de ferramenta ausente.
+- **Não redistribuição:** nenhum arquivo proprietário foi copiado, versionado ou publicado; somente hashes, tamanhos e metadados foram preservados.
+
+
+## Fontes da primeira passagem pt-BR do jogo base
+
+Consulta realizada em 2026-07-28. Os identificadores abaixo são referenciados por `docs/research/ashes-of-war-base-game-ptbr-pass-1.json`.
+
+| ID | Nome | Tipo | Idioma/plataforma/versão | Campos sustentados | Evidência | Confiabilidade | Limitações | URL |
+|---|---|---|---|---|---|---|---|---|
+| `ptbr-steam-language-support` | Steam — ELDEN RING | loja/distribuidora oficial | pt-BR; PC; página consultada em 2026-07-28 | existência de interface e legendas oficiais em português do Brasil | direta para suporte de idioma; não contém entradas individuais | alta para suporte de idioma | não publica nomes, habilidades, afinidades, tipos ou compatibilidade | https://store.steampowered.com/app/1245620/ELDEN_RING/?curator_clanid=44939887&l=brazilian |
+| `ptbr-playstation-language-support` | PlayStation Store Brasil — ELDEN RING | loja/distribuidora oficial | pt-BR; PS4/PS5; página consultada em 2026-07-28 | existência de Português (Brasil) nos idiomas de tela | direta para suporte de idioma; não contém entradas individuais | alta para suporte de idioma | não publica o léxico das Cinzas da Guerra | https://store.playstation.com/pt-br/product/UP0700-PPSA04610_00-ELDENRING0000000 |
+| `ptbr-saika-ashes-video-1` | Saika Games — Elden Ring 100% Cinza da Guerra #1 | índice comunitário de vídeo/gameplay | pt-BR; plataforma e versão do jogo não informadas; consulta 2026-07-28 | candidatos de nomes para 31 entradas, com timestamps | reprodução secundária; a página associa nome e timestamp, mas o frame não foi verificado nesta pesquisa | média para descoberta; insuficiente para `confirmed` | não informa origem da tradução, versão, plataforma nem texto dos demais campos | https://saikagames.com.br/eldenringcinzadaguerra1/ |
+| `ptbr-saika-ashes-video-2` | Saika Games — Elden Ring 100% Cinza da Guerra #2 | índice comunitário de vídeo/gameplay | pt-BR; plataforma e versão do jogo não informadas; consulta 2026-07-28 | candidatos de nomes para 31 entradas, com timestamps | reprodução secundária; a página associa nome e timestamp, mas o frame não foi verificado nesta pesquisa | média para descoberta; insuficiente para `confirmed` | não permite distinguir de modo verificável nome do item e nome da habilidade | https://saikagames.com.br/eldenringcinzadaguerra2/ |
+| `ptbr-saika-ashes-video-3` | Saika Games — Elden Ring 100% Cinza da Guerra #3 | índice comunitário de vídeo/gameplay | pt-BR; plataforma e versão do jogo não informadas; consulta 2026-07-28 | candidatos de nomes para 29 entradas do escopo; também lista Lost Ashes of War, que foi excluída | reprodução secundária; a página associa nome e timestamp, mas o frame não foi verificado nesta pesquisa | média para descoberta; insuficiente para `confirmed` | inclui item fora do escopo e não sustenta afinidade, tipo ou compatibilidade pt-BR | https://saikagames.com.br/eldenringcinzadaguerra3/ |
+| `ptbr-nexus-localization-workflow` | Nexus Mods — How to translate Elden Ring | artigo técnico comunitário | inglês; PC; consulta 2026-07-28 | processo de extração de `item.msgbnd.dcx` e pastas de idioma | descrição técnica reproduzível da origem dos textos | média/alta para metodologia | não fornece os textos pt-BR pesquisados e depende de arquivos locais do jogo | https://www.nexusmods.com/eldenring/articles/115 |
+| `ptbr-soulsmodding-localization-structure` | Souls Modding Wiki — localização de mensagens | documentação técnica comunitária | inglês; PC; consulta 2026-07-28 | estrutura de `item.msgbnd`, `menu.msgbnd` e diretórios de idioma | documentação secundária da estrutura de localização | média para metodologia | não contém valores individuais pt-BR | https://www.soulsmodding.com/doku.php?id=tutorial%3Aintro-to-elden-ring-emevd |
+| `ptbr-terra-localization-patch` | Terra Game On — Tradução de Elden Ring recebe correções | notícia | pt-BR; plataformas não discriminadas; notícia de 2022, consulta 2026-07-28 | risco histórico de alterações/correções na localização oficial brasileira | fonte secundária sobre patch oficial | média para contexto histórico | não informa os textos individuais nem permite resolver versão atual | https://www.terra.com.br/gameon/traducao-de-elden-ring-recebe-correcoes%2Ce670347b83dd8207a1198f38e9260553493g33z8.html
+
+
 ## Inventário principal
 
 | Fonte | Tipo | Consulta | Confiabilidade | Campos sustentados | Limitações | URL |
