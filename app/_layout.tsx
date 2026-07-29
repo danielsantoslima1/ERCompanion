@@ -31,7 +31,6 @@ function RootNavigation({
   const {
     initializationError,
     isHydrated,
-    resolvedTheme,
     theme,
     translations,
   } = useApp();
@@ -60,9 +59,11 @@ function RootNavigation({
           <Stack
             screenOptions={{
               contentStyle: { backgroundColor: theme.colors.background },
-              headerStyle: { backgroundColor: theme.colors.surface },
+              headerStyle: {
+                backgroundColor: theme.colors.navigationBackground,
+              },
               headerTitleStyle: { fontFamily: typography.display },
-              headerTintColor: theme.colors.textPrimary,
+              headerTintColor: theme.colors.navigationText,
             }}>
             <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
             <Stack.Screen
@@ -83,7 +84,10 @@ function RootNavigation({
             />
           </Stack>
         )}
-        <StatusBar style={resolvedTheme === 'dark' ? 'light' : 'dark'} />
+        <StatusBar
+          backgroundColor={theme.colors.navigationBackground}
+          style="light"
+        />
       </ThemeProvider>
     </View>
   );

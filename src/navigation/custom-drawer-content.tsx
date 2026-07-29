@@ -50,7 +50,7 @@ function DrawerItem({
           backgroundColor: isSelected
             ? theme.colors.drawerActiveBackground
             : 'transparent',
-          borderColor: isSelected ? theme.colors.primary : 'transparent',
+          borderColor: isSelected ? theme.colors.selectedBorder : 'transparent',
           borderRadius: theme.borderRadius.medium,
           marginLeft: isNested ? theme.spacing.large : 0,
           opacity: pressed ? 0.7 : 1,
@@ -64,7 +64,7 @@ function DrawerItem({
           {
             color: isSelected
               ? theme.colors.drawerActiveText
-              : theme.colors.textPrimary,
+              : theme.colors.navigationText,
           },
         ]}>
         {label}
@@ -365,20 +365,20 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
         style={[
           styles.header,
           {
-            borderBottomColor: theme.colors.border,
+            borderBottomColor: theme.colors.borderStrong,
             gap: theme.spacing.small,
             padding: theme.spacing.large,
           },
         ]}>
         <Text
           variant="displayBold"
-          style={[styles.appName, { color: theme.colors.primary }]}>
+          style={[styles.appName, { color: theme.colors.accent }]}>
           {translations.app.name}
         </Text>
         <Text
           style={[
             styles.appDescription,
-            { color: theme.colors.textSecondary },
+            { color: theme.colors.navigationTextSecondary },
           ]}>
           {translations.navigation.drawerDescription}
         </Text>
@@ -417,7 +417,7 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
                 ? theme.colors.drawerActiveBackground
                 : 'transparent',
               borderColor: isBossRoute
-                ? theme.colors.primary
+                ? theme.colors.selectedBorder
                 : 'transparent',
               borderRadius: theme.borderRadius.medium,
               opacity: pressed ? 0.7 : 1,
@@ -430,7 +430,7 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
               {
                 color: isBossRoute
                   ? theme.colors.drawerActiveText
-                  : theme.colors.textPrimary,
+                  : theme.colors.navigationText,
               },
             ]}>
             {translations.navigation.bosses}
@@ -452,7 +452,7 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
               {
                 color: isBossRoute
                   ? theme.colors.drawerActiveText
-                  : theme.colors.textSecondary,
+                  : theme.colors.navigationTextSecondary,
               },
             ]}>
             {isBossesExpanded ? '−' : '+'}
@@ -472,7 +472,7 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
               <Text
                 style={[
                   styles.emptyMessage,
-                  { color: theme.colors.textSecondary },
+                  { color: theme.colors.navigationTextSecondary },
                 ]}>
                 {translations.navigation.noRegions}
               </Text>
@@ -556,7 +556,7 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
                 ? theme.colors.drawerActiveBackground
                 : 'transparent',
               borderColor: isAshRoute
-                ? theme.colors.primary
+                ? theme.colors.selectedBorder
                 : 'transparent',
               borderRadius: theme.borderRadius.medium,
               opacity: pressed ? 0.7 : 1,
@@ -569,7 +569,7 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
               {
                 color: isAshRoute
                   ? theme.colors.drawerActiveText
-                  : theme.colors.textPrimary,
+                  : theme.colors.navigationText,
               },
             ]}>
             {translations.navigation.ashesOfWar}
@@ -593,7 +593,7 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
               {
                 color: isAshRoute
                   ? theme.colors.drawerActiveText
-                  : theme.colors.textSecondary,
+                  : theme.colors.navigationTextSecondary,
               },
             ]}>
             {isAshesExpanded ? '−' : '+'}
@@ -734,18 +734,18 @@ function DirectRouteGroup({
           styles.item,
           {
             backgroundColor: active ? theme.colors.drawerActiveBackground : 'transparent',
-            borderColor: active ? theme.colors.primary : 'transparent',
+            borderColor: active ? theme.colors.selectedBorder : 'transparent',
             borderRadius: theme.borderRadius.medium,
             paddingHorizontal: theme.spacing.medium,
           },
         ]}>
-        <Text style={[styles.itemLabel, { color: active ? theme.colors.drawerActiveText : theme.colors.textPrimary }]}>
+        <Text style={[styles.itemLabel, { color: active ? theme.colors.drawerActiveText : theme.colors.navigationText }]}>
           {label}
         </Text>
         <Text
           accessibilityElementsHidden
           importantForAccessibility="no-hide-descendants"
-          style={[styles.expandIndicator, { color: active ? theme.colors.drawerActiveText : theme.colors.textSecondary }]}>
+          style={[styles.expandIndicator, { color: active ? theme.colors.drawerActiveText : theme.colors.navigationTextSecondary }]}>
           {expanded ? '−' : '+'}
         </Text>
       </Pressable>
@@ -776,10 +776,10 @@ function DrawerGroup({
         accessibilityState={{ expanded }}
         onPress={onToggle}
         style={[styles.group, { marginLeft: theme.spacing.large }]}>
-        <Text style={[styles.itemLabel, { color: theme.colors.textPrimary }]}>
+        <Text style={[styles.itemLabel, { color: theme.colors.navigationText }]}>
           {label}
         </Text>
-        <Text style={{ color: theme.colors.textSecondary }}>
+        <Text style={{ color: theme.colors.navigationTextSecondary }}>
           {expanded ? '−' : '+'}
         </Text>
       </Pressable>

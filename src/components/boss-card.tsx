@@ -32,7 +32,9 @@ export function BossCard({
       style={[
         styles.container,
         {
-          backgroundColor: theme.colors.surface,
+          backgroundColor: isDefeated
+            ? theme.colors.successBackground
+            : theme.colors.surface,
           borderColor: isDefeated
             ? theme.colors.success
             : theme.colors.border,

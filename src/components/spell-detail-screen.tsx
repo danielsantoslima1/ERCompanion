@@ -60,7 +60,12 @@ export function SpellDetailScreen({ category, id }: { readonly category: SpellCa
       <ScrollView contentContainerStyle={[styles.content, { gap: theme.spacing.medium, padding: theme.spacing.large }]}>
         <Text variant="display" accessibilityRole="header" style={[styles.title, { color: theme.colors.textPrimary }]}>{name}</Text>
         {spellUsesEnglishFallback(entry, language) ? (
-          <Text style={[styles.notice, { color: theme.colors.textSecondary, borderColor: theme.colors.border, padding: theme.spacing.small }]}>
+          <Text style={[styles.notice, {
+            backgroundColor: theme.colors.warningBackground,
+            color: theme.colors.warning,
+            borderColor: theme.colors.warning,
+            padding: theme.spacing.small,
+          }]}>
             {translations.spells.fallbackNotice}
           </Text>
         ) : null}
@@ -112,7 +117,7 @@ export function SpellDetailScreen({ category, id }: { readonly category: SpellCa
                 if (!method.containsQuestSpoilers) return <View key={`${entry.id}-${index}`}>{content}</View>;
                 return (
                   <View key={`${entry.id}-${index}`} style={{ gap: theme.spacing.small }}>
-                    <Text style={[styles.spoiler, { color: theme.colors.accent }]}>{translations.spells.containsQuestSpoilers}</Text>
+                    <Text style={[styles.spoiler, { color: theme.colors.warning }]}>{translations.spells.containsQuestSpoilers}</Text>
                     <Pressable
                       accessibilityRole="button"
                       accessibilityState={{ expanded }}

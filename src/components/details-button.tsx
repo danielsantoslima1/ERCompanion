@@ -29,14 +29,25 @@ export function DetailsButton({
       style={({ pressed }) => [
         styles.button,
         {
+          backgroundColor: pressed
+            ? theme.colors.primarySoft
+            : theme.colors.surface,
           borderColor: theme.colors.primary,
           borderRadius: theme.borderRadius.medium,
-          opacity: disabled ? 0.5 : pressed ? 0.7 : 1,
+          opacity: disabled ? 0.55 : 1,
           paddingHorizontal: theme.spacing.medium,
           paddingVertical: theme.spacing.small,
         },
       ]}>
-      <Text style={[styles.label, { color: theme.colors.primary }]}>
+      <Text
+        style={[
+          styles.label,
+          {
+            color: disabled
+              ? theme.colors.disabledText
+              : theme.colors.primary,
+          },
+        ]}>
         {label}
       </Text>
     </Pressable>

@@ -15,7 +15,7 @@ export default function DrawerLayout() {
       screenOptions={{
         drawerActiveBackgroundColor: theme.colors.drawerActiveBackground,
         drawerActiveTintColor: theme.colors.drawerActiveText,
-        drawerInactiveTintColor: theme.colors.textSecondary,
+        drawerInactiveTintColor: theme.colors.navigationTextSecondary,
         drawerLabelStyle: {
           fontFamily: typography.bodySemibold,
         },
@@ -24,16 +24,16 @@ export default function DrawerLayout() {
         },
         drawerStyle: {
           backgroundColor: theme.colors.drawerBackground,
-          borderRightColor: theme.colors.border,
+          borderRightColor: theme.colors.borderStrong,
           borderRightWidth: 1,
         },
         headerStyle: {
-          backgroundColor: theme.colors.surface,
+          backgroundColor: theme.colors.navigationBackground,
         },
         headerTitleStyle: {
           fontFamily: typography.display,
         },
-        headerTintColor: theme.colors.textPrimary,
+        headerTintColor: theme.colors.navigationText,
         sceneStyle: {
           backgroundColor: theme.colors.background,
         },
@@ -57,7 +57,7 @@ export default function DrawerLayout() {
         options={{
           drawerItemStyle: { display: 'none' },
           headerLeft: () => (
-            <DrawerToggleButton tintColor={theme.colors.textPrimary} />
+            <DrawerToggleButton tintColor={theme.colors.navigationText} />
           ),
           title: translations.navigation.bosses,
         }}
@@ -74,7 +74,7 @@ export default function DrawerLayout() {
         options={{
           drawerItemStyle: { display: 'none' },
           headerLeft: () => (
-            <DrawerToggleButton tintColor={theme.colors.textPrimary} />
+            <DrawerToggleButton tintColor={theme.colors.navigationText} />
           ),
           title: translations.navigation.bosses,
         }}

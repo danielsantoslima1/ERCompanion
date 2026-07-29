@@ -30,7 +30,9 @@ export function AshOfWarCard({
       style={[
         styles.container,
         {
-          backgroundColor: theme.colors.surface,
+          backgroundColor: isCollected
+            ? theme.colors.successBackground
+            : theme.colors.surface,
           borderColor: isCollected
             ? theme.colors.success
             : theme.colors.border,

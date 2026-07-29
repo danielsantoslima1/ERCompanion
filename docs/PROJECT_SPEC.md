@@ -788,3 +788,11 @@ explícita.
 
 Próxima etapa:
 `Manter o fallback em inglês para as Cinzas da Guerra e retomar a validação oficial pt-BR somente mediante nova autorização explícita do usuário.`
+
+## Identidade cromática da Phase 2
+
+Os temas Claro, Escuro e Sistema usam tokens semânticos centralizados. Verde
+profundo domina headers, Drawer, ações, seleção, progresso e foco; dourado é
+reservado a identidade e pequenos destaques. Combinações críticas possuem
+validação automatizada de contraste. A especificação completa está em
+`docs/PHASE_2_COLOR_PALETTE.md`; a revisão manual no Expo Go está pendente.

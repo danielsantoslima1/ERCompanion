@@ -316,3 +316,13 @@ explícita.
 
 Próxima etapa:
 `Manter o fallback em inglês para as Cinzas da Guerra e retomar a validação oficial pt-BR somente mediante nova autorização explícita do usuário.`
+
+## Phase 2 — identidade cromática
+
+Implementados tokens semânticos com paridade entre temas Claro e Escuro,
+navegação e Drawer estruturais em verde profundo, dourado controlado, estados
+de sucesso/aviso/erro, inputs, seleção, foco e progresso. O tema Sistema
+continua seguindo a preferência do sistema sem mudança de persistência. Testes
+de contraste e contrato do tema protegem a implementação. Revisão manual no
+Expo Go pendente; splash visual, Index e demais etapas da Phase 2 não fazem
+parte deste incremento.

@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react-native';
+import { act, fireEvent, render } from '@testing-library/react-native';
 import { Text } from 'react-native';
 
 import { typography } from '../../theme/typography';
@@ -81,5 +81,34 @@ describe('AppTextInput typography', () => {
       fontSize: 16,
     });
     expect(input.props.accessibilityLabel).toBe('Busca');
+  });
+
+  it('applies and removes the semantic focus border without replacing callbacks', async () => {
+    const onBlur = jest.fn();
+    const onFocus = jest.fn();
+    const { getByLabelText } = await render(
+      <AppTextInput
+        accessibilityLabel="Busca"
+        focusBorderColor="#7D4D0B"
+        onBlur={onBlur}
+        onFocus={onFocus}
+        style={{ borderColor: '#8D806B', borderWidth: 1 }}
+      />,
+    );
+    const input = getByLabelText('Busca');
+
+    await act(() => fireEvent(input, 'focus'));
+    expect(getByLabelText('Busca')).toHaveStyle({
+      borderColor: '#7D4D0B',
+      borderWidth: 1,
+    });
+    expect(onFocus).toHaveBeenCalledTimes(1);
+
+    await act(() => fireEvent(getByLabelText('Busca'), 'blur'));
+    expect(getByLabelText('Busca')).toHaveStyle({
+      borderColor: '#8D806B',
+      borderWidth: 1,
+    });
+    expect(onBlur).toHaveBeenCalledTimes(1);
   });
 });

@@ -207,15 +207,16 @@ export default function RegionScreen() {
           accessibilityLabelledBy="boss-search-label"
           autoCapitalize="none"
           autoCorrect={false}
+          focusBorderColor={theme.colors.focusRing}
           onChangeText={setQuery}
           placeholder={translations.region.searchPlaceholder}
-          placeholderTextColor={theme.colors.disabled}
+          placeholderTextColor={theme.colors.placeholder}
           returnKeyType="search"
           style={[
             styles.input,
             {
-              backgroundColor: theme.colors.surface,
-              borderColor: theme.colors.border,
+              backgroundColor: theme.colors.inputBackground,
+              borderColor: theme.colors.inputBorder,
               borderRadius: theme.borderRadius.medium,
               color: theme.colors.textPrimary,
               paddingHorizontal: theme.spacing.medium,
@@ -241,7 +242,7 @@ export default function RegionScreen() {
                 styles.filter,
                 {
                   backgroundColor: isActive
-                    ? theme.colors.drawerActiveBackground
+                    ? theme.colors.selectedBackground
                     : theme.colors.surface,
                   borderColor: isActive
                     ? theme.colors.primary
@@ -257,7 +258,7 @@ export default function RegionScreen() {
                   styles.filterText,
                   {
                     color: isActive
-                      ? theme.colors.drawerActiveText
+                      ? theme.colors.text
                       : theme.colors.textPrimary,
                   },
                 ]}>

@@ -39,7 +39,7 @@ export function InitializationErrorScreen() {
         style={[
           styles.content,
           {
-            backgroundColor: theme.colors.surface,
+            backgroundColor: theme.colors.dangerBackground,
             borderColor: theme.colors.danger,
             borderRadius: theme.borderRadius.large,
             gap: theme.spacing.medium,

@@ -235,14 +235,15 @@ export default function CombinedAllBossesScreen() {
                 accessibilityLabel={translations.region.search}
                 autoCapitalize="none"
                 autoCorrect={false}
+                focusBorderColor={theme.colors.focusRing}
                 onChangeText={setQuery}
                 placeholder={translations.region.searchPlaceholder}
-                placeholderTextColor={theme.colors.disabled}
+                placeholderTextColor={theme.colors.placeholder}
                 style={[
                   styles.input,
                   {
-                    backgroundColor: theme.colors.surface,
-                    borderColor: theme.colors.border,
+                    backgroundColor: theme.colors.inputBackground,
+                    borderColor: theme.colors.inputBorder,
                     borderRadius: theme.borderRadius.medium,
                     color: theme.colors.textPrimary,
                     paddingHorizontal: theme.spacing.medium,
@@ -265,7 +266,7 @@ export default function CombinedAllBossesScreen() {
                         styles.filter,
                         {
                           backgroundColor: active
-                            ? theme.colors.drawerActiveBackground
+                            ? theme.colors.selectedBackground
                             : theme.colors.surface,
                           borderColor: active
                             ? theme.colors.primary
@@ -279,7 +280,7 @@ export default function CombinedAllBossesScreen() {
                       <Text
                         style={{
                           color: active
-                            ? theme.colors.drawerActiveText
+                            ? theme.colors.text
                             : theme.colors.textPrimary,
                           fontWeight: '700',
                         }}>

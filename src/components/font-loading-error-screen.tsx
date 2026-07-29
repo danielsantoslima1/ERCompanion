@@ -16,7 +16,7 @@ export function FontLoadingErrorScreen({
       style={[
         styles.container,
         {
-          backgroundColor: theme.colors.background,
+          backgroundColor: theme.colors.dangerBackground,
           padding: theme.spacing.large,
         },
       ]}>

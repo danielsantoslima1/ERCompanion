@@ -90,6 +90,7 @@ export default function HomeScreen() {
             defeated={combinedProgress.completed}
             percentage={combinedProgress.percentage}
             total={combinedProgress.total}
+            variant="accent"
           />
         </View>
 

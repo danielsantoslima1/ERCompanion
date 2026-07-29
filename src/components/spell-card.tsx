@@ -26,7 +26,9 @@ export function SpellCard(props: SpellCardProps) {
     <View style={[
       styles.card,
       {
-        backgroundColor: theme.colors.surface,
+        backgroundColor: props.isCollected
+          ? theme.colors.successBackground
+          : theme.colors.surface,
         borderColor: props.isCollected ? theme.colors.success : theme.colors.border,
         borderRadius: theme.borderRadius.medium,
         gap: theme.spacing.medium,

@@ -45,10 +45,10 @@ export function OriginFilterButtons({
               styles.button,
               {
                 backgroundColor: selected
-                  ? theme.colors.drawerActiveBackground
+                  ? theme.colors.selectedBackground
                   : theme.colors.surface,
                 borderColor: selected
-                  ? theme.colors.primary
+                  ? theme.colors.selectedBorder
                   : theme.colors.border,
                 borderRadius: theme.borderRadius.round,
                 borderWidth: selected ? 2 : 1,
@@ -61,9 +61,7 @@ export function OriginFilterButtons({
               style={[
                 styles.label,
                 {
-                  color: selected
-                    ? theme.colors.drawerActiveText
-                    : theme.colors.textPrimary,
+                  color: theme.colors.text,
                   textDecorationLine: selected ? 'underline' : 'none',
                 },
               ]}>
