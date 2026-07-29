@@ -4,6 +4,7 @@ import {
   catalogRegions,
   type ContentPack,
 } from './catalog';
+import { incantations, sorceries, type SpellContentPack } from './spells';
 
 export interface CompletionProgress {
   readonly completed: number;
@@ -14,7 +15,9 @@ export interface CompletionProgress {
 export const PROGRESS_TOTALS = {
   bosses: 208,
   ashesOfWar: 116,
-  combined: 324,
+  sorceries: 84,
+  incantations: 129,
+  combined: 537,
   bossByContentPack: {
     'base-game': 165,
     'shadow-of-the-erdtree': 43,
@@ -22,6 +25,14 @@ export const PROGRESS_TOTALS = {
   ashOfWarByContentPack: {
     'base-game': 91,
     'shadow-of-the-erdtree': 25,
+  },
+  sorceryByContentPack: {
+    'base-game': 70,
+    'shadow-of-the-erdtree': 14,
+  },
+  incantationByContentPack: {
+    'base-game': 101,
+    'shadow-of-the-erdtree': 28,
   },
 } as const;
 
@@ -55,6 +66,8 @@ function createKnownProgress(
 
 const bossIds = new Set(bossEncounters.map((boss) => boss.id));
 const ashOfWarIds = new Set(ashesOfWar.map((ash) => ash.id));
+const sorceryIds = new Set(sorceries.map((entry) => entry.id));
+const incantationIds = new Set(incantations.map((entry) => entry.id));
 
 function getBossIdsByContentPack(contentPack: ContentPack): Set<string> {
   const regionIds = new Set(
@@ -111,13 +124,58 @@ export function calculateAshOfWarProgressByContentPack(
   );
 }
 
+export function calculateSorceryProgress(
+  collectedIds: readonly string[],
+): CompletionProgress {
+  return createKnownProgress(collectedIds, sorceryIds);
+}
+
+export function calculateIncantationProgress(
+  collectedIds: readonly string[],
+): CompletionProgress {
+  return createKnownProgress(collectedIds, incantationIds);
+}
+
+function getSpellIdsByContentPack(
+  entries: readonly { readonly id: string; readonly contentPack: SpellContentPack }[],
+  contentPack: SpellContentPack,
+): Set<string> {
+  return new Set(
+    entries.filter((entry) => entry.contentPack === contentPack).map((entry) => entry.id),
+  );
+}
+
+export function calculateSorceryProgressByContentPack(
+  collectedIds: readonly string[],
+  contentPack: SpellContentPack,
+): CompletionProgress {
+  return createKnownProgress(
+    collectedIds,
+    getSpellIdsByContentPack(sorceries, contentPack),
+  );
+}
+
+export function calculateIncantationProgressByContentPack(
+  collectedIds: readonly string[],
+  contentPack: SpellContentPack,
+): CompletionProgress {
+  return createKnownProgress(
+    collectedIds,
+    getSpellIdsByContentPack(incantations, contentPack),
+  );
+}
+
 export function calculateCombinedProgress(
   defeatedBossIds: readonly string[],
   collectedAshOfWarIds: readonly string[],
+  collectedSorceryIds: readonly string[] = [],
+  collectedIncantationIds: readonly string[] = [],
 ): CompletionProgress {
   const completed =
     calculateBossCatalogProgress(defeatedBossIds).completed +
-    calculateAshOfWarProgress(collectedAshOfWarIds).completed;
+    calculateAshOfWarProgress(collectedAshOfWarIds).completed +
+    calculateSorceryProgress(collectedSorceryIds).completed +
+    calculateIncantationProgress(collectedIncantationIds).completed;
 
   return {
     completed,

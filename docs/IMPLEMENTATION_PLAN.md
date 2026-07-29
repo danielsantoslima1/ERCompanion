@@ -1,5 +1,15 @@
 # Plano de Implementação
 
+## Estado atual — MVP de Feitiços e Encantamentos
+
+O MVP de 84 Feitiços e 129 Encantamentos foi implementado e aprovado na revisão manual no Expo Go. A entrega inclui catálogos tipados, validadores, schema v3, migração, progresso separado, total geral 537, Home, Drawer, listas, busca, filtros Lendárias/Perdíveis, cards, detalhes, spoilers, fallback e testes. Não há dependências novas.
+
+Os campos técnicos não aprovados permanecem fora da produção. As 153 localizações sem evidência suficiente usam um estado explícito de localização pendente.
+
+### Convenção obrigatória para listas gerais
+
+Categorias que possuam uma tela “Todos” com conteúdo Base e DLC reutilizam `OriginFilterButtons`. O estado inicial não seleciona origem; `Base` e `DLC` são exclusivos, podem ser desmarcados por novo toque e intersectam busca e filtros. O progresso acompanha  o pacote visível. A seleção é preservada enquanto a lista permanece montada ao abrir detalhes. Rotas específicas não mostram o controle.
+
 Este plano divide o desenvolvimento do Elden Ring Companion em incrementos pequenos e testáveis. Ao final de cada etapa, o aplicativo deve permanecer executável no Expo Go. Até a arquitetura, a navegação, o armazenamento e a interface estarem validados, devem ser usados apenas poucos dados fictícios e nenhum material protegido do jogo.
 
 ## 1. Verificação da estrutura e das dependências atuais

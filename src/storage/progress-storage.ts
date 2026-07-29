@@ -4,12 +4,14 @@ import { storageKeys } from './keys';
 import { normalizeProgressId, normalizeProgressIds } from './validators';
 
 let progressMutationQueue: Promise<void> = Promise.resolve();
-export const PROGRESS_SCHEMA_VERSION = 2;
+export const PROGRESS_SCHEMA_VERSION = 3;
 
-export interface ProgressStateV2 {
+export interface ProgressStateV3 {
   readonly schemaVersion: typeof PROGRESS_SCHEMA_VERSION;
   readonly defeatedBossIds: readonly string[];
   readonly collectedAshOfWarIds: readonly string[];
+  readonly collectedSorceryIds: readonly string[];
+  readonly collectedIncantationIds: readonly string[];
 }
 
 function enqueueProgressMutation<Result>(
@@ -26,11 +28,15 @@ function enqueueProgressMutation<Result>(
 function createProgressState(
   defeatedBossIds: unknown = [],
   collectedAshOfWarIds: unknown = [],
-): ProgressStateV2 {
+  collectedSorceryIds: unknown = [],
+  collectedIncantationIds: unknown = [],
+): ProgressStateV3 {
   return {
     schemaVersion: PROGRESS_SCHEMA_VERSION,
     defeatedBossIds: normalizeProgressIds(defeatedBossIds),
     collectedAshOfWarIds: normalizeProgressIds(collectedAshOfWarIds),
+    collectedSorceryIds: normalizeProgressIds(collectedSorceryIds),
+    collectedIncantationIds: normalizeProgressIds(collectedIncantationIds),
   };
 }
 
@@ -39,7 +45,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function parseProgressState(value: unknown): {
-  readonly state: ProgressStateV2;
+  readonly state: ProgressStateV3;
   readonly shouldPersist: boolean;
 } {
   if (Array.isArray(value)) {
@@ -50,10 +56,19 @@ function parseProgressState(value: unknown): {
     return { state: createProgressState(), shouldPersist: false };
   }
 
-  const state = createProgressState(
-    value.defeatedBossIds,
-    value.collectedAshOfWarIds,
-  );
+  const state = value.schemaVersion === 1
+    ? createProgressState(value.defeatedBossIds)
+    : value.schemaVersion === 2
+      ? createProgressState(
+          value.defeatedBossIds,
+          value.collectedAshOfWarIds,
+        )
+      : createProgressState(
+          value.defeatedBossIds,
+          value.collectedAshOfWarIds,
+          value.collectedSorceryIds,
+          value.collectedIncantationIds,
+        );
   const canonicalValue = JSON.stringify(state);
 
   return {
@@ -64,7 +79,7 @@ function parseProgressState(value: unknown): {
   };
 }
 
-async function readProgressState(): Promise<ProgressStateV2> {
+async function readProgressState(): Promise<ProgressStateV3> {
   let storedValue: string | null;
 
   try {
@@ -96,10 +111,12 @@ async function readProgressState(): Promise<ProgressStateV2> {
   return state;
 }
 
-async function writeProgressState(state: ProgressStateV2): Promise<void> {
+async function writeProgressState(state: ProgressStateV3): Promise<void> {
   const normalizedState = createProgressState(
     state.defeatedBossIds,
     state.collectedAshOfWarIds,
+    state.collectedSorceryIds,
+    state.collectedIncantationIds,
   );
 
   try {
@@ -125,7 +142,11 @@ function requireProgressId(id: unknown, label: string): string {
 }
 
 async function updateProgressIds(
-  field: 'defeatedBossIds' | 'collectedAshOfWarIds',
+  field:
+    | 'defeatedBossIds'
+    | 'collectedAshOfWarIds'
+    | 'collectedSorceryIds'
+    | 'collectedIncantationIds',
   id: string,
   shouldInclude: boolean,
 ): Promise<void> {
@@ -144,7 +165,7 @@ async function updateProgressIds(
   await writeProgressState({ ...current, [field]: nextIds });
 }
 
-export async function loadProgressState(): Promise<ProgressStateV2> {
+export async function loadProgressState(): Promise<ProgressStateV3> {
   await progressMutationQueue;
   return readProgressState();
 }
@@ -155,6 +176,14 @@ export async function loadDefeatedBossIds(): Promise<string[]> {
 
 export async function loadCollectedAshOfWarIds(): Promise<string[]> {
   return [...(await loadProgressState()).collectedAshOfWarIds];
+}
+
+export async function loadCollectedSorceryIds(): Promise<string[]> {
+  return [...(await loadProgressState()).collectedSorceryIds];
+}
+
+export async function loadCollectedIncantationIds(): Promise<string[]> {
+  return [...(await loadProgressState()).collectedIncantationIds];
 }
 
 export async function saveDefeatedBossIds(ids: readonly string[]): Promise<void> {
@@ -216,6 +245,34 @@ export async function isAshOfWarCollected(id: string): Promise<boolean> {
   return normalizedId === null
     ? false
     : (await loadProgressState()).collectedAshOfWarIds.includes(normalizedId);
+}
+
+export async function addCollectedSorceryId(id: string): Promise<void> {
+  const normalizedId = requireProgressId(id, 'Sorcery');
+  return enqueueProgressMutation(() =>
+    updateProgressIds('collectedSorceryIds', normalizedId, true),
+  );
+}
+
+export async function removeCollectedSorceryId(id: string): Promise<void> {
+  const normalizedId = requireProgressId(id, 'Sorcery');
+  return enqueueProgressMutation(() =>
+    updateProgressIds('collectedSorceryIds', normalizedId, false),
+  );
+}
+
+export async function addCollectedIncantationId(id: string): Promise<void> {
+  const normalizedId = requireProgressId(id, 'Incantation');
+  return enqueueProgressMutation(() =>
+    updateProgressIds('collectedIncantationIds', normalizedId, true),
+  );
+}
+
+export async function removeCollectedIncantationId(id: string): Promise<void> {
+  const normalizedId = requireProgressId(id, 'Incantation');
+  return enqueueProgressMutation(() =>
+    updateProgressIds('collectedIncantationIds', normalizedId, false),
+  );
 }
 
 export async function clearProgress(): Promise<void> {

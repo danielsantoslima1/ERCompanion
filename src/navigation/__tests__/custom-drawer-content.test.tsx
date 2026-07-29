@@ -252,6 +252,8 @@ describe('CustomDrawerContent', () => {
       mockAppState.translations.navigation.home,
       mockAppState.translations.navigation.expandBosses,
       mockAppState.translations.navigation.expandAshesOfWar,
+      mockAppState.translations.navigation.expandSorceries,
+      mockAppState.translations.navigation.expandIncantations,
       mockAppState.translations.navigation.settings,
     ]);
     expect(
@@ -298,6 +300,8 @@ describe('CustomDrawerContent', () => {
       mockAppState.translations.navigation.allAshesOfWar,
       mockAppState.translations.common.baseGame,
       mockAppState.translations.common.expansion,
+      mockAppState.translations.navigation.expandSorceries,
+      mockAppState.translations.navigation.expandIncantations,
       mockAppState.translations.navigation.settings,
     ]);
     expect(screen.queryByText('Limgrave')).toBeNull();
@@ -329,6 +333,26 @@ describe('CustomDrawerContent', () => {
       pathname: '/ashes-of-war/shadow-of-the-erdtree',
       selected: 'Shadow of the Erdtree',
       expanded: 'Recolher Cinzas da Guerra',
+    },
+    {
+      pathname: '/sorceries',
+      selected: 'Todos os Feitiços',
+      expanded: 'Recolher Feitiços',
+    },
+    {
+      pathname: '/sorceries/base-game',
+      selected: 'Jogo base',
+      expanded: 'Recolher Feitiços',
+    },
+    {
+      pathname: '/incantations',
+      selected: 'Todos os Encantamentos',
+      expanded: 'Recolher Encantamentos',
+    },
+    {
+      pathname: '/incantations/shadow-of-the-erdtree',
+      selected: 'Shadow of the Erdtree',
+      expanded: 'Recolher Encantamentos',
     },
   ])('opens and selects only the route branch for $pathname', async ({
     expanded,

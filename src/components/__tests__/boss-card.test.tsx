@@ -4,7 +4,7 @@ import {
   render,
   screen,
 } from '@testing-library/react-native';
-import { Alert } from 'react-native';
+import { Alert, StyleSheet } from 'react-native';
 import type { TestInstance } from 'test-renderer';
 
 import type { AppContextValue } from '../../contexts/app-context';
@@ -116,6 +116,31 @@ describe('BossCard', () => {
     expect(onViewDetails).toHaveBeenCalledTimes(1);
     expect(markBossDefeated).not.toHaveBeenCalled();
     expect(markBossNotDefeated).not.toHaveBeenCalled();
+  });
+
+  it('uses the shared details button visual contract', async () => {
+    await render(
+      <BossCard
+        id="test-boss"
+        isDefeated={false}
+        location="Test Location"
+        name="Test Boss"
+        onViewDetails={jest.fn()}
+      />,
+    );
+
+    expect(StyleSheet.flatten(screen.getByTestId('details-button').props.style))
+      .toMatchObject({
+        alignItems: 'center',
+        borderColor: lightTheme.colors.primary,
+        borderRadius: lightTheme.borderRadius.medium,
+        borderWidth: 1,
+        justifyContent: 'center',
+        minHeight: 48,
+        opacity: 1,
+        paddingHorizontal: lightTheme.spacing.medium,
+        paddingVertical: lightTheme.spacing.small,
+      });
   });
 
   it('changes progress without opening details', async () => {

@@ -99,8 +99,14 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
   const isAshRoute =
     pathname === '/ashes-of-war' ||
     pathname.startsWith('/ashes-of-war/');
+  const isSorceryRoute =
+    pathname === '/sorceries' || pathname.startsWith('/sorceries/');
+  const isIncantationRoute =
+    pathname === '/incantations' || pathname.startsWith('/incantations/');
   const [isBossesExpanded, setIsBossesExpanded] = useState(isBossRoute);
   const [isAshesExpanded, setIsAshesExpanded] = useState(isAshRoute);
+  const [isSorceriesExpanded, setIsSorceriesExpanded] = useState(isSorceryRoute);
+  const [isIncantationsExpanded, setIsIncantationsExpanded] = useState(isIncantationRoute);
   const routeRegion = regions.find(
     (region) => pathname === `/regions/${region.id}`,
   );
@@ -145,20 +151,40 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
     if (isBossRoute) {
       setIsBossesExpanded(true);
       setIsAshesExpanded(false);
+      setIsSorceriesExpanded(false);
+      setIsIncantationsExpanded(false);
       setIsBaseGameExpanded(activeContentPack === 'base-game');
       setIsExpansionExpanded(activeContentPack === 'shadow-of-the-erdtree');
     } else if (isAshRoute) {
       setIsAshesExpanded(true);
       setIsBossesExpanded(false);
+      setIsSorceriesExpanded(false);
+      setIsIncantationsExpanded(false);
+      setIsBaseGameExpanded(false);
+      setIsExpansionExpanded(false);
+    } else if (isSorceryRoute) {
+      setIsSorceriesExpanded(true);
+      setIsBossesExpanded(false);
+      setIsAshesExpanded(false);
+      setIsIncantationsExpanded(false);
+      setIsBaseGameExpanded(false);
+      setIsExpansionExpanded(false);
+    } else if (isIncantationRoute) {
+      setIsIncantationsExpanded(true);
+      setIsBossesExpanded(false);
+      setIsAshesExpanded(false);
+      setIsSorceriesExpanded(false);
       setIsBaseGameExpanded(false);
       setIsExpansionExpanded(false);
     } else if (pathname === '/' || pathname === '/settings') {
       setIsBossesExpanded(false);
       setIsAshesExpanded(false);
+      setIsSorceriesExpanded(false);
+      setIsIncantationsExpanded(false);
       setIsBaseGameExpanded(false);
       setIsExpansionExpanded(false);
     }
-  }, [activeContentPack, isAshRoute, isBossRoute, pathname]);
+  }, [activeContentPack, isAshRoute, isBossRoute, isIncantationRoute, isSorceryRoute, pathname]);
 
   const closeDrawer = useCallback(() => {
     props.navigation.closeDrawer();
@@ -171,6 +197,8 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
     ) => {
       setIsBossesExpanded(false);
       setIsAshesExpanded(false);
+      setIsSorceriesExpanded(false);
+      setIsIncantationsExpanded(false);
       setIsBaseGameExpanded(false);
       setIsExpansionExpanded(false);
       if (pathname !== destination) {
@@ -187,6 +215,8 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
       const targetRegion = regions.find((region) => region.id === regionId);
       setIsBossesExpanded(true);
       setIsAshesExpanded(false);
+      setIsSorceriesExpanded(false);
+      setIsIncantationsExpanded(false);
       setIsBaseGameExpanded(targetRegion?.contentPack === 'base-game');
       setIsExpansionExpanded(
         targetRegion?.contentPack === 'shadow-of-the-erdtree',
@@ -205,6 +235,8 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
       const destination = `/all-bosses/${contentPack}`;
       setIsBossesExpanded(true);
       setIsAshesExpanded(false);
+      setIsSorceriesExpanded(false);
+      setIsIncantationsExpanded(false);
       setIsBaseGameExpanded(contentPack === 'base-game');
       setIsExpansionExpanded(contentPack === 'shadow-of-the-erdtree');
       if (pathname !== destination) {
@@ -239,6 +271,8 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
     ) => {
       setIsAshesExpanded(true);
       setIsBossesExpanded(false);
+      setIsSorceriesExpanded(false);
+      setIsIncantationsExpanded(false);
       setIsBaseGameExpanded(false);
       setIsExpansionExpanded(false);
       if (pathname !== destination) {
@@ -251,6 +285,8 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
 
   const toggleBosses = useCallback(() => {
     setIsAshesExpanded(false);
+    setIsSorceriesExpanded(false);
+    setIsIncantationsExpanded(false);
     setIsBossesExpanded((currentValue) => {
       if (currentValue) {
         setIsBaseGameExpanded(false);
@@ -264,7 +300,49 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
     setIsBossesExpanded(false);
     setIsBaseGameExpanded(false);
     setIsExpansionExpanded(false);
+    setIsSorceriesExpanded(false);
+    setIsIncantationsExpanded(false);
     setIsAshesExpanded((currentValue) => !currentValue);
+  }, []);
+
+  const navigateToSpellGroup = useCallback(
+    (
+      category: 'sorceries' | 'incantations',
+      segment: 'index' | 'base-game' | 'shadow-of-the-erdtree',
+    ) => {
+      const destination = segment === 'index'
+        ? `/${category}`
+        : `/${category}/${segment}`;
+      setIsBossesExpanded(false);
+      setIsAshesExpanded(false);
+      setIsSorceriesExpanded(category === 'sorceries');
+      setIsIncantationsExpanded(category === 'incantations');
+      setIsBaseGameExpanded(false);
+      setIsExpansionExpanded(false);
+      if (pathname !== destination) {
+        props.navigation.navigate(`${category}/${segment}`);
+      }
+      closeDrawer();
+    },
+    [closeDrawer, pathname, props.navigation],
+  );
+
+  const toggleSorceries = useCallback(() => {
+    setIsBossesExpanded(false);
+    setIsAshesExpanded(false);
+    setIsIncantationsExpanded(false);
+    setIsBaseGameExpanded(false);
+    setIsExpansionExpanded(false);
+    setIsSorceriesExpanded((current) => !current);
+  }, []);
+
+  const toggleIncantations = useCallback(() => {
+    setIsBossesExpanded(false);
+    setIsAshesExpanded(false);
+    setIsSorceriesExpanded(false);
+    setIsBaseGameExpanded(false);
+    setIsExpansionExpanded(false);
+    setIsIncantationsExpanded((current) => !current);
   }, []);
 
   const toggleContentPack = useCallback((contentPack: ContentPack) => {
@@ -557,6 +635,66 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
           </View>
         ) : null}
 
+        <DirectRouteGroup
+          active={isSorceryRoute}
+          expanded={isSorceriesExpanded}
+          expandLabel={
+            isSorceriesExpanded
+              ? translations.navigation.collapseSorceries
+              : translations.navigation.expandSorceries
+          }
+          label={translations.navigation.sorceries}
+          onToggle={toggleSorceries}>
+          <DrawerItem
+            isNested
+            isSelected={pathname === '/sorceries'}
+            label={translations.navigation.allSorceries}
+            onPress={() => navigateToSpellGroup('sorceries', 'index')}
+          />
+          <DrawerItem
+            isNested
+            isSelected={pathname === '/sorceries/base-game'}
+            label={translations.common.baseGame}
+            onPress={() => navigateToSpellGroup('sorceries', 'base-game')}
+          />
+          <DrawerItem
+            isNested
+            isSelected={pathname === '/sorceries/shadow-of-the-erdtree'}
+            label={translations.common.expansion}
+            onPress={() => navigateToSpellGroup('sorceries', 'shadow-of-the-erdtree')}
+          />
+        </DirectRouteGroup>
+
+        <DirectRouteGroup
+          active={isIncantationRoute}
+          expanded={isIncantationsExpanded}
+          expandLabel={
+            isIncantationsExpanded
+              ? translations.navigation.collapseIncantations
+              : translations.navigation.expandIncantations
+          }
+          label={translations.navigation.incantations}
+          onToggle={toggleIncantations}>
+          <DrawerItem
+            isNested
+            isSelected={pathname === '/incantations'}
+            label={translations.navigation.allIncantations}
+            onPress={() => navigateToSpellGroup('incantations', 'index')}
+          />
+          <DrawerItem
+            isNested
+            isSelected={pathname === '/incantations/base-game'}
+            label={translations.common.baseGame}
+            onPress={() => navigateToSpellGroup('incantations', 'base-game')}
+          />
+          <DrawerItem
+            isNested
+            isSelected={pathname === '/incantations/shadow-of-the-erdtree'}
+            label={translations.common.expansion}
+            onPress={() => navigateToSpellGroup('incantations', 'shadow-of-the-erdtree')}
+          />
+        </DirectRouteGroup>
+
         <DrawerItem
           isSelected={pathname === '/settings'}
           label={translations.navigation.settings}
@@ -564,6 +702,53 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
         />
       </View>
     </DrawerContentScrollView>
+  );
+}
+
+function DirectRouteGroup({
+  active,
+  children,
+  expanded,
+  expandLabel,
+  label,
+  onToggle,
+}: {
+  readonly active: boolean;
+  readonly children: ReactNode;
+  readonly expanded: boolean;
+  readonly expandLabel: string;
+  readonly label: string;
+  readonly onToggle: () => void;
+}) {
+  const { theme } = useApp();
+  return (
+    <>
+      <Pressable
+        accessibilityLabel={expandLabel}
+        accessibilityRole="button"
+        accessibilityState={{ expanded, selected: active }}
+        onPress={onToggle}
+        style={[
+          styles.item,
+          {
+            backgroundColor: active ? theme.colors.drawerActiveBackground : 'transparent',
+            borderColor: active ? theme.colors.primary : 'transparent',
+            borderRadius: theme.borderRadius.medium,
+            paddingHorizontal: theme.spacing.medium,
+          },
+        ]}>
+        <Text style={[styles.itemLabel, { color: active ? theme.colors.drawerActiveText : theme.colors.textPrimary }]}>
+          {label}
+        </Text>
+        <Text
+          accessibilityElementsHidden
+          importantForAccessibility="no-hide-descendants"
+          style={[styles.expandIndicator, { color: active ? theme.colors.drawerActiveText : theme.colors.textSecondary }]}>
+          {expanded ? '−' : '+'}
+        </Text>
+      </Pressable>
+      {expanded ? <View style={{ gap: theme.spacing.small }}>{children}</View> : null}
+    </>
   );
 }
 

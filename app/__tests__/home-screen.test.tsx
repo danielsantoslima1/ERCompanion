@@ -10,7 +10,7 @@ import { lightTheme } from '../../src/theme';
 
 let mockAppState: Pick<
   AppContextValue,
-  'ashOfWarProgress' | 'bossProgress' | 'combinedProgress' | 'theme' | 'translations'
+  'ashOfWarProgress' | 'bossProgress' | 'combinedProgress' | 'incantationProgress' | 'sorceryProgress' | 'theme' | 'translations'
 >;
 
 jest.mock('expo-router', () => ({ router: { push: jest.fn() } }));
@@ -31,30 +31,34 @@ beforeEach(() => {
   mockAppState = {
     ashOfWarProgress: progress(0, 116),
     bossProgress: progress(0, 208),
-    combinedProgress: progress(0, 324),
+    combinedProgress: progress(0, 537),
+    sorceryProgress: progress(0, 84),
+    incantationProgress: progress(0, 129),
     theme: lightTheme,
     translations: getTranslationDictionary('pt-BR'),
   };
 });
 
 describe('HomeScreen category integration', () => {
-  it('shows combined progress and exactly two category cards', async () => {
+  it('shows combined progress and exactly four category cards', async () => {
     await render(<HomeScreen />);
-    expect(screen.getByText('0/324')).toBeOnTheScreen();
-    expect(screen.getAllByText('0%')).toHaveLength(3);
-    expect(screen.getAllByRole('button')).toHaveLength(2);
+    expect(screen.getByText('0/537')).toBeOnTheScreen();
+    expect(screen.getAllByText('0%')).toHaveLength(5);
+    expect(screen.getAllByRole('button')).toHaveLength(4);
     expect(screen.getByText('Chefes')).toBeOnTheScreen();
     expect(screen.getByText('Cinzas da Guerra')).toBeOnTheScreen();
     expect(screen.getByText('0/208')).toBeOnTheScreen();
     expect(screen.getByText('0/116')).toBeOnTheScreen();
+    expect(screen.getByText('0/84')).toBeOnTheScreen();
+    expect(screen.getByText('0/129')).toBeOnTheScreen();
     expect(screen.queryByText('Progresso do Jogo Base')).toBeNull();
     expect(screen.queryByText('Progresso da expansão')).toBeNull();
   });
 
   it('uses the horizontal progress pattern in both category cards', async () => {
     await render(<HomeScreen />);
-    expect(screen.getAllByTestId('progress-values')).toHaveLength(2);
-    expect(screen.getAllByTestId('progress-track')).toHaveLength(2);
+    expect(screen.getAllByTestId('progress-values')).toHaveLength(4);
+    expect(screen.getAllByTestId('progress-track')).toHaveLength(4);
     for (const values of screen.getAllByTestId('progress-values')) {
       expect(StyleSheet.flatten(values.props.style)).toMatchObject({
         flexDirection: 'row',
@@ -68,10 +72,10 @@ describe('HomeScreen category integration', () => {
       ...mockAppState,
       ashOfWarProgress: progress(1, 116),
       bossProgress: progress(1, 208),
-      combinedProgress: progress(2, 324),
+      combinedProgress: progress(2, 537),
     };
     await render(<HomeScreen />);
-    expect(screen.getByText('2/324')).toBeOnTheScreen();
+    expect(screen.getByText('2/537')).toBeOnTheScreen();
     expect(screen.getByText('1/208')).toBeOnTheScreen();
     expect(screen.getByText('1/116')).toBeOnTheScreen();
   });
@@ -81,14 +85,16 @@ describe('HomeScreen category integration', () => {
       ...mockAppState,
       ashOfWarProgress: progress(116, 116),
       bossProgress: progress(208, 208),
-      combinedProgress: progress(324, 324),
+      sorceryProgress: progress(84, 84),
+      incantationProgress: progress(129, 129),
+      combinedProgress: progress(537, 537),
     };
     await render(<HomeScreen />);
-    expect(screen.getByText('324/324')).toBeOnTheScreen();
-    expect(screen.getAllByText('100%')).toHaveLength(3);
+    expect(screen.getByText('537/537')).toBeOnTheScreen();
+    expect(screen.getAllByText('100%')).toHaveLength(5);
   });
 
-  it('opens the two public category routes', async () => {
+  it('opens the four public category routes', async () => {
     await render(<HomeScreen />);
     await fireEvent.press(
       screen.getByRole('button', { name: /Chefes: 0 de 208/ }),
@@ -98,6 +104,10 @@ describe('HomeScreen category integration', () => {
       screen.getByRole('button', { name: /Cinzas da Guerra: 0 de 116/ }),
     );
     expect(router.push).toHaveBeenCalledWith('/ashes-of-war');
+    await fireEvent.press(screen.getByRole('button', { name: /Feitiços: 0 de 84/ }));
+    expect(router.push).toHaveBeenCalledWith('/sorceries');
+    await fireEvent.press(screen.getByRole('button', { name: /Encantamentos: 0 de 129/ }));
+    expect(router.push).toHaveBeenCalledWith('/incantations');
   });
 
   it('provides localized accessible labels in English', async () => {
@@ -113,5 +123,7 @@ describe('HomeScreen category integration', () => {
     expect(
       screen.getByRole('button', { name: /Ashes of War: 0 of 116/ }),
     ).toBeOnTheScreen();
+    expect(screen.getByRole('button', { name: /Sorceries: 0 of 84/ })).toBeOnTheScreen();
+    expect(screen.getByRole('button', { name: /Incantations: 0 of 129/ })).toBeOnTheScreen();
   });
 });

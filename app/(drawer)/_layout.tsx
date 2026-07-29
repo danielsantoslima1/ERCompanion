@@ -93,6 +93,30 @@ export default function DrawerLayout() {
           title: translations.ashesOfWar.expansionTitle,
         }}
       />
+      <Drawer.Screen
+        name="sorceries/index"
+        options={{ drawerItemStyle: { display: 'none' }, title: translations.spells.allSorceries }}
+      />
+      <Drawer.Screen
+        name="sorceries/base-game"
+        options={{ drawerItemStyle: { display: 'none' }, title: translations.spells.sorceryBaseGameTitle }}
+      />
+      <Drawer.Screen
+        name="sorceries/shadow-of-the-erdtree"
+        options={{ drawerItemStyle: { display: 'none' }, title: translations.spells.sorceryExpansionTitle }}
+      />
+      <Drawer.Screen
+        name="incantations/index"
+        options={{ drawerItemStyle: { display: 'none' }, title: translations.spells.allIncantations }}
+      />
+      <Drawer.Screen
+        name="incantations/base-game"
+        options={{ drawerItemStyle: { display: 'none' }, title: translations.spells.incantationBaseGameTitle }}
+      />
+      <Drawer.Screen
+        name="incantations/shadow-of-the-erdtree"
+        options={{ drawerItemStyle: { display: 'none' }, title: translations.spells.incantationExpansionTitle }}
+      />
     </Drawer>
   );
 }

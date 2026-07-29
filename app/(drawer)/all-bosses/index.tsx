@@ -13,9 +13,14 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { BossCard } from '@/src/components/boss-card';
+import {
+  OriginFilterButtons,
+  type OriginFilter,
+} from '@/src/components/origin-filter-buttons';
 import { RegionProgressItem } from '@/src/components/region-progress-item';
 import {
   bosses,
+  calculateBossCatalogProgressByContentPack,
   combineBossesWithProgress,
   getBossesByContentPack,
   regions,
@@ -49,6 +54,7 @@ export default function CombinedAllBossesScreen() {
   } = useApp();
   const [query, setQuery] = useState('');
   const [filter, setFilter] = useState<BossFilter>('all');
+  const [originFilter, setOriginFilter] = useState<OriginFilter>('all');
   const defeatedBossIdSet = useMemo(
     () => new Set(defeatedBossIds),
     [defeatedBossIds],
@@ -94,11 +100,16 @@ export default function CombinedAllBossesScreen() {
         'shadow-of-the-erdtree',
         translations.common.expansion,
       ),
-    ].filter((section) => section.data.length > 0);
+    ].filter(
+      (section) =>
+        (originFilter === 'all' || section.contentPack === originFilter) &&
+        section.data.length > 0,
+    );
   }, [
     defeatedBossIdSet,
     filter,
     language,
+    originFilter,
     query,
     regionById,
     translations.common.baseGame,
@@ -108,6 +119,16 @@ export default function CombinedAllBossesScreen() {
   const visibleCount = useMemo(
     () => sections.reduce((total, section) => total + section.data.length, 0),
     [sections],
+  );
+  const progress = useMemo(
+    () =>
+      originFilter === 'all'
+        ? bossProgress
+        : calculateBossCatalogProgressByContentPack(
+            defeatedBossIds,
+            originFilter,
+          ),
+    [bossProgress, defeatedBossIds, originFilter],
   );
   const filters: readonly { id: BossFilter; label: string }[] = [
     { id: 'all', label: translations.region.all },
@@ -199,9 +220,16 @@ export default function CombinedAllBossesScreen() {
                 {translations.allBosses.combinedProgress}
               </Text>
               <RegionProgressItem
-                defeated={bossProgress.completed}
-                percentage={bossProgress.percentage}
-                total={bossProgress.total}
+                defeated={progress.completed}
+                percentage={progress.percentage}
+                total={progress.total}
+              />
+              <OriginFilterButtons
+                activeOrigin={originFilter}
+                baseLabel={translations.common.baseFilter}
+                dlcLabel={translations.common.dlcFilter}
+                getAccessibilityLabel={translations.common.filterByOrigin}
+                onChange={setOriginFilter}
               />
               <TextInput
                 accessibilityLabel={translations.region.search}

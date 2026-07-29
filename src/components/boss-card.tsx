@@ -1,7 +1,8 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import { useApp } from '../hooks/use-app';
 import { BossProgressButton } from './boss-progress-button';
+import { DetailsButton } from './details-button';
 
 interface BossCardProps {
   id: string;
@@ -84,28 +85,11 @@ export function BossCard({
 
       <View style={{ gap: theme.spacing.small }}>
         {onViewDetails ? (
-          <Pressable
+          <DetailsButton
             accessibilityLabel={translations.bossDetails.viewDetailsFor(name)}
-            accessibilityRole="button"
+            label={translations.bossDetails.viewDetails}
             onPress={onViewDetails}
-            style={({ pressed }) => [
-              styles.detailsButton,
-              {
-                borderColor: theme.colors.primary,
-                borderRadius: theme.borderRadius.medium,
-                opacity: pressed ? 0.7 : 1,
-                paddingHorizontal: theme.spacing.medium,
-                paddingVertical: theme.spacing.small,
-              },
-            ]}>
-          <Text
-            style={[
-                  styles.buttonText,
-                  { color: theme.colors.primary },
-            ]}>
-                {translations.bossDetails.viewDetails}
-          </Text>
-          </Pressable>
+          />
         ) : null}
         <BossProgressButton id={id} isDefeated={isDefeated} />
       </View>
@@ -142,16 +126,5 @@ const styles = StyleSheet.create({
   region: {
     fontSize: 14,
     fontWeight: '600',
-  },
-  detailsButton: {
-    alignItems: 'center',
-    borderWidth: 1,
-    justifyContent: 'center',
-    minHeight: 48,
-  },
-  buttonText: {
-    fontSize: 15,
-    fontWeight: '700',
-    textAlign: 'center',
   },
 });

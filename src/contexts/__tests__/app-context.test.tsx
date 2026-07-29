@@ -6,13 +6,19 @@ import { getTranslationDictionary } from '../../i18n';
 import {
   addDefeatedBossId,
   addCollectedAshOfWarId,
+  addCollectedIncantationId,
+  addCollectedSorceryId,
   clearProgress,
   defaultSettings,
   loadDefeatedBossIds,
   loadCollectedAshOfWarIds,
+  loadCollectedIncantationIds,
+  loadCollectedSorceryIds,
   loadSettings,
   removeDefeatedBossId,
   removeCollectedAshOfWarId,
+  removeCollectedIncantationId,
+  removeCollectedSorceryId,
   restoreDefaultSettings,
   saveDefeatedBossIds,
   saveSettings,
@@ -35,11 +41,17 @@ jest.mock('../../storage', () => ({
   restoreDefaultSettings: jest.fn(),
   loadDefeatedBossIds: jest.fn(),
   loadCollectedAshOfWarIds: jest.fn(),
+  loadCollectedSorceryIds: jest.fn(),
+  loadCollectedIncantationIds: jest.fn(),
   saveDefeatedBossIds: jest.fn(),
   addDefeatedBossId: jest.fn(),
   addCollectedAshOfWarId: jest.fn(),
+  addCollectedSorceryId: jest.fn(),
+  addCollectedIncantationId: jest.fn(),
   removeDefeatedBossId: jest.fn(),
   removeCollectedAshOfWarId: jest.fn(),
+  removeCollectedSorceryId: jest.fn(),
+  removeCollectedIncantationId: jest.fn(),
   clearProgress: jest.fn(),
 }));
 
@@ -49,11 +61,17 @@ const mockedSaveSettings = jest.mocked(saveSettings);
 const mockedRestoreDefaultSettings = jest.mocked(restoreDefaultSettings);
 const mockedLoadDefeatedBossIds = jest.mocked(loadDefeatedBossIds);
 const mockedLoadCollectedAshOfWarIds = jest.mocked(loadCollectedAshOfWarIds);
+const mockedLoadCollectedSorceryIds = jest.mocked(loadCollectedSorceryIds);
+const mockedLoadCollectedIncantationIds = jest.mocked(loadCollectedIncantationIds);
 const mockedSaveDefeatedBossIds = jest.mocked(saveDefeatedBossIds);
 const mockedAddDefeatedBossId = jest.mocked(addDefeatedBossId);
 const mockedAddCollectedAshOfWarId = jest.mocked(addCollectedAshOfWarId);
+const mockedAddCollectedSorceryId = jest.mocked(addCollectedSorceryId);
+const mockedAddCollectedIncantationId = jest.mocked(addCollectedIncantationId);
 const mockedRemoveDefeatedBossId = jest.mocked(removeDefeatedBossId);
 const mockedRemoveCollectedAshOfWarId = jest.mocked(removeCollectedAshOfWarId);
+const mockedRemoveCollectedSorceryId = jest.mocked(removeCollectedSorceryId);
+const mockedRemoveCollectedIncantationId = jest.mocked(removeCollectedIncantationId);
 const mockedClearProgress = jest.mocked(clearProgress);
 
 interface Deferred<T> {
@@ -102,6 +120,8 @@ function TestConsumer() {
       <Text testID="defeated-count">{app.defeatedBossCount}</Text>
       <Text testID="collected-ash-ids">{app.collectedAshOfWarIds.join(',')}</Text>
       <Text testID="ash-count">{app.ashOfWarProgress.completed}</Text>
+      <Text testID="sorcery-ids">{app.collectedSorceryIds.join(',')}</Text>
+      <Text testID="incantation-ids">{app.collectedIncantationIds.join(',')}</Text>
       <Text testID="combined-count">{app.combinedProgress.completed}</Text>
       <Text testID="hydrated">{String(app.isHydrated)}</Text>
       <Text testID="initialization-error">
@@ -179,6 +199,14 @@ function TestConsumer() {
         }}
       />
       <Pressable
+        testID="toggle-sorcery"
+        onPress={() => runAction(() => app.toggleSorceryCollected('sorcery-comet-azur'))}
+      />
+      <Pressable
+        testID="toggle-incantation"
+        onPress={() => runAction(() => app.toggleIncantationCollected('incantation-elden-stars'))}
+      />
+      <Pressable
         testID="reset-progress"
         onPress={() => runAction(app.resetProgress)}
       />
@@ -225,18 +253,55 @@ beforeEach(() => {
   mockedLoadDefeatedBossIds.mockResolvedValue([]);
   mockedLoadCollectedAshOfWarIds.mockReset();
   mockedLoadCollectedAshOfWarIds.mockResolvedValue([]);
+  mockedLoadCollectedSorceryIds.mockReset();
+  mockedLoadCollectedSorceryIds.mockResolvedValue([]);
+  mockedLoadCollectedIncantationIds.mockReset();
+  mockedLoadCollectedIncantationIds.mockResolvedValue([]);
   mockedSaveDefeatedBossIds.mockReset();
   mockedSaveDefeatedBossIds.mockResolvedValue();
   mockedAddDefeatedBossId.mockReset();
   mockedAddDefeatedBossId.mockResolvedValue();
   mockedAddCollectedAshOfWarId.mockReset();
+  mockedAddCollectedSorceryId.mockReset();
+  mockedAddCollectedIncantationId.mockReset();
   mockedAddCollectedAshOfWarId.mockResolvedValue();
+  mockedAddCollectedSorceryId.mockResolvedValue();
+  mockedAddCollectedIncantationId.mockResolvedValue();
   mockedRemoveDefeatedBossId.mockReset();
   mockedRemoveDefeatedBossId.mockResolvedValue();
   mockedRemoveCollectedAshOfWarId.mockReset();
+  mockedRemoveCollectedSorceryId.mockReset();
+  mockedRemoveCollectedIncantationId.mockReset();
   mockedRemoveCollectedAshOfWarId.mockResolvedValue();
+  mockedRemoveCollectedSorceryId.mockResolvedValue();
+  mockedRemoveCollectedIncantationId.mockResolvedValue();
   mockedClearProgress.mockReset();
   mockedClearProgress.mockResolvedValue();
+});
+
+describe('AppProvider spell progress', () => {
+  it('updates Sorceries and Incantations independently', async () => {
+    await renderHydratedProvider();
+    await fireEvent.press(screen.getByTestId('toggle-sorcery'));
+    expectText('sorcery-ids', 'sorcery-comet-azur');
+    expectText('incantation-ids', '');
+    expect(mockedAddCollectedSorceryId).toHaveBeenCalledWith('sorcery-comet-azur');
+
+    await fireEvent.press(screen.getByTestId('toggle-incantation'));
+    expectText('incantation-ids', 'incantation-elden-stars');
+    expectText('sorcery-ids', 'sorcery-comet-azur');
+    expect(mockedAddCollectedIncantationId).toHaveBeenCalledWith('incantation-elden-stars');
+  });
+
+  it('rolls back only the failed Sorcery update', async () => {
+    mockedAddCollectedSorceryId.mockRejectedValueOnce(new Error('write failed'));
+    mockedLoadCollectedIncantationIds.mockResolvedValue(['incantation-elden-stars']);
+    await renderHydratedProvider();
+    await fireEvent.press(screen.getByTestId('toggle-sorcery'));
+    await waitFor(() => expectText('action-error', 'Failed to update spell progress.'));
+    expectText('sorcery-ids', '');
+    expectText('incantation-ids', 'incantation-elden-stars');
+  });
 });
 
 describe('AppProvider hydration', () => {

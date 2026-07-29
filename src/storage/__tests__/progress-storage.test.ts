@@ -2,14 +2,20 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {
   addCollectedAshOfWarId,
+  addCollectedIncantationId,
+  addCollectedSorceryId,
   addDefeatedBossId,
   clearProgress,
   isAshOfWarCollected,
   isBossDefeated,
   loadCollectedAshOfWarIds,
+  loadCollectedIncantationIds,
+  loadCollectedSorceryIds,
   loadDefeatedBossIds,
   loadProgressState,
   removeCollectedAshOfWarId,
+  removeCollectedIncantationId,
+  removeCollectedSorceryId,
   removeDefeatedBossId,
   saveDefeatedBossIds,
   toggleCollectedAshOfWarId,
@@ -28,15 +34,23 @@ const PROGRESS_KEY = '@elden-ring-companion/defeated-boss-ids:v1';
 const state = (
   defeatedBossIds: readonly string[] = [],
   collectedAshOfWarIds: readonly string[] = [],
-) => ({ schemaVersion: 2, defeatedBossIds, collectedAshOfWarIds });
+  collectedSorceryIds: readonly string[] = [],
+  collectedIncantationIds: readonly string[] = [],
+) => ({
+  schemaVersion: 3,
+  defeatedBossIds,
+  collectedAshOfWarIds,
+  collectedSorceryIds,
+  collectedIncantationIds,
+});
 
-describe('progress storage v2', () => {
+describe('progress storage v3', () => {
   beforeEach(async () => {
     await AsyncStorage.clear();
     jest.clearAllMocks();
   });
 
-  it('returns an empty v2 state when storage is absent or corrupted', async () => {
+  it('returns an empty v3 state when storage is absent or corrupted', async () => {
     await expect(loadProgressState()).resolves.toEqual(state());
     await AsyncStorage.setItem(PROGRESS_KEY, '[invalid');
     await expect(loadProgressState()).resolves.toEqual(state());
@@ -58,7 +72,51 @@ describe('progress storage v2', () => {
     );
   });
 
-  it('normalizes v2 idempotently and preserves first occurrence', async () => {
+  it('migrates v2 preserving bosses and Ashes while starting both spell categories empty', async () => {
+    await AsyncStorage.setItem(PROGRESS_KEY, JSON.stringify({
+      schemaVersion: 2,
+      defeatedBossIds: ['boss-a'],
+      collectedAshOfWarIds: ['ash-a'],
+    }));
+    await expect(loadProgressState()).resolves.toEqual(state(['boss-a'], ['ash-a']));
+  });
+
+  it('ignores spell arrays injected into a v2 payload', async () => {
+    await AsyncStorage.setItem(PROGRESS_KEY, JSON.stringify({
+      schemaVersion: 2,
+      defeatedBossIds: ['boss-a'],
+      collectedAshOfWarIds: ['ash-a'],
+      collectedSorceryIds: ['sorcery-injected'],
+      collectedIncantationIds: ['incantation-injected'],
+    }));
+
+    await expect(loadProgressState()).resolves.toEqual(
+      state(['boss-a'], ['ash-a']),
+    );
+  });
+
+  it('persists Sorceries and Incantations independently without losing prior categories', async () => {
+    await AsyncStorage.setItem(PROGRESS_KEY, JSON.stringify(state(['boss-a'], ['ash-a'])));
+    await addCollectedSorceryId('sorcery-a');
+    await addCollectedIncantationId('incantation-a');
+    await expect(loadProgressState()).resolves.toEqual(
+      state(['boss-a'], ['ash-a'], ['sorcery-a'], ['incantation-a']),
+    );
+    await expect(loadCollectedSorceryIds()).resolves.toEqual(['sorcery-a']);
+    await expect(loadCollectedIncantationIds()).resolves.toEqual(['incantation-a']);
+  });
+
+  it('removes spell progress independently', async () => {
+    await AsyncStorage.setItem(
+      PROGRESS_KEY,
+      JSON.stringify(state(['boss-a'], ['ash-a'], ['sorcery-a'], ['incantation-a'])),
+    );
+    await removeCollectedSorceryId('sorcery-a');
+    await removeCollectedIncantationId('incantation-a');
+    await expect(loadProgressState()).resolves.toEqual(state(['boss-a'], ['ash-a']));
+  });
+
+  it('normalizes v3 idempotently and preserves first occurrence', async () => {
     const normalized = state(
       ['boss-b', 'boss-a'],
       ['ash-b', 'ash-a'],
@@ -277,7 +335,7 @@ describe('progress storage v2', () => {
       );
     });
 
-    it('does not rewrite canonical v2 progress during a read', async () => {
+    it('does not rewrite canonical v3 progress during a read', async () => {
       await AsyncStorage.setItem(
         PROGRESS_KEY,
         JSON.stringify(state(['boss-a'], ['ash-a'])),
@@ -289,7 +347,7 @@ describe('progress storage v2', () => {
       expect(AsyncStorage.clear).not.toHaveBeenCalled();
     });
 
-    it('saves a valid boss list as a complete v2 payload', async () => {
+    it('saves a valid boss list as a complete v3 payload', async () => {
       await saveDefeatedBossIds(['boss-a', 'boss-b']);
       await expect(AsyncStorage.getItem(PROGRESS_KEY)).resolves.toBe(
         JSON.stringify(state(['boss-a', 'boss-b'])),

@@ -1,5 +1,15 @@
 # Elden Ring Companion
 
+## Extensão implementada — Feitiços e Encantamentos
+
+O aplicativo passa a contemplar 84 Feitiços e 129 Encantamentos como categorias independentes. O total geral é derivado dos catálogos e soma 537 registros: 208 Chefes, 116 Cinzas da Guerra, 84 Feitiços e 129 Encantamentos.
+
+O progresso persistido usa schema v3, preservando os dados anteriores e adicionando `collectedSorceryIds` e `collectedIncantationIds`. A Home possui quatro cards de categoria e o Drawer mantém quatro grupos principais mutuamente exclusivos. O MVP usa fallback em inglês, possui 153 localizações pendentes, sete magias lendárias e nenhuma magia confirmada como perdível.
+
+### Regra de filtros de origem
+
+Toda tela geral “Todos” que reúna jogo base e Shadow of the Erdtree deve usar o componente compartilhado de filtros `Base` e `DLC`. Sem seleção, a tela mostra ambos; os filtros são mutuamente exclusivos e um segundo toque limpa a seleção. Origem, busca e demais filtros são combinados por interseção, e o progresso usa o total da origem visível. O estado local deve sobreviver à ida aos detalhes e ao retorno. Rotas já limitadas a uma origem não exibem esses botões. Textos, acessibilidade e temas devem permanecer localizados e consistentes.
+
 ## Objetivo
 
 Aplicativo móvel para acompanhar os chefes derrotados em Elden Ring e na expansão Shadow of the Erdtree.

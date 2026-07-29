@@ -11,6 +11,8 @@ export default function HomeScreen() {
     ashOfWarProgress,
     bossProgress,
     combinedProgress,
+    incantationProgress,
+    sorceryProgress,
     theme,
     translations,
   } = useApp();
@@ -26,6 +28,18 @@ export default function HomeScreen() {
       label: translations.ashesOfWar.title,
       progress: ashOfWarProgress,
       route: '/ashes-of-war' as const,
+    },
+    {
+      id: 'sorceries',
+      label: translations.spells.sorceries,
+      progress: sorceryProgress,
+      route: '/sorceries' as const,
+    },
+    {
+      id: 'incantations',
+      label: translations.spells.incantations,
+      progress: incantationProgress,
+      route: '/incantations' as const,
     },
   ] as const;
 

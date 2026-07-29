@@ -191,6 +191,52 @@ describe('CombinedAllBossesScreen progress', () => {
     await render(<CombinedAllBossesScreen />);
     expect(screen.getByText('0/208')).toBeOnTheScreen();
   });
+
+  it('uses shared mutually exclusive origin filters and updates visible progress', async () => {
+    mockDataControl.setMockData(catalogRegions, bossEncounters);
+    await render(<CombinedAllBossesScreen />);
+    const base = screen.getByRole('button', {
+      name: 'Filtrar por origem: Base',
+    });
+    const dlc = screen.getByRole('button', {
+      name: 'Filtrar por origem: DLC',
+    });
+    expect(base.props.accessibilityState).toEqual({ selected: false });
+    expect(dlc.props.accessibilityState).toEqual({ selected: false });
+
+    await fireEvent.press(base);
+    expect(screen.getByText('165 resultados encontrados')).toBeOnTheScreen();
+    expect(screen.getByText('0/165')).toBeOnTheScreen();
+    expect(screen.queryByTestId('boss-section-shadow-of-the-erdtree')).toBeNull();
+
+    await fireEvent.press(dlc);
+    expect(screen.getByText('43 resultados encontrados')).toBeOnTheScreen();
+    expect(screen.getByText('0/43')).toBeOnTheScreen();
+    expect(screen.queryByTestId('boss-section-base-game')).toBeNull();
+
+    await fireEvent.press(dlc);
+    expect(screen.getByText('208 resultados encontrados')).toBeOnTheScreen();
+    expect(screen.getByText('0/208')).toBeOnTheScreen();
+  });
+
+  it('combines the origin filter with search and preserves it after opening details', async () => {
+    await render(<CombinedAllBossesScreen />);
+    await fireEvent.press(
+      screen.getByRole('button', { name: 'Filtrar por origem: Base' }),
+    );
+    await fireEvent.changeText(screen.getByLabelText('Buscar'), 'Zeta');
+    expect(screen.getByText('Zeta')).toBeOnTheScreen();
+    expect(screen.queryByText('Chefe DLC')).toBeNull();
+    await fireEvent.press(
+      screen.getByRole('button', {
+        name: mockAppState.translations.bossDetails.viewDetailsFor('Zeta'),
+      }),
+    );
+    expect(
+      screen.getByRole('button', { name: 'Filtrar por origem: Base' }).props
+        .accessibilityState,
+    ).toEqual({ selected: true });
+  });
 });
 
 describe('CombinedAllBossesScreen ordering, search, and filters', () => {

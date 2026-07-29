@@ -70,6 +70,7 @@ describe('AshOfWarListScreen totals and routes', () => {
     expect(screen.getByText('91 resultados encontrados')).toBeOnTheScreen();
     expect(screen.getByText('0/91')).toBeOnTheScreen();
     expect(screen.queryByTestId('ash-section-base-game')).toBeNull();
+    expect(screen.queryByTestId('origin-filter-buttons')).toBeNull();
   });
 
   it('shows the expansion static route with 25 entries and no sections', async () => {
@@ -81,6 +82,7 @@ describe('AshOfWarListScreen totals and routes', () => {
     expect(
       screen.queryByTestId('ash-section-shadow-of-the-erdtree'),
     ).toBeNull();
+    expect(screen.queryByTestId('origin-filter-buttons')).toBeNull();
   });
 
   it('uses one horizontal progress card in the combined list', async () => {
@@ -111,6 +113,30 @@ describe('AshOfWarListScreen totals and routes', () => {
     await render(<AshOfWarListScreen mode="all" />);
     expect(screen.getByText('116/116')).toBeOnTheScreen();
     expect(screen.getByText('100%')).toBeOnTheScreen();
+  });
+
+  it('filters Base and DLC exclusively, clears on a second press, and updates progress totals', async () => {
+    await render(<AshOfWarListScreen mode="all" />);
+    const base = screen.getByRole('button', {
+      name: 'Filtrar por origem: Base',
+    });
+    const dlc = screen.getByRole('button', {
+      name: 'Filtrar por origem: DLC',
+    });
+
+    await fireEvent.press(base);
+    expect(screen.getByText('91 resultados encontrados')).toBeOnTheScreen();
+    expect(screen.getByText('0/91')).toBeOnTheScreen();
+    expect(screen.queryByTestId('ash-section-shadow-of-the-erdtree')).toBeNull();
+
+    await fireEvent.press(dlc);
+    expect(screen.getByText('25 resultados encontrados')).toBeOnTheScreen();
+    expect(screen.getByText('0/25')).toBeOnTheScreen();
+    expect(screen.queryByTestId('ash-section-base-game')).toBeNull();
+
+    await fireEvent.press(dlc);
+    expect(screen.getByText('116 resultados encontrados')).toBeOnTheScreen();
+    expect(screen.getByText('0/116')).toBeOnTheScreen();
   });
 });
 
@@ -195,6 +221,32 @@ describe('AshOfWarListScreen search, filters, and ordering', () => {
     );
     expect(screen.getByText(entry.name.en)).toBeOnTheScreen();
     expect(screen.getAllByText(entry.name.en)).toHaveLength(1);
+  });
+
+  it('intersects origin, collection state, and search while preserving origin on details', async () => {
+    const entry = getAshesOfWarByContentPack('base-game')[0];
+    mockAppState = {
+      ...mockAppState,
+      collectedAshOfWarIds: [entry.id],
+      ashOfWarProgress: calculateAshOfWarProgress([entry.id]),
+    };
+    await render(<AshOfWarListScreen mode="all" />);
+    await fireEvent.press(
+      screen.getByRole('button', { name: 'Filtrar por origem: Base' }),
+    );
+    await fireEvent.press(screen.getByRole('radio', { name: 'Coletadas' }));
+    await fireEvent.changeText(
+      screen.getByLabelText('Buscar Cinzas da Guerra'),
+      entry.name.en,
+    );
+    expect(screen.getByText(entry.name.en)).toBeOnTheScreen();
+    await fireEvent.press(
+      screen.getByRole('button', { name: `Ver detalhes de ${entry.name.en}` }),
+    );
+    expect(
+      screen.getByRole('button', { name: 'Filtrar por origem: Base' }).props
+        .accessibilityState,
+    ).toEqual({ selected: true });
   });
 
   it('excludes collected entries from Not collected', async () => {

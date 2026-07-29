@@ -25,6 +25,10 @@ import {
 } from '../data';
 import { useApp } from '../hooks/use-app';
 import { AshOfWarCard } from './ash-of-war-card';
+import {
+  OriginFilterButtons,
+  type OriginFilter,
+} from './origin-filter-buttons';
 import { RegionProgressItem } from './region-progress-item';
 
 export type AshOfWarListMode =
@@ -63,12 +67,15 @@ export function AshOfWarListScreen({
   } = useApp();
   const [query, setQuery] = useState('');
   const [filter, setFilter] = useState<AshOfWarFilter>('all');
+  const [originFilter, setOriginFilter] = useState<OriginFilter>('all');
   const collectedIds = useMemo(
     () => new Set(collectedAshOfWarIds),
     [collectedAshOfWarIds],
   );
   const contentPack =
     mode === 'all' ? undefined : mode;
+  const progressContentPack =
+    contentPack ?? (originFilter === 'all' ? undefined : originFilter);
   const title =
     mode === 'all'
       ? translations.ashesOfWar.allTitle
@@ -77,13 +84,13 @@ export function AshOfWarListScreen({
         : translations.ashesOfWar.expansionTitle;
   const progress = useMemo<CompletionProgress>(
     () =>
-      contentPack
+      progressContentPack
         ? calculateAshOfWarProgressByContentPack(
             collectedAshOfWarIds,
-            contentPack,
+            progressContentPack,
           )
         : ashOfWarProgress,
-    [ashOfWarProgress, collectedAshOfWarIds, contentPack],
+    [ashOfWarProgress, collectedAshOfWarIds, progressContentPack],
   );
 
   const resolveEntries = useCallback(
@@ -137,10 +144,15 @@ export function AshOfWarListScreen({
           ),
         ),
       },
-    ].filter((section) => section.data.length > 0);
+    ].filter(
+      (section) =>
+        (originFilter === 'all' || section.contentPack === originFilter) &&
+        section.data.length > 0,
+    );
   }, [
     language,
     mode,
+    originFilter,
     resolveEntries,
     translations.common.baseGame,
     translations.common.expansion,
@@ -216,6 +228,15 @@ export function AshOfWarListScreen({
         ]}
         value={query}
       />
+      {mode === 'all' ? (
+        <OriginFilterButtons
+          activeOrigin={originFilter}
+          baseLabel={translations.common.baseFilter}
+          dlcLabel={translations.common.dlcFilter}
+          getAccessibilityLabel={translations.common.filterByOrigin}
+          onChange={setOriginFilter}
+        />
+      ) : null}
       <View
         accessibilityRole="radiogroup"
         style={[styles.filters, { gap: theme.spacing.small }]}>

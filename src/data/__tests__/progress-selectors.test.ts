@@ -1,10 +1,12 @@
-import { ashesOfWar, bosses, regions } from '..';
+import { ashesOfWar, bosses, incantations, regions, sorceries } from '..';
 import {
   calculateAshOfWarProgress,
   calculateAshOfWarProgressByContentPack,
   calculateBossCatalogProgress,
   calculateBossCatalogProgressByContentPack,
   calculateCombinedProgress,
+  calculateIncantationProgress,
+  calculateSorceryProgress,
   calculateProgressPercentage,
   PROGRESS_TOTALS,
 } from '../progress-selectors';
@@ -17,7 +19,9 @@ describe('progress selectors', () => {
     expect(PROGRESS_TOTALS).toEqual({
       bosses: 208,
       ashesOfWar: 116,
-      combined: 324,
+      sorceries: 84,
+      incantations: 129,
+      combined: 537,
       bossByContentPack: {
         'base-game': 165,
         'shadow-of-the-erdtree': 43,
@@ -25,6 +29,14 @@ describe('progress selectors', () => {
       ashOfWarByContentPack: {
         'base-game': 91,
         'shadow-of-the-erdtree': 25,
+      },
+      sorceryByContentPack: {
+        'base-game': 70,
+        'shadow-of-the-erdtree': 14,
+      },
+      incantationByContentPack: {
+        'base-game': 101,
+        'shadow-of-the-erdtree': 28,
       },
     });
   });
@@ -67,19 +79,34 @@ describe('progress selectors', () => {
   it('calculates zero, partial, complete and combined progress safely', () => {
     expect(calculateCombinedProgress([], [])).toEqual({
       completed: 0,
-      total: 324,
+      total: 537,
       percentage: 0,
     });
     expect(
       calculateCombinedProgress(
         bosses.map((boss) => boss.id),
         ashesOfWar.map((ash) => ash.id),
+        sorceries.map((entry) => entry.id),
+        incantations.map((entry) => entry.id),
       ),
-    ).toEqual({ completed: 324, total: 324, percentage: 100 });
+    ).toEqual({ completed: 537, total: 537, percentage: 100 });
     expect(calculateProgressPercentage(1, 3)).toBe(33);
     expect(calculateProgressPercentage(1000, 3)).toBe(100);
     expect(calculateProgressPercentage(1, 0)).toBe(0);
     expect(calculateProgressPercentage(Number.NaN, 2)).toBe(0);
     expect(calculateProgressPercentage(1, Number.POSITIVE_INFINITY)).toBe(0);
+  });
+
+  it('calculates separate Sorcery and Incantation progress', () => {
+    expect(calculateSorceryProgress([sorceries[0].id, 'unknown'])).toEqual({
+      completed: 1,
+      total: 84,
+      percentage: 1,
+    });
+    expect(calculateIncantationProgress([incantations[0].id, 'unknown'])).toEqual({
+      completed: 1,
+      total: 129,
+      percentage: 1,
+    });
   });
 });
