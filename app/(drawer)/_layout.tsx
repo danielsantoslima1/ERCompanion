@@ -3,6 +3,7 @@ import { Drawer } from 'expo-router/drawer';
 
 import { useApp } from '@/src/hooks/use-app';
 import { CustomDrawerContent } from '@/src/navigation';
+import { typography } from '@/src/theme/typography';
 
 export default function DrawerLayout() {
   const { theme, translations } = useApp();
@@ -15,6 +16,9 @@ export default function DrawerLayout() {
         drawerActiveBackgroundColor: theme.colors.drawerActiveBackground,
         drawerActiveTintColor: theme.colors.drawerActiveText,
         drawerInactiveTintColor: theme.colors.textSecondary,
+        drawerLabelStyle: {
+          fontFamily: typography.bodySemibold,
+        },
         drawerItemStyle: {
           borderRadius: theme.borderRadius.medium,
         },
@@ -25,6 +29,9 @@ export default function DrawerLayout() {
         },
         headerStyle: {
           backgroundColor: theme.colors.surface,
+        },
+        headerTitleStyle: {
+          fontFamily: typography.display,
         },
         headerTintColor: theme.colors.textPrimary,
         sceneStyle: {

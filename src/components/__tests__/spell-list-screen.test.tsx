@@ -8,7 +8,7 @@ import {
   getSorceriesByContentPack,
 } from '../../data';
 import { getTranslationDictionary } from '../../i18n';
-import { lightTheme } from '../../theme';
+import { lightTheme, typography } from '../../theme';
 import { SpellListScreen } from '../spell-list-screen';
 
 jest.mock('@expo/vector-icons/Ionicons', () => {
@@ -119,6 +119,9 @@ describe('SpellListScreen', () => {
 
   it('normalizes accents and exposes pending locations without inventing one', async () => {
     await render(<SpellListScreen category="sorcery" mode="all" />);
+    expect(screen.getByLabelText('Buscar magias')).toHaveStyle({
+      fontFamily: typography.body,
+    });
     await fireEvent.changeText(
       screen.getByLabelText('Buscar magias'),
       "adula's moonblade",

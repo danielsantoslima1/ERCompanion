@@ -1,5 +1,20 @@
 # Plano de Implementação
 
+## Phase 2 — etapa tipográfica
+
+A primeira etapa funcional da Phase 2 aplica Cinzel Decorative à identidade e
+aos títulos e Spectral ao restante da interface. Os sete arquivos estáticos
+efetivamente usados são carregados offline por `expo-font`; a splash nativa
+existente permanece até fontes e estado essencial estarem prontos. A falha de
+carregamento possui fallback controlado e nova tentativa.
+
+Os nomes das famílias e variantes ficam centralizados, e `AppText` e
+`AppTextInput` evitam nomes literais espalhados. Esta etapa não altera paleta,
+splash visual, animação, Index, dados ou comportamento. A revisão manual foi
+concluída e aprovada no Expo Go. Uma etapa futura poderá restringir a fonte
+temática caso novas avaliações de legibilidade indiquem essa necessidade.
+Mantinia e Agmena permanecem proibidas sem licença comercial apropriada.
+
 ## Estado atual — MVP de Feitiços e Encantamentos
 
 O MVP de 84 Feitiços e 129 Encantamentos foi implementado e aprovado na revisão manual no Expo Go. A entrega inclui catálogos tipados, validadores, schema v3, migração, progresso separado, total geral 537, Home, Drawer, listas, busca, filtros Lendárias/Perdíveis, cards, detalhes, spoilers, fallback e testes. Não há dependências novas.

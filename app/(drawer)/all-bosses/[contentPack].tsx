@@ -5,11 +5,11 @@ import {
   FlatList,
   Pressable,
   StyleSheet,
-  Text,
-  TextInput,
   View,
   type ListRenderItem,
 } from 'react-native';
+import { AppText as Text } from '@/src/components/app-text';
+import { AppTextInput as TextInput } from '@/src/components/app-text-input';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { BossCard } from '@/src/components/boss-card';
@@ -133,7 +133,7 @@ export default function AllBossesScreen() {
               padding: theme.spacing.large,
             },
           ]}>
-          <Text accessibilityRole="header" style={[styles.title, { color: theme.colors.textPrimary }]}>
+          <Text variant="display" accessibilityRole="header" style={[styles.title, { color: theme.colors.textPrimary }]}>
             {translations.allBosses.invalidTitle}
           </Text>
           <Text style={{ color: theme.colors.textSecondary }}>
@@ -201,7 +201,7 @@ export default function AllBossesScreen() {
           }
           ListHeaderComponent={
             <View style={{ gap: theme.spacing.large }}>
-              <Text accessibilityRole="header" style={[styles.title, { color: theme.colors.textPrimary }]}>
+              <Text variant="display" accessibilityRole="header" style={[styles.title, { color: theme.colors.textPrimary }]}>
                 {title}
               </Text>
               <Text style={[styles.sectionTitle, { color: theme.colors.textPrimary }]}>

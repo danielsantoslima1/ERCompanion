@@ -5,9 +5,9 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
-  Text,
   View,
 } from 'react-native';
+import { AppText as Text } from '@/src/components/app-text';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import {
@@ -184,7 +184,7 @@ export default function SettingsScreen() {
         ]}
         contentInsetAdjustmentBehavior="automatic">
         <View style={{ gap: theme.spacing.small }}>
-          <Text
+          <Text variant="display"
             accessibilityRole="header"
             style={[styles.title, { color: theme.colors.textPrimary }]}>
             {translations.settings.title}
@@ -222,7 +222,7 @@ export default function SettingsScreen() {
 
         <View style={{ gap: theme.spacing.medium }}>
           <View style={{ gap: theme.spacing.extraSmall }}>
-            <Text
+            <Text variant="display"
               accessibilityRole="header"
               style={[
                 styles.sectionTitle,

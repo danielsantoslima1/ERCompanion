@@ -1,5 +1,6 @@
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { AppText as Text } from '@/src/components/app-text';
 
 import { useApp } from '../hooks/use-app';
 import { AshOfWarProgressButton } from './ash-of-war-progress-button';

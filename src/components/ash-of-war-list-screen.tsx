@@ -6,12 +6,12 @@ import {
   Pressable,
   SectionList,
   StyleSheet,
-  Text,
-  TextInput,
   View,
   type ListRenderItem,
   type SectionListRenderItem,
 } from 'react-native';
+import { AppText as Text } from '@/src/components/app-text';
+import { AppTextInput as TextInput } from '@/src/components/app-text-input';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import {
@@ -195,7 +195,7 @@ export function AshOfWarListScreen({
 
   const header = (
     <View style={{ gap: theme.spacing.large }}>
-      <Text
+      <Text variant="display"
         accessibilityRole="header"
         style={[styles.title, { color: theme.colors.textPrimary }]}>
         {title}
@@ -326,7 +326,7 @@ export function AshOfWarListScreen({
             ListHeaderComponent={header}
             renderItem={renderSectionAsh}
             renderSectionHeader={({ section }) => (
-              <Text
+              <Text variant="display"
                 accessibilityRole="header"
                 style={[
                   styles.sectionTitle,

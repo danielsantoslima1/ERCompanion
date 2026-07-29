@@ -10,7 +10,8 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { AppText as Text } from '@/src/components/app-text';
 
 import {
   bosses,
@@ -370,6 +371,7 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
           },
         ]}>
         <Text
+          variant="displayBold"
           style={[styles.appName, { color: theme.colors.primary }]}>
           {translations.app.name}
         </Text>

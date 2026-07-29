@@ -9,9 +9,9 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
-  Text,
   View,
 } from 'react-native';
+import { AppText as Text } from '@/src/components/app-text';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { BossProgressButton } from '@/src/components/boss-progress-button';
@@ -198,7 +198,7 @@ export default function BossDetailScreen() {
               padding: theme.spacing.large,
             },
           ]}>
-          <Text
+          <Text variant="display"
             accessibilityRole="header"
             style={[styles.title, { color: theme.colors.textPrimary }]}>
             {translations.bossDetails.encounterNotFound}
@@ -293,7 +293,7 @@ export default function BossDetailScreen() {
             },
           ]}>
           <View style={{ gap: theme.spacing.small }}>
-            <Text
+            <Text variant="display"
               accessibilityRole="header"
               style={[styles.title, { color: theme.colors.textPrimary }]}>
               {name}

@@ -1,5 +1,21 @@
 # Elden Ring Companion
 
+## Phase 2 — tipografia
+
+A identidade visual usa Cinzel Decorative em títulos principais, grandes
+seções, categorias e no nome “Elden Ring Companion”. Toda a interface restante
+usa Spectral, incluindo cards, botões, filtros, busca, Drawer, progresso,
+detalhes e configurações. As fontes são recursos locais oficiais do Google
+Fonts sob SIL Open Font License 1.1 e são carregadas antes da interface.
+
+Os títulos nativos suportados pelo React Navigation recebem a tipografia
+centralizada. Textos integralmente controlados pelo sistema operacional podem
+ignorar a família customizada conforme a plataforma. A aplicação tipográfica
+foi aprovada na revisão manual no Expo Go. Se testes futuros de legibilidade
+exigirem, a fonte temática poderá ser restringida a menos elementos de
+identidade. Mantinia e Agmena não podem ser usadas sem licença comercial
+apropriada.
+
 ## Extensão implementada — Feitiços e Encantamentos
 
 O aplicativo passa a contemplar 84 Feitiços e 129 Encantamentos como categorias independentes. O total geral é derivado dos catálogos e soma 537 registros: 208 Chefes, 116 Cinzas da Guerra, 84 Feitiços e 129 Encantamentos.

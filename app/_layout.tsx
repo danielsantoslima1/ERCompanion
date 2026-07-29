@@ -7,14 +7,27 @@ import { StyleSheet, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 
+import { FontLoadingErrorScreen } from '@/src/components/font-loading-error-screen';
 import { InitializationErrorScreen } from '@/src/components/initialization-error-screen';
 import { AppProvider } from '@/src/contexts';
 import { useApp } from '@/src/hooks/use-app';
+import { useAppFonts } from '@/src/hooks/use-app-fonts';
 import { createNavigationTheme } from '@/src/navigation';
+import { typography } from '@/src/theme/typography';
 
 void SplashScreen.preventAutoHideAsync();
 
-function RootNavigation() {
+interface RootNavigationProps {
+  readonly fontError: Error | null;
+  readonly fontsLoaded: boolean;
+  readonly retryFonts: () => void;
+}
+
+function RootNavigation({
+  fontError,
+  fontsLoaded,
+  retryFonts,
+}: RootNavigationProps) {
   const {
     initializationError,
     isHydrated,
@@ -27,21 +40,28 @@ function RootNavigation() {
     [theme],
   );
   const handleLayout = useCallback(() => {
-    if (isHydrated) void SplashScreen.hideAsync();
-  }, [isHydrated]);
+    if (isHydrated && (fontsLoaded || fontError)) {
+      void SplashScreen.hideAsync();
+    }
+  }, [fontError, fontsLoaded, isHydrated]);
+
+  if (!fontsLoaded && !fontError) return null;
 
   return (
     <View
       onLayout={handleLayout}
       style={[styles.content, { backgroundColor: theme.colors.background }]}>
       <ThemeProvider value={navigationTheme}>
-        {initializationError ? (
+        {fontError ? (
+          <FontLoadingErrorScreen onRetry={retryFonts} />
+        ) : initializationError ? (
           <InitializationErrorScreen />
         ) : (
           <Stack
             screenOptions={{
               contentStyle: { backgroundColor: theme.colors.background },
               headerStyle: { backgroundColor: theme.colors.surface },
+              headerTitleStyle: { fontFamily: typography.display },
               headerTintColor: theme.colors.textPrimary,
             }}>
             <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
@@ -70,10 +90,16 @@ function RootNavigation() {
 }
 
 export default function RootLayout() {
+  const { error, isLoaded, retry } = useAppFonts();
+
   return (
     <GestureHandlerRootView style={styles.content}>
       <AppProvider>
-        <RootNavigation />
+        <RootNavigation
+          fontError={error}
+          fontsLoaded={isLoaded}
+          retryFonts={retry}
+        />
       </AppProvider>
     </GestureHandlerRootView>
   );

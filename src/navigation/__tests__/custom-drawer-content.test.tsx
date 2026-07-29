@@ -6,7 +6,7 @@ import { CustomDrawerContent } from '../custom-drawer-content';
 import type { AppContextValue } from '../../contexts/app-context';
 import { catalogRegions, type CatalogRegion } from '../../data/catalog';
 import { getLocalizedText, getTranslationDictionary } from '../../i18n';
-import { lightTheme } from '../../theme';
+import { lightTheme, typography } from '../../theme';
 
 const closeDrawer = jest.fn<void, []>();
 const navigateDrawer = jest.fn();
@@ -110,6 +110,9 @@ describe('CustomDrawerContent', () => {
   it('removes All regions and shows All bosses before the package groups', async () => {
     const translations = mockAppState.translations;
     await render(<CustomDrawerContent {...createProps()} />);
+    expect(screen.getByText(translations.app.name)).toHaveStyle({
+      fontFamily: typography.displayBold,
+    });
     expect(screen.queryByText('All regions')).toBeNull();
     expect(screen.queryByText('Todas as regiões')).toBeNull();
 

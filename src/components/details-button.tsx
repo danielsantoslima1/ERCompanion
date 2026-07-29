@@ -1,4 +1,5 @@
-import { Pressable, StyleSheet, Text } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
+import { AppText as Text } from '@/src/components/app-text';
 
 import { useApp } from '../hooks/use-app';
 

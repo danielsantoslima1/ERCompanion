@@ -1,4 +1,5 @@
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
+import { AppText as Text } from '@/src/components/app-text';
 
 import { useApp } from '../hooks/use-app';
 
@@ -31,7 +32,7 @@ export function SettingsOptionGroup<T extends string>({
   return (
     <View style={{ gap: theme.spacing.medium }}>
       <View style={{ gap: theme.spacing.extraSmall }}>
-        <Text
+        <Text variant="display"
           accessibilityRole="header"
           style={[styles.sectionTitle, { color: theme.colors.textPrimary }]}>
           {title}

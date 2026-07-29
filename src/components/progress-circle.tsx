@@ -1,9 +1,9 @@
 import {
   StyleSheet,
-  Text,
   View,
   useWindowDimensions,
 } from 'react-native';
+import { AppText as Text } from '@/src/components/app-text';
 import Svg, { Circle } from 'react-native-svg';
 
 import { useApp } from '../hooks/use-app';

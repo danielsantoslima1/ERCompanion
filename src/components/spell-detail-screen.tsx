@@ -1,7 +1,8 @@
 import { router } from 'expo-router';
 import type { Href } from 'expo-router';
 import { useState, type ReactNode } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { AppText as Text } from '@/src/components/app-text';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import {
@@ -33,7 +34,7 @@ export function SpellDetailScreen({ category, id }: { readonly category: SpellCa
   if (!entry) {
     return (
       <SafeAreaView style={[styles.centered, { backgroundColor: theme.colors.background, padding: theme.spacing.large }]}>
-        <Text accessibilityRole="header" style={[styles.title, { color: theme.colors.textPrimary }]}>{translations.spells.notFoundTitle}</Text>
+        <Text variant="display" accessibilityRole="header" style={[styles.title, { color: theme.colors.textPrimary }]}>{translations.spells.notFoundTitle}</Text>
         <Text style={[styles.body, { color: theme.colors.textSecondary }]}>{translations.spells.notFoundMessage}</Text>
         <Pressable accessibilityRole="button" onPress={() => router.canGoBack() ? router.back() : router.replace((category === 'sorcery' ? '/sorceries' : '/incantations') as Href)}>
           <Text style={{ color: theme.colors.primary }}>{translations.spells.back}</Text>
@@ -57,7 +58,7 @@ export function SpellDetailScreen({ category, id }: { readonly category: SpellCa
   return (
     <SafeAreaView style={[styles.screen, { backgroundColor: theme.colors.background }]}>
       <ScrollView contentContainerStyle={[styles.content, { gap: theme.spacing.medium, padding: theme.spacing.large }]}>
-        <Text accessibilityRole="header" style={[styles.title, { color: theme.colors.textPrimary }]}>{name}</Text>
+        <Text variant="display" accessibilityRole="header" style={[styles.title, { color: theme.colors.textPrimary }]}>{name}</Text>
         {spellUsesEnglishFallback(entry, language) ? (
           <Text style={[styles.notice, { color: theme.colors.textSecondary, borderColor: theme.colors.border, padding: theme.spacing.small }]}>
             {translations.spells.fallbackNotice}

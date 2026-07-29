@@ -6,7 +6,7 @@ import HomeScreen from '../(drawer)/index';
 import type { AppContextValue } from '../../src/contexts/app-context';
 import type { CompletionProgress } from '../../src/data';
 import { getTranslationDictionary } from '../../src/i18n';
-import { lightTheme } from '../../src/theme';
+import { lightTheme, typography } from '../../src/theme';
 
 let mockAppState: Pick<
   AppContextValue,
@@ -51,6 +51,12 @@ describe('HomeScreen category integration', () => {
     expect(screen.getByText('0/116')).toBeOnTheScreen();
     expect(screen.getByText('0/84')).toBeOnTheScreen();
     expect(screen.getByText('0/129')).toBeOnTheScreen();
+    expect(screen.getByText(mockAppState.translations.home.title)).toHaveStyle({
+      fontFamily: typography.display,
+    });
+    expect(screen.getByText('Chefes')).toHaveStyle({
+      fontFamily: typography.display,
+    });
     expect(screen.queryByText('Progresso do Jogo Base')).toBeNull();
     expect(screen.queryByText('Progresso da expansão')).toBeNull();
   });

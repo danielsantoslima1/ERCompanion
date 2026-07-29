@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from '@testing-library/react-native';
 
 import type { AppContextValue } from '../../contexts/app-context';
 import { getTranslationDictionary } from '../../i18n';
-import { lightTheme } from '../../theme';
+import { lightTheme, typography } from '../../theme';
 import {
   OriginFilterButtons,
   type OriginFilter,
@@ -48,6 +48,9 @@ describe('OriginFilterButtons', () => {
       screen.getByRole('button', { name: 'Filtrar por origem: DLC' }).props
         .accessibilityState,
     ).toEqual({ selected: false });
+    expect(screen.getByText('Base')).toHaveStyle({
+      fontFamily: typography.bodyBold,
+    });
   });
 
   it('supports the English labels and accessible actions', async () => {

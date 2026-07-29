@@ -1,5 +1,6 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { AppText as Text } from '@/src/components/app-text';
 
 import type { SpellCategory } from '../data';
 import { useApp } from '../hooks/use-app';

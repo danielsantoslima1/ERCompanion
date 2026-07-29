@@ -9,7 +9,7 @@ import type { TestInstance } from 'test-renderer';
 
 import type { AppContextValue } from '../../contexts/app-context';
 import { getTranslationDictionary } from '../../i18n';
-import { lightTheme } from '../../theme';
+import { lightTheme, typography } from '../../theme';
 import { BossCard } from '../boss-card';
 
 interface ControlledVoidPromise {
@@ -141,6 +141,9 @@ describe('BossCard', () => {
         paddingHorizontal: lightTheme.spacing.medium,
         paddingVertical: lightTheme.spacing.small,
       });
+    expect(screen.getByText('View details')).toHaveStyle({
+      fontFamily: typography.bodyBold,
+    });
   });
 
   it('changes progress without opening details', async () => {

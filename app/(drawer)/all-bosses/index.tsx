@@ -5,11 +5,11 @@ import {
   Pressable,
   SectionList,
   StyleSheet,
-  Text,
-  TextInput,
   View,
   type SectionListRenderItem,
 } from 'react-native';
+import { AppText as Text } from '@/src/components/app-text';
+import { AppTextInput as TextInput } from '@/src/components/app-text-input';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { BossCard } from '@/src/components/boss-card';
@@ -175,7 +175,7 @@ export default function CombinedAllBossesScreen() {
           keyExtractor={(item) => item.id}
           renderItem={renderBoss}
           renderSectionHeader={({ section }) => (
-            <Text
+            <Text variant="display"
               accessibilityRole="header"
               style={[
                 styles.sectionTitle,
@@ -207,7 +207,7 @@ export default function CombinedAllBossesScreen() {
           }
           ListHeaderComponent={
             <View style={{ gap: theme.spacing.large }}>
-              <Text
+              <Text variant="display"
                 accessibilityRole="header"
                 style={[styles.title, { color: theme.colors.textPrimary }]}>
                 {translations.allBosses.combinedTitle}

@@ -1,4 +1,5 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { AppText as Text } from '@/src/components/app-text';
 
 import { useApp } from '../hooks/use-app';
 import { BossProgressButton } from './boss-progress-button';

@@ -9,11 +9,11 @@ import {
   FlatList,
   Pressable,
   StyleSheet,
-  Text,
-  TextInput,
   View,
   type ListRenderItem,
 } from 'react-native';
+import { AppText as Text } from '@/src/components/app-text';
+import { AppTextInput as TextInput } from '@/src/components/app-text-input';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { BossCard } from '@/src/components/boss-card';
@@ -136,7 +136,7 @@ export default function RegionScreen() {
               padding: theme.spacing.large,
             },
           ]}>
-          <Text
+          <Text variant="display"
             accessibilityRole="header"
             style={[styles.title, { color: theme.colors.textPrimary }]}>
             {translations.region.notFoundTitle}
@@ -185,7 +185,7 @@ export default function RegionScreen() {
   const listHeader = (
     <View style={{ gap: theme.spacing.large }}>
       <View style={{ gap: theme.spacing.small }}>
-        <Text
+        <Text variant="display"
           accessibilityRole="header"
           style={[styles.title, { color: theme.colors.textPrimary }]}>
           {translations.region.progress}
