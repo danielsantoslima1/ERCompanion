@@ -8,9 +8,13 @@ export interface TranslationDictionary {
     bosses: string;
     settings: string;
     allBosses: string;
+    ashesOfWar: string;
+    allAshesOfWar: string;
     drawerDescription: string;
     expandBosses: string;
     collapseBosses: string;
+    expandAshesOfWar: string;
+    collapseAshesOfWar: string;
     expandBaseGame: string;
     collapseBaseGame: string;
     expandExpansion: string;
@@ -22,6 +26,7 @@ export interface TranslationDictionary {
     title: string;
     description: string;
     totalProgress: string;
+    overallProgress: string;
     defeatedBosses: string;
     progressByRegion: string;
     availableRegions: string;
@@ -30,6 +35,17 @@ export interface TranslationDictionary {
     baseGameProgress: string;
     expansionProgress: string;
     openAllBosses: (contentName: string) => string;
+    overallProgressAccessibility: (
+      completed: number,
+      total: number,
+      percentage: number,
+    ) => string;
+    categoryProgressAccessibility: (
+      categoryName: string,
+      completed: number,
+      total: number,
+      percentage: number,
+    ) => string;
     totalProgressAccessibility: (
       defeated: number,
       total: number,
@@ -55,6 +71,8 @@ export interface TranslationDictionary {
     ) => string;
   };
   allBosses: {
+    combinedTitle: string;
+    combinedProgress: string;
     baseGameTitle: string;
     expansionTitle: string;
     baseGameProgress: string;
@@ -93,6 +111,7 @@ export interface TranslationDictionary {
     ) => string;
     bossCardAccessibility: (
       bossName: string,
+      regionName: string | undefined,
       location: string,
       status: string,
     ) => string;
@@ -121,6 +140,54 @@ export interface TranslationDictionary {
     variableParticipantCount: (count: number) => string;
     participantCount: (count: number) => string;
     participantRange: (minimum: number, maximum: number) => string;
+  };
+  ashesOfWar: {
+    title: string;
+    allTitle: string;
+    baseGameTitle: string;
+    expansionTitle: string;
+    progress: string;
+    search: string;
+    searchPlaceholder: string;
+    all: string;
+    collected: string;
+    notCollected: string;
+    collectedStatus: string;
+    notCollectedStatus: string;
+    markAsCollected: string;
+    markAsNotCollected: string;
+    saving: string;
+    updateErrorTitle: string;
+    updateErrorMessage: string;
+    noResults: string;
+    resultCount: (count: number) => string;
+    viewDetails: string;
+    viewDetailsFor: (name: string) => string;
+    cardAccessibility: (
+      name: string,
+      location: string,
+      status: string,
+    ) => string;
+    collectAccessibility: (action: string, name: string) => string;
+    details: string;
+    origin: string;
+    primaryLocation: string;
+    primaryAcquisition: string;
+    acquisitionMethods: string;
+    summary: string;
+    skill: string;
+    skillType: string;
+    affinity: string;
+    compatibleEquipment: string;
+    fpCost: string;
+    specialEffects: string;
+    limitations: string;
+    notes: string;
+    collectionStatus: string;
+    fallbackNotice: string;
+    notFoundTitle: string;
+    notFoundMessage: string;
+    back: string;
   };
   settings: {
     title: string;

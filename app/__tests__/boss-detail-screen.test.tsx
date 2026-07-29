@@ -84,6 +84,24 @@ function createRootState(previousRegionId?: string): unknown {
   };
 }
 
+function createBossListRootState(
+  routeName: 'all-bosses/index' | 'all-bosses/[contentPack]',
+): unknown {
+  return {
+    index: 1,
+    routes: [
+      {
+        name: '(drawer)',
+        state: {
+          index: 0,
+          routes: [{ name: routeName }],
+        },
+      },
+      { name: 'bosses/[bossId]' },
+    ],
+  };
+}
+
 beforeEach(() => {
   jest.clearAllMocks();
   mockAppState = {
@@ -107,6 +125,20 @@ beforeEach(() => {
 });
 
 describe('BossDetailScreen', () => {
+  it.each([
+    'all-bosses/index',
+    'all-bosses/[contentPack]',
+  ] as const)(
+    'keeps the standard back action for the originating %s list',
+    async (routeName) => {
+      mockRootNavigationState = createBossListRootState(routeName);
+      await render(<BossDetailScreen />);
+
+      expect(mockAddListener).not.toHaveBeenCalled();
+      expect(mockRouterReplace).not.toHaveBeenCalled();
+    },
+  );
+
   it('shows the correct encounter, region, location, availability, and state', async () => {
     setBossId('flying-dragon-agheel-agheel-lake');
     await render(<BossDetailScreen />);

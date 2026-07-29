@@ -1,12 +1,18 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {
+  addCollectedAshOfWarId,
   addDefeatedBossId,
   clearProgress,
+  isAshOfWarCollected,
   isBossDefeated,
+  loadCollectedAshOfWarIds,
   loadDefeatedBossIds,
+  loadProgressState,
+  removeCollectedAshOfWarId,
   removeDefeatedBossId,
   saveDefeatedBossIds,
+  toggleCollectedAshOfWarId,
 } from '../progress-storage';
 
 jest.mock(
@@ -19,124 +25,226 @@ jest.mock(
 
 const SETTINGS_KEY = '@elden-ring-companion/settings:v1';
 const PROGRESS_KEY = '@elden-ring-companion/defeated-boss-ids:v1';
-const versionedProgress = (ids: readonly string[]) =>
-  JSON.stringify({ schemaVersion: 1, defeatedBossIds: ids });
-const mockedGetItem = jest.mocked(AsyncStorage.getItem);
-const mockedSetItem = jest.mocked(AsyncStorage.setItem);
-const mockedRemoveItem = jest.mocked(AsyncStorage.removeItem);
-const mockedClear = jest.mocked(AsyncStorage.clear);
+const state = (
+  defeatedBossIds: readonly string[] = [],
+  collectedAshOfWarIds: readonly string[] = [],
+) => ({ schemaVersion: 2, defeatedBossIds, collectedAshOfWarIds });
 
-describe('progress storage', () => {
+describe('progress storage v2', () => {
   beforeEach(async () => {
     await AsyncStorage.clear();
     jest.clearAllMocks();
   });
 
-  describe('loadDefeatedBossIds', () => {
-    it('returns an empty list when no value is stored', async () => {
+  it('returns an empty v2 state when storage is absent or corrupted', async () => {
+    await expect(loadProgressState()).resolves.toEqual(state());
+    await AsyncStorage.setItem(PROGRESS_KEY, '[invalid');
+    await expect(loadProgressState()).resolves.toEqual(state());
+  });
+
+  it('migrates v1 without losing bosses and starts Ashes empty', async () => {
+    await AsyncStorage.setItem(
+      PROGRESS_KEY,
+      JSON.stringify({
+        schemaVersion: 1,
+        defeatedBossIds: [' boss-a ', 'boss-a', 'future-boss'],
+      }),
+    );
+    await expect(loadProgressState()).resolves.toEqual(
+      state(['boss-a', 'future-boss']),
+    );
+    await expect(AsyncStorage.getItem(PROGRESS_KEY)).resolves.toBe(
+      JSON.stringify(state(['boss-a', 'future-boss'])),
+    );
+  });
+
+  it('normalizes v2 idempotently and preserves first occurrence', async () => {
+    const normalized = state(
+      ['boss-b', 'boss-a'],
+      ['ash-b', 'ash-a'],
+    );
+    await AsyncStorage.setItem(PROGRESS_KEY, JSON.stringify(normalized));
+    jest.clearAllMocks();
+    await expect(loadProgressState()).resolves.toEqual(normalized);
+    expect(AsyncStorage.setItem).not.toHaveBeenCalled();
+  });
+
+  it('normalizes invalid fields, duplicates and temporary IDs safely', async () => {
+    await AsyncStorage.setItem(
+      PROGRESS_KEY,
+      JSON.stringify(
+        state(
+          ['boss-a', 3, '', 'sample-boss', ' boss-a '] as unknown as string[],
+          ['future-ash', null, 'sample-ash'] as unknown as string[],
+        ),
+      ),
+    );
+    await expect(loadProgressState()).resolves.toEqual(
+      state(['boss-a'], ['future-ash']),
+    );
+  });
+
+  it('recovers known arrays from an unknown schema version', async () => {
+    await AsyncStorage.setItem(
+      PROGRESS_KEY,
+      JSON.stringify({
+        schemaVersion: 99,
+        defeatedBossIds: ['future-boss'],
+        collectedAshOfWarIds: ['future-ash'],
+        futureField: true,
+      }),
+    );
+    await expect(loadProgressState()).resolves.toEqual(
+      state(['future-boss'], ['future-ash']),
+    );
+  });
+
+  it('preserves settings during migration and never clears storage', async () => {
+    const settings = JSON.stringify({ language: 'en', theme: 'dark' });
+    await AsyncStorage.setItem(SETTINGS_KEY, settings);
+    await AsyncStorage.setItem(
+      PROGRESS_KEY,
+      JSON.stringify({ schemaVersion: 1, defeatedBossIds: ['boss-a'] }),
+    );
+    await loadProgressState();
+    await expect(AsyncStorage.getItem(SETTINGS_KEY)).resolves.toBe(settings);
+    expect(AsyncStorage.clear).not.toHaveBeenCalled();
+  });
+
+  it('boss writes preserve collected Ashes', async () => {
+    await AsyncStorage.setItem(
+      PROGRESS_KEY,
+      JSON.stringify(state([], ['ash-a'])),
+    );
+    await addDefeatedBossId('boss-a');
+    await saveDefeatedBossIds(['boss-b']);
+    await expect(loadProgressState()).resolves.toEqual(
+      state(['boss-b'], ['ash-a']),
+    );
+  });
+
+  it('Ash writes preserve defeated bosses and do not duplicate', async () => {
+    await AsyncStorage.setItem(
+      PROGRESS_KEY,
+      JSON.stringify(state(['boss-a'])),
+    );
+    await addCollectedAshOfWarId('ash-a');
+    await addCollectedAshOfWarId('ash-a');
+    await expect(loadProgressState()).resolves.toEqual(
+      state(['boss-a'], ['ash-a']),
+    );
+  });
+
+  it('removes and toggles collected Ashes', async () => {
+    await addCollectedAshOfWarId('ash-a');
+    await removeCollectedAshOfWarId('ash-a');
+    await expect(isAshOfWarCollected('ash-a')).resolves.toBe(false);
+    await toggleCollectedAshOfWarId('ash-a');
+    await expect(loadCollectedAshOfWarIds()).resolves.toEqual(['ash-a']);
+    await toggleCollectedAshOfWarId('ash-a');
+    await expect(loadCollectedAshOfWarIds()).resolves.toEqual([]);
+  });
+
+  it('boss removal preserves Ashes', async () => {
+    await AsyncStorage.setItem(
+      PROGRESS_KEY,
+      JSON.stringify(state(['boss-a'], ['ash-a'])),
+    );
+    await removeDefeatedBossId('boss-a');
+    await expect(loadProgressState()).resolves.toEqual(state([], ['ash-a']));
+  });
+
+  it('serializes boss and Ash operations without lost updates', async () => {
+    await Promise.all([
+      addDefeatedBossId('boss-a'),
+      addCollectedAshOfWarId('ash-a'),
+      addCollectedAshOfWarId('ash-b'),
+    ]);
+    await expect(loadProgressState()).resolves.toEqual(
+      state(['boss-a'], ['ash-a', 'ash-b']),
+    );
+  });
+
+  it('exposes category-specific loaders', async () => {
+    await AsyncStorage.setItem(
+      PROGRESS_KEY,
+      JSON.stringify(state(['boss-a'], ['ash-a'])),
+    );
+    await expect(loadDefeatedBossIds()).resolves.toEqual(['boss-a']);
+    await expect(loadCollectedAshOfWarIds()).resolves.toEqual(['ash-a']);
+  });
+
+  it('resets both categories and preserves unrelated keys', async () => {
+    const settings = JSON.stringify({ language: 'pt-BR', theme: 'light' });
+    await AsyncStorage.setItem(SETTINGS_KEY, settings);
+    await AsyncStorage.setItem(
+      PROGRESS_KEY,
+      JSON.stringify(state(['boss-a'], ['ash-a'])),
+    );
+    jest.clearAllMocks();
+    await clearProgress();
+    await expect(AsyncStorage.getItem(PROGRESS_KEY)).resolves.toBe(
+      JSON.stringify(state()),
+    );
+    await expect(AsyncStorage.getItem(SETTINGS_KEY)).resolves.toBe(settings);
+    expect(AsyncStorage.clear).not.toHaveBeenCalled();
+    expect(AsyncStorage.removeItem).not.toHaveBeenCalled();
+  });
+
+  it('surfaces read and write failures with context', async () => {
+    jest.mocked(AsyncStorage.getItem).mockRejectedValueOnce(new Error('read'));
+    await expect(loadProgressState()).rejects.toThrow(
+      'Failed to read progress from local storage.',
+    );
+    jest.mocked(AsyncStorage.setItem).mockRejectedValueOnce(new Error('write'));
+    await expect(addCollectedAshOfWarId('ash-a')).rejects.toThrow(
+      'Failed to save progress to local storage.',
+    );
+  });
+
+  describe('specific boss regression coverage preserved from v1', () => {
+    it('loads an empty boss list when no value is stored', async () => {
       await expect(loadDefeatedBossIds()).resolves.toEqual([]);
     });
 
-    it('returns a valid stored list', async () => {
+    it('migrates a legacy boss array to v2', async () => {
       await AsyncStorage.setItem(
         PROGRESS_KEY,
         JSON.stringify(['boss-a', 'boss-b']),
       );
-
       await expect(loadDefeatedBossIds()).resolves.toEqual([
         'boss-a',
         'boss-b',
       ]);
-    });
-
-    it('migrates legacy progress, removes sample IDs, deduplicates, and preserves unknown real IDs', async () => {
-      await AsyncStorage.setItem(
-        PROGRESS_KEY,
-        JSON.stringify([
-          'sample-base-training-guardian',
-          'tree-sentinel-limgrave-road',
-          'future-real-boss',
-          'tree-sentinel-limgrave-road',
-        ]),
-      );
-
-      await expect(loadDefeatedBossIds()).resolves.toEqual([
-        'tree-sentinel-limgrave-road',
-        'future-real-boss',
-      ]);
       await expect(AsyncStorage.getItem(PROGRESS_KEY)).resolves.toBe(
-        versionedProgress([
-          'tree-sentinel-limgrave-road',
-          'future-real-boss',
-        ]),
+        JSON.stringify(state(['boss-a', 'boss-b'])),
       );
     });
 
-    it('reads current versioned progress idempotently without rewriting it', async () => {
-      await AsyncStorage.setItem(
-        PROGRESS_KEY,
-        versionedProgress(['tree-sentinel-limgrave-road']),
-      );
-      jest.clearAllMocks();
-
-      await expect(loadDefeatedBossIds()).resolves.toEqual([
-        'tree-sentinel-limgrave-road',
-      ]);
-      expect(mockedSetItem).not.toHaveBeenCalled();
-    });
-
-    it('returns an empty list for an unknown schema version', async () => {
-      await AsyncStorage.setItem(
-        PROGRESS_KEY,
-        JSON.stringify({ schemaVersion: 99, defeatedBossIds: ['boss-a'] }),
-      );
-
-      await expect(loadDefeatedBossIds()).resolves.toEqual([]);
-    });
-
-    it('does not modify settings while migrating progress', async () => {
-      const settings = JSON.stringify({ language: 'en', theme: 'dark' });
-      await AsyncStorage.setItem(SETTINGS_KEY, settings);
+    it('removes sample IDs while migrating a legacy array', async () => {
       await AsyncStorage.setItem(
         PROGRESS_KEY,
         JSON.stringify(['sample-old', 'real-id']),
       );
-
-      await loadDefeatedBossIds();
-
-      await expect(AsyncStorage.getItem(SETTINGS_KEY)).resolves.toBe(settings);
+      await expect(loadDefeatedBossIds()).resolves.toEqual(['real-id']);
     });
 
-    it('normalizes stored IDs with trim', async () => {
+    it('normalizes spaces while loading legacy IDs', async () => {
       await AsyncStorage.setItem(
         PROGRESS_KEY,
         JSON.stringify([' boss-a ', '\tboss-b\n']),
       );
-
       await expect(loadDefeatedBossIds()).resolves.toEqual([
         'boss-a',
         'boss-b',
       ]);
     });
 
-    it('removes duplicate stored IDs', async () => {
-      await AsyncStorage.setItem(
-        PROGRESS_KEY,
-        JSON.stringify(['boss-a', 'boss-a', 'boss-b']),
-      );
-
-      await expect(loadDefeatedBossIds()).resolves.toEqual([
-        'boss-a',
-        'boss-b',
-      ]);
-    });
-
-    it('preserves the order of the first stored occurrence', async () => {
+    it('deduplicates legacy IDs while preserving first occurrence', async () => {
       await AsyncStorage.setItem(
         PROGRESS_KEY,
         JSON.stringify(['boss-b', 'boss-a', ' boss-b ', 'boss-c']),
       );
-
       await expect(loadDefeatedBossIds()).resolves.toEqual([
         'boss-b',
         'boss-a',
@@ -144,95 +252,68 @@ describe('progress storage', () => {
       ]);
     });
 
-    it('returns an empty list for corrupted JSON', async () => {
-      await AsyncStorage.setItem(PROGRESS_KEY, '[invalid');
-
+    it('returns an empty boss list for null', async () => {
+      await AsyncStorage.setItem(PROGRESS_KEY, 'null');
       await expect(loadDefeatedBossIds()).resolves.toEqual([]);
     });
 
-    it('returns an empty list for an invalid stored format', async () => {
-      await AsyncStorage.setItem(
-        PROGRESS_KEY,
-        JSON.stringify({ id: 'boss-a' }),
-      );
-
+    it('returns an empty boss list for an object without progress fields', async () => {
+      await AsyncStorage.setItem(PROGRESS_KEY, JSON.stringify({ id: 'boss-a' }));
       await expect(loadDefeatedBossIds()).resolves.toEqual([]);
     });
 
-    it('returns an empty list for an array with a non-string item', async () => {
+    it('drops invalid array members without losing valid IDs', async () => {
       await AsyncStorage.setItem(
         PROGRESS_KEY,
-        JSON.stringify(['boss-a', 2]),
+        JSON.stringify(['boss-a', 2, '', null]),
       );
-
-      await expect(loadDefeatedBossIds()).resolves.toEqual([]);
-    });
-
-    it('returns an empty list for an array with an empty string', async () => {
-      await AsyncStorage.setItem(
-        PROGRESS_KEY,
-        JSON.stringify(['boss-a', '']),
-      );
-
-      await expect(loadDefeatedBossIds()).resolves.toEqual([]);
+      await expect(loadDefeatedBossIds()).resolves.toEqual(['boss-a']);
     });
 
     it('propagates a contextualized read failure', async () => {
-      mockedGetItem.mockRejectedValueOnce(new Error('read failure'));
-
+      jest.mocked(AsyncStorage.getItem).mockRejectedValueOnce(new Error('read'));
       await expect(loadDefeatedBossIds()).rejects.toThrow(
-        'Failed to read defeated boss IDs from local storage.',
+        'Failed to read progress from local storage.',
       );
     });
 
-    it('does not modify AsyncStorage during a read', async () => {
-      await AsyncStorage.setItem(PROGRESS_KEY, versionedProgress(['boss-a']));
+    it('does not rewrite canonical v2 progress during a read', async () => {
+      await AsyncStorage.setItem(
+        PROGRESS_KEY,
+        JSON.stringify(state(['boss-a'], ['ash-a'])),
+      );
       jest.clearAllMocks();
-
       await loadDefeatedBossIds();
-
-      expect(mockedGetItem).toHaveBeenCalledTimes(1);
-      expect(mockedSetItem).not.toHaveBeenCalled();
-      expect(mockedRemoveItem).not.toHaveBeenCalled();
-      expect(mockedClear).not.toHaveBeenCalled();
+      expect(AsyncStorage.setItem).not.toHaveBeenCalled();
+      expect(AsyncStorage.removeItem).not.toHaveBeenCalled();
+      expect(AsyncStorage.clear).not.toHaveBeenCalled();
     });
-  });
 
-  describe('saveDefeatedBossIds', () => {
-    it('saves a valid list', async () => {
+    it('saves a valid boss list as a complete v2 payload', async () => {
       await saveDefeatedBossIds(['boss-a', 'boss-b']);
-
       await expect(AsyncStorage.getItem(PROGRESS_KEY)).resolves.toBe(
-        versionedProgress(['boss-a', 'boss-b']),
+        JSON.stringify(state(['boss-a', 'boss-b'])),
       );
     });
 
-    it('normalizes spaces before saving', async () => {
+    it('normalizes spaces before saving bosses', async () => {
       await saveDefeatedBossIds([' boss-a ', '\tboss-b\n']);
-
       await expect(loadDefeatedBossIds()).resolves.toEqual([
         'boss-a',
         'boss-b',
       ]);
     });
 
-    it('removes duplicate IDs before saving', async () => {
+    it('removes duplicate boss IDs before saving', async () => {
       await saveDefeatedBossIds(['boss-a', 'boss-a', 'boss-b']);
-
       await expect(loadDefeatedBossIds()).resolves.toEqual([
         'boss-a',
         'boss-b',
       ]);
     });
 
-    it('preserves first-occurrence order when saving', async () => {
-      await saveDefeatedBossIds([
-        'boss-b',
-        'boss-a',
-        ' boss-b ',
-        'boss-c',
-      ]);
-
+    it('preserves first-occurrence order when saving bosses', async () => {
+      await saveDefeatedBossIds(['boss-b', 'boss-a', ' boss-b ', 'boss-c']);
       await expect(loadDefeatedBossIds()).resolves.toEqual([
         'boss-b',
         'boss-a',
@@ -240,223 +321,129 @@ describe('progress storage', () => {
       ]);
     });
 
-    it('rejects empty IDs', async () => {
-      await expect(saveDefeatedBossIds(['boss-a', ''])).rejects.toThrow(
-        'Defeated boss IDs must be non-empty strings.',
+    it('removes invalid and temporary IDs when saving bosses', async () => {
+      await saveDefeatedBossIds(
+        ['boss-a', '', 'sample-boss', 2] as unknown as string[],
       );
+      await expect(loadDefeatedBossIds()).resolves.toEqual(['boss-a']);
     });
 
-    it('does not write invalid data', async () => {
-      const invalidIds = ['boss-a', 2] as unknown as readonly string[];
-
-      await expect(saveDefeatedBossIds(invalidIds)).rejects.toThrow();
-      expect(mockedSetItem).not.toHaveBeenCalled();
-    });
-
-    it('propagates a contextualized write failure', async () => {
-      mockedSetItem.mockRejectedValueOnce(new Error('write failure'));
-
+    it('surfaces a contextualized boss save failure', async () => {
+      jest.mocked(AsyncStorage.setItem).mockRejectedValueOnce(new Error('write'));
       await expect(saveDefeatedBossIds(['boss-a'])).rejects.toThrow(
-        'Failed to save defeated boss IDs to local storage.',
+        'Failed to save progress to local storage.',
       );
     });
-  });
 
-  describe('addDefeatedBossId', () => {
-    it('adds a new ID', async () => {
+    it('adds a boss ID', async () => {
       await addDefeatedBossId('boss-a');
-
       await expect(loadDefeatedBossIds()).resolves.toEqual(['boss-a']);
     });
 
-    it('normalizes an ID before saving', async () => {
+    it('normalizes a boss ID before adding it', async () => {
       await addDefeatedBossId(' boss-a ');
-
       await expect(loadDefeatedBossIds()).resolves.toEqual(['boss-a']);
     });
 
-    it('does not duplicate an existing ID', async () => {
+    it('does not duplicate an existing boss ID', async () => {
       await saveDefeatedBossIds(['boss-a']);
-
       await addDefeatedBossId('boss-a');
-
       await expect(loadDefeatedBossIds()).resolves.toEqual(['boss-a']);
     });
 
-    it('preserves existing IDs', async () => {
+    it('preserves existing boss IDs when adding another', async () => {
       await saveDefeatedBossIds(['boss-a']);
-
       await addDefeatedBossId('boss-b');
-
       await expect(loadDefeatedBossIds()).resolves.toEqual([
         'boss-a',
         'boss-b',
       ]);
     });
 
-    it('rejects an empty ID', async () => {
+    it('rejects an empty boss ID when adding', async () => {
       await expect(addDefeatedBossId(' \t ')).rejects.toThrow(
         'Boss ID must be a non-empty string.',
       );
     });
 
-    it('propagates a contextualized persistence failure', async () => {
-      mockedSetItem.mockRejectedValueOnce(new Error('write failure'));
-
+    it('surfaces a boss addition persistence failure', async () => {
+      jest.mocked(AsyncStorage.setItem).mockRejectedValueOnce(new Error('write'));
       await expect(addDefeatedBossId('boss-a')).rejects.toThrow(
-        'Failed to save defeated boss IDs to local storage.',
+        'Failed to save progress to local storage.',
       );
     });
-  });
 
-  describe('removeDefeatedBossId', () => {
-    it('removes an existing ID', async () => {
+    it('removes an existing boss ID', async () => {
       await saveDefeatedBossIds(['boss-a', 'boss-b']);
-
       await removeDefeatedBossId('boss-a');
-
       await expect(loadDefeatedBossIds()).resolves.toEqual(['boss-b']);
     });
 
-    it('keeps other existing IDs', async () => {
+    it('preserves other boss IDs during removal', async () => {
       await saveDefeatedBossIds(['boss-a', 'boss-b', 'boss-c']);
-
       await removeDefeatedBossId('boss-b');
-
       await expect(loadDefeatedBossIds()).resolves.toEqual([
         'boss-a',
         'boss-c',
       ]);
     });
 
-    it('does not remove other values for an unknown ID', async () => {
+    it('does not alter progress when removing an unknown boss', async () => {
       await saveDefeatedBossIds(['boss-a', 'boss-b']);
-
-      await removeDefeatedBossId('missing-boss');
-
+      await removeDefeatedBossId('future-boss');
       await expect(loadDefeatedBossIds()).resolves.toEqual([
         'boss-a',
         'boss-b',
       ]);
     });
 
-    it('normalizes the received ID', async () => {
+    it('normalizes a boss ID before removing it', async () => {
       await saveDefeatedBossIds(['boss-a', 'boss-b']);
-
       await removeDefeatedBossId(' boss-a ');
-
       await expect(loadDefeatedBossIds()).resolves.toEqual(['boss-b']);
     });
 
-    it('rejects an empty ID', async () => {
+    it('rejects an empty boss ID when removing', async () => {
       await expect(removeDefeatedBossId('')).rejects.toThrow(
         'Boss ID must be a non-empty string.',
       );
     });
 
-    it('propagates a contextualized persistence failure', async () => {
+    it('surfaces a boss removal persistence failure', async () => {
       await saveDefeatedBossIds(['boss-a']);
-      mockedSetItem.mockRejectedValueOnce(new Error('write failure'));
-
+      jest.mocked(AsyncStorage.setItem).mockRejectedValueOnce(new Error('write'));
       await expect(removeDefeatedBossId('boss-a')).rejects.toThrow(
-        'Failed to save defeated boss IDs to local storage.',
+        'Failed to save progress to local storage.',
       );
     });
-  });
 
-  describe('isBossDefeated', () => {
-    it('returns true for a saved ID', async () => {
+    it('reports a saved boss as defeated', async () => {
       await saveDefeatedBossIds(['boss-a']);
-
       await expect(isBossDefeated('boss-a')).resolves.toBe(true);
     });
 
-    it('returns false for an unsaved ID', async () => {
+    it('reports an unsaved boss as not defeated', async () => {
       await saveDefeatedBossIds(['boss-a']);
-
       await expect(isBossDefeated('boss-b')).resolves.toBe(false);
     });
 
-    it('normalizes the queried ID', async () => {
+    it('normalizes a boss ID before checking it', async () => {
       await saveDefeatedBossIds(['boss-a']);
-
       await expect(isBossDefeated(' boss-a ')).resolves.toBe(true);
     });
 
-    it('rejects an empty ID as not defeated', async () => {
+    it('returns false for an empty boss ID without reading storage', async () => {
+      jest.clearAllMocks();
       await expect(isBossDefeated(' \t ')).resolves.toBe(false);
-      expect(mockedGetItem).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('clearProgress', () => {
-    it('resets only the progress payload while preserving its schema', async () => {
-      await AsyncStorage.setItem(PROGRESS_KEY, JSON.stringify(['boss-a']));
-      await AsyncStorage.setItem(
-        SETTINGS_KEY,
-        JSON.stringify({ language: 'en', theme: 'dark' }),
-      );
-      jest.clearAllMocks();
-
-      await clearProgress();
-
-      expect(mockedRemoveItem).not.toHaveBeenCalled();
-      await expect(AsyncStorage.getItem(PROGRESS_KEY)).resolves.toBe(
-        versionedProgress([]),
-      );
+      expect(AsyncStorage.getItem).not.toHaveBeenCalled();
     });
 
-    it('does not use AsyncStorage.clear', async () => {
-      await clearProgress();
-
-      expect(mockedClear).not.toHaveBeenCalled();
-    });
-
-    it('does not remove stored settings', async () => {
-      const settingsValue = JSON.stringify({
-        language: 'en',
-        theme: 'dark',
-      });
-      await AsyncStorage.setItem(SETTINGS_KEY, settingsValue);
-      jest.clearAllMocks();
-
-      await clearProgress();
-
-      await expect(AsyncStorage.getItem(SETTINGS_KEY)).resolves.toBe(
-        settingsValue,
-      );
-    });
-
-    it('propagates a contextualized reset write failure', async () => {
-      mockedSetItem.mockRejectedValueOnce(new Error('write failure'));
-
-      await expect(clearProgress()).rejects.toThrow(
-        'Failed to save defeated boss IDs to local storage.',
-      );
-    });
-  });
-
-  describe('mutation concurrency', () => {
-    it('preserves two IDs added concurrently', async () => {
-      const firstAddition = addDefeatedBossId('boss-a');
-      const secondAddition = addDefeatedBossId('boss-b');
-
-      await Promise.all([firstAddition, secondAddition]);
-
-      await expect(loadDefeatedBossIds()).resolves.toEqual([
-        'boss-a',
-        'boss-b',
-      ]);
-    });
-
-    it('respects the initiation order of concurrent add and remove operations', async () => {
+    it('preserves initiation order for concurrent boss operations', async () => {
       await saveDefeatedBossIds(['boss-a']);
-
-      const addition = addDefeatedBossId('boss-b');
-      const removal = removeDefeatedBossId('boss-a');
-
-      await Promise.all([addition, removal]);
-
+      await Promise.all([
+        addDefeatedBossId('boss-b'),
+        removeDefeatedBossId('boss-a'),
+      ]);
       await expect(loadDefeatedBossIds()).resolves.toEqual(['boss-b']);
     });
   });

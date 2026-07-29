@@ -177,6 +177,7 @@ describe('BossCard', () => {
       screen.getByLabelText(
         translations.region.bossCardAccessibility(
           'Test Boss',
+          undefined,
           'Test Location',
           translations.region.notDefeatedStatus,
         ),

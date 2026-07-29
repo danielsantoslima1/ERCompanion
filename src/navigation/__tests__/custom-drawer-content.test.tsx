@@ -107,25 +107,28 @@ beforeEach(() => {
 });
 
 describe('CustomDrawerContent', () => {
-  it('removes All regions and shows All bosses first in each exclusive group', async () => {
+  it('removes All regions and shows All bosses before the package groups', async () => {
     const translations = mockAppState.translations;
     await render(<CustomDrawerContent {...createProps()} />);
     expect(screen.queryByText('All regions')).toBeNull();
     expect(screen.queryByText('Todas as regiões')).toBeNull();
 
-    await openBossesAndGroup('base-game');
+    await fireEvent.press(
+      screen.getByRole('button', { name: translations.navigation.expandBosses }),
+    );
     expect(screen.getByText(translations.navigation.allBosses)).toBeOnTheScreen();
-    expect(screen.getAllByRole('button')[3]).toHaveAccessibleName(
+    expect(screen.getAllByRole('button')[2]).toHaveAccessibleName(
       translations.navigation.allBosses,
     );
 
     await fireEvent.press(
       screen.getByRole('button', {
-        name: translations.navigation.expandExpansion,
+        name: translations.navigation.expandBaseGame,
       }),
     );
-    expect(screen.queryByText(getLocalizedText(catalogRegions[0].name, 'pt-BR'))).toBeNull();
-    expect(screen.getByText(translations.navigation.allBosses)).toBeOnTheScreen();
+    expect(
+      screen.getAllByText(translations.navigation.allBosses),
+    ).toHaveLength(2);
   });
 
   it('shows 16 and 10 alphabetically sorted regions in the active group', async () => {
@@ -204,9 +207,9 @@ describe('CustomDrawerContent', () => {
     await render(<CustomDrawerContent {...createProps()} />);
     await openBossesAndGroup('base-game');
     await fireEvent.press(
-      screen.getByRole('button', {
+      screen.getAllByRole('button', {
         name: mockAppState.translations.navigation.allBosses,
-      }),
+      })[1],
     );
     expect(navigateDrawer).toHaveBeenCalledWith('all-bosses/[contentPack]', {
       contentPack: 'base-game',
@@ -238,5 +241,143 @@ describe('CustomDrawerContent', () => {
         regionId: region.id,
       });
     }
+  });
+
+  it('keeps the fixed main order and exposes accessible expansion state', async () => {
+    await render(<CustomDrawerContent {...createProps()} />);
+    const labels = screen
+      .getAllByRole('button')
+      .map((button) => button.props.accessibilityLabel);
+    expect(labels).toEqual([
+      mockAppState.translations.navigation.home,
+      mockAppState.translations.navigation.expandBosses,
+      mockAppState.translations.navigation.expandAshesOfWar,
+      mockAppState.translations.navigation.settings,
+    ]);
+    expect(
+      screen.getByRole('button', {
+        name: mockAppState.translations.navigation.expandBosses,
+      }).props.accessibilityState,
+    ).toMatchObject({ expanded: false, selected: false });
+  });
+
+  it('opens only one main group and closes boss package groups with it', async () => {
+    await render(<CustomDrawerContent {...createProps()} />);
+    await openBossesAndGroup('base-game');
+    expect(screen.getByText('Limgrave')).toBeOnTheScreen();
+
+    await fireEvent.press(
+      screen.getByRole('button', {
+        name: mockAppState.translations.navigation.expandAshesOfWar,
+      }),
+    );
+    expect(screen.queryByText('Limgrave')).toBeNull();
+    expect(
+      screen.getByText(mockAppState.translations.navigation.allAshesOfWar),
+    ).toBeOnTheScreen();
+    expect(
+      screen.queryByRole('button', {
+        name: mockAppState.translations.navigation.collapseBosses,
+      }),
+    ).toBeNull();
+  });
+
+  it('shows direct Ash routes without regions and navigates safely', async () => {
+    await render(<CustomDrawerContent {...createProps()} />);
+    await fireEvent.press(
+      screen.getByRole('button', {
+        name: mockAppState.translations.navigation.expandAshesOfWar,
+      }),
+    );
+    expect(
+      screen.getAllByRole('button').map((button) => button.props.accessibilityLabel),
+    ).toEqual([
+      mockAppState.translations.navigation.home,
+      mockAppState.translations.navigation.expandBosses,
+      mockAppState.translations.navigation.collapseAshesOfWar,
+      mockAppState.translations.navigation.allAshesOfWar,
+      mockAppState.translations.common.baseGame,
+      mockAppState.translations.common.expansion,
+      mockAppState.translations.navigation.settings,
+    ]);
+    expect(screen.queryByText('Limgrave')).toBeNull();
+    await fireEvent.press(
+      screen.getByRole('button', {
+        name: mockAppState.translations.navigation.allAshesOfWar,
+      }),
+    );
+    expect(navigateDrawer).toHaveBeenCalledWith('ashes-of-war/index');
+  });
+
+  it.each([
+    {
+      pathname: '/all-bosses',
+      selected: 'Todos os chefes',
+      expanded: 'Recolher regiões de chefes',
+    },
+    {
+      pathname: '/ashes-of-war',
+      selected: 'Todas as Cinzas',
+      expanded: 'Recolher Cinzas da Guerra',
+    },
+    {
+      pathname: '/ashes-of-war/base-game',
+      selected: 'Jogo base',
+      expanded: 'Recolher Cinzas da Guerra',
+    },
+    {
+      pathname: '/ashes-of-war/shadow-of-the-erdtree',
+      selected: 'Shadow of the Erdtree',
+      expanded: 'Recolher Cinzas da Guerra',
+    },
+  ])('opens and selects only the route branch for $pathname', async ({
+    expanded,
+    pathname,
+    selected,
+  }) => {
+    mockPathname = pathname;
+    await render(<CustomDrawerContent {...createProps()} />);
+    expect(
+      screen.getByRole('button', { name: expanded }).props.accessibilityState,
+    ).toMatchObject({ expanded: true, selected: true });
+    expect(
+      screen.getByRole('button', { name: selected }).props.accessibilityState,
+    ).toMatchObject({ selected: true });
+    expect(
+      screen.getAllByRole('button').filter(
+        (button) => button.props.accessibilityState?.selected === true,
+      ),
+    ).toHaveLength(2);
+  });
+
+  it('keeps route-driven active state after changing language', async () => {
+    mockPathname = '/ashes-of-war/base-game';
+    const view = await render(<CustomDrawerContent {...createProps()} />);
+    mockAppState = {
+      ...mockAppState,
+      language: 'en',
+      translations: getTranslationDictionary('en'),
+    };
+    await view.rerender(<CustomDrawerContent {...createProps()} />);
+    expect(
+      screen.getByRole('button', { name: 'Base game' }).props.accessibilityState,
+    ).toMatchObject({ selected: true });
+    expect(
+      screen.getByRole('button', { name: 'Collapse Ashes of War' }).props
+        .accessibilityState,
+    ).toMatchObject({ expanded: true, selected: true });
+  });
+
+  it('closes every group when the active route becomes Home', async () => {
+    mockPathname = '/ashes-of-war/base-game';
+    const view = await render(<CustomDrawerContent {...createProps()} />);
+    expect(screen.getByText('Todas as Cinzas')).toBeOnTheScreen();
+    mockPathname = '/';
+    await view.rerender(<CustomDrawerContent {...createProps()} />);
+    expect(screen.queryByText('Todas as Cinzas')).toBeNull();
+    expect(
+      screen.getByRole('button', { name: mockAppState.translations.navigation.home })
+        .props.accessibilityState,
+    ).toMatchObject({ selected: true });
   });
 });

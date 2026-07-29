@@ -56,6 +56,13 @@ export default function DrawerLayout() {
         }}
       />
       <Drawer.Screen
+        name="all-bosses/index"
+        options={{
+          drawerItemStyle: { display: 'none' },
+          title: translations.allBosses.combinedTitle,
+        }}
+      />
+      <Drawer.Screen
         name="all-bosses/[contentPack]"
         options={{
           drawerItemStyle: { display: 'none' },
@@ -63,6 +70,27 @@ export default function DrawerLayout() {
             <DrawerToggleButton tintColor={theme.colors.textPrimary} />
           ),
           title: translations.navigation.bosses,
+        }}
+      />
+      <Drawer.Screen
+        name="ashes-of-war/index"
+        options={{
+          drawerItemStyle: { display: 'none' },
+          title: translations.ashesOfWar.allTitle,
+        }}
+      />
+      <Drawer.Screen
+        name="ashes-of-war/base-game"
+        options={{
+          drawerItemStyle: { display: 'none' },
+          title: translations.ashesOfWar.baseGameTitle,
+        }}
+      />
+      <Drawer.Screen
+        name="ashes-of-war/shadow-of-the-erdtree"
+        options={{
+          drawerItemStyle: { display: 'none' },
+          title: translations.ashesOfWar.expansionTitle,
         }}
       />
     </Drawer>

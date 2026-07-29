@@ -5,11 +5,14 @@ import { Pressable, Text, useColorScheme, View } from 'react-native';
 import { getTranslationDictionary } from '../../i18n';
 import {
   addDefeatedBossId,
+  addCollectedAshOfWarId,
   clearProgress,
   defaultSettings,
   loadDefeatedBossIds,
+  loadCollectedAshOfWarIds,
   loadSettings,
   removeDefeatedBossId,
+  removeCollectedAshOfWarId,
   restoreDefaultSettings,
   saveDefeatedBossIds,
   saveSettings,
@@ -31,9 +34,12 @@ jest.mock('../../storage', () => ({
   saveSettings: jest.fn(),
   restoreDefaultSettings: jest.fn(),
   loadDefeatedBossIds: jest.fn(),
+  loadCollectedAshOfWarIds: jest.fn(),
   saveDefeatedBossIds: jest.fn(),
   addDefeatedBossId: jest.fn(),
+  addCollectedAshOfWarId: jest.fn(),
   removeDefeatedBossId: jest.fn(),
+  removeCollectedAshOfWarId: jest.fn(),
   clearProgress: jest.fn(),
 }));
 
@@ -42,9 +48,12 @@ const mockedLoadSettings = jest.mocked(loadSettings);
 const mockedSaveSettings = jest.mocked(saveSettings);
 const mockedRestoreDefaultSettings = jest.mocked(restoreDefaultSettings);
 const mockedLoadDefeatedBossIds = jest.mocked(loadDefeatedBossIds);
+const mockedLoadCollectedAshOfWarIds = jest.mocked(loadCollectedAshOfWarIds);
 const mockedSaveDefeatedBossIds = jest.mocked(saveDefeatedBossIds);
 const mockedAddDefeatedBossId = jest.mocked(addDefeatedBossId);
+const mockedAddCollectedAshOfWarId = jest.mocked(addCollectedAshOfWarId);
 const mockedRemoveDefeatedBossId = jest.mocked(removeDefeatedBossId);
+const mockedRemoveCollectedAshOfWarId = jest.mocked(removeCollectedAshOfWarId);
 const mockedClearProgress = jest.mocked(clearProgress);
 
 interface Deferred<T> {
@@ -68,6 +77,7 @@ function TestConsumer() {
   const app = useApp();
   const [actionError, setActionError] = useState('');
   const [bossCheck, setBossCheck] = useState('');
+  const [ashCheck, setAshCheck] = useState('');
 
   const runAction = (action: () => Promise<void>) => {
     setActionError('');
@@ -90,6 +100,9 @@ function TestConsumer() {
       <Text testID="theme-mode">{app.theme.mode}</Text>
       <Text testID="defeated-ids">{app.defeatedBossIds.join(',')}</Text>
       <Text testID="defeated-count">{app.defeatedBossCount}</Text>
+      <Text testID="collected-ash-ids">{app.collectedAshOfWarIds.join(',')}</Text>
+      <Text testID="ash-count">{app.ashOfWarProgress.completed}</Text>
+      <Text testID="combined-count">{app.combinedProgress.completed}</Text>
       <Text testID="hydrated">{String(app.isHydrated)}</Text>
       <Text testID="initialization-error">
         {app.initializationError === null ? 'none' : 'present'}
@@ -97,6 +110,7 @@ function TestConsumer() {
       <Text testID="dictionary-description">{app.translations.app.description}</Text>
       <Text testID="action-error">{actionError}</Text>
       <Text testID="boss-check">{bossCheck}</Text>
+      <Text testID="ash-check">{ashCheck}</Text>
 
       <Pressable testID="language-en" onPress={() => runAction(() => app.setLanguage('en'))} />
       <Pressable
@@ -145,6 +159,26 @@ function TestConsumer() {
       />
       <Pressable testID="check-a" onPress={() => checkBoss('tree-sentinel-limgrave-road')} />
       <Pressable
+        testID="mark-ash"
+        onPress={() => runAction(() => app.markAshOfWarCollected('stamp-upward-cut'))}
+      />
+      <Pressable
+        testID="unmark-ash"
+        onPress={() => runAction(() => app.markAshOfWarNotCollected('stamp-upward-cut'))}
+      />
+      <Pressable
+        testID="toggle-ash"
+        onPress={() => runAction(() => app.toggleAshOfWarCollected('stamp-upward-cut'))}
+      />
+      <Pressable
+        testID="check-ash"
+        onPress={() => {
+          void app.isAshOfWarCollected('stamp-upward-cut').then(
+            (collected) => setAshCheck(String(collected)),
+          );
+        }}
+      />
+      <Pressable
         testID="reset-progress"
         onPress={() => runAction(app.resetProgress)}
       />
@@ -189,12 +223,18 @@ beforeEach(() => {
   mockedRestoreDefaultSettings.mockResolvedValue();
   mockedLoadDefeatedBossIds.mockReset();
   mockedLoadDefeatedBossIds.mockResolvedValue([]);
+  mockedLoadCollectedAshOfWarIds.mockReset();
+  mockedLoadCollectedAshOfWarIds.mockResolvedValue([]);
   mockedSaveDefeatedBossIds.mockReset();
   mockedSaveDefeatedBossIds.mockResolvedValue();
   mockedAddDefeatedBossId.mockReset();
   mockedAddDefeatedBossId.mockResolvedValue();
+  mockedAddCollectedAshOfWarId.mockReset();
+  mockedAddCollectedAshOfWarId.mockResolvedValue();
   mockedRemoveDefeatedBossId.mockReset();
   mockedRemoveDefeatedBossId.mockResolvedValue();
+  mockedRemoveCollectedAshOfWarId.mockReset();
+  mockedRemoveCollectedAshOfWarId.mockResolvedValue();
   mockedClearProgress.mockReset();
   mockedClearProgress.mockResolvedValue();
 });
@@ -661,5 +701,60 @@ describe('AppProvider action concurrency', () => {
     await waitFor(() => expectText('language', 'en'));
     expectText('defeated-ids', 'tree-sentinel-limgrave-road');
     expectText('defeated-count', '1');
+  });
+});
+
+describe('AppProvider Ash of War progress', () => {
+  it('hydrates, collects, checks and uncollects an Ash without changing bosses', async () => {
+    mockedLoadDefeatedBossIds.mockResolvedValue(['tree-sentinel-limgrave-road']);
+    mockedLoadCollectedAshOfWarIds.mockResolvedValue(['kick']);
+    await renderHydratedProvider();
+    expectText('collected-ash-ids', 'kick');
+    expectText('combined-count', '2');
+
+    await fireEvent.press(screen.getByTestId('mark-ash'));
+    await waitFor(() =>
+      expect(mockedAddCollectedAshOfWarId).toHaveBeenCalledWith(
+        'stamp-upward-cut',
+      ),
+    );
+    expectText('defeated-ids', 'tree-sentinel-limgrave-road');
+    expectText('ash-count', '2');
+
+    await fireEvent.press(screen.getByTestId('check-ash'));
+    await waitFor(() => expectText('ash-check', 'true'));
+    await fireEvent.press(screen.getByTestId('unmark-ash'));
+    await waitFor(() =>
+      expect(mockedRemoveCollectedAshOfWarId).toHaveBeenCalledWith(
+        'stamp-upward-cut',
+      ),
+    );
+    expectText('collected-ash-ids', 'kick');
+  });
+
+  it('rolls back only the failed Ash update', async () => {
+    mockedLoadDefeatedBossIds.mockResolvedValue(['tree-sentinel-limgrave-road']);
+    mockedLoadCollectedAshOfWarIds.mockResolvedValue(['kick']);
+    mockedAddCollectedAshOfWarId.mockRejectedValue(new Error('write failed'));
+    await renderHydratedProvider();
+
+    await fireEvent.press(screen.getByTestId('mark-ash'));
+    await waitFor(() =>
+      expectText('action-error', 'Failed to update Ash of War progress.'),
+    );
+    expectText('defeated-ids', 'tree-sentinel-limgrave-road');
+    expectText('collected-ash-ids', 'kick');
+  });
+
+  it('reset clears both categories after persistence succeeds', async () => {
+    mockedLoadDefeatedBossIds.mockResolvedValue(['tree-sentinel-limgrave-road']);
+    mockedLoadCollectedAshOfWarIds.mockResolvedValue(['kick']);
+    await renderHydratedProvider();
+
+    await fireEvent.press(screen.getByTestId('reset-progress'));
+    await waitFor(() => expect(mockedClearProgress).toHaveBeenCalled());
+    expectText('defeated-ids', '');
+    expectText('collected-ash-ids', '');
+    expectText('combined-count', '0');
   });
 });

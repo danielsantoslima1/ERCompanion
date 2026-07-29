@@ -216,3 +216,54 @@ O padrão cobre total zero, progresso parcial, conclusão integral, telas estrei
 O reset final deixou o progresso em `0/208`, `0/165` e `0/43`, preservando idioma e tema. Não há problemas conhecidos de navegação nem ocorrências de `Unmatched Route`.
 
 Próxima etapa: Planejar a pesquisa e a modelagem dos itens do jogo, reutilizando as 26 regiões aprovadas e a regra de ordenação alfabética.
+
+# Etapa planejada — implementação das Cinzas da Guerra
+
+O usuário aprovou provisoriamente as 116 entradas documentais para implementação, mantendo explícitas todas as pendências editoriais. A implementação será dividida em incrementos: catálogo de produção; seletores e fallback; armazenamento v2 e migração; progresso combinado; Todos os chefes geral; listas/cards de Cinzas; detalhes; Home; Drawer; traduções/acessibilidade; testes; revisão manual; documentação; e commit somente após autorização.
+
+O plano detalhado, com arquivos, dependências, riscos, testes, critérios de conclusão e rollback por etapa, está em `docs/ASHES_OF_WAR_IMPLEMENTATION_PLAN.md`.
+
+O primeiro incremento foi concluído: catálogo de produção das 116 Cinzas, tipos, índice, seletores localizados, fallback, ordenação, validadores e testes. Interface e armazenamento ainda não foram alterados.
+
+Próxima etapa: Implementar os seletores de progresso e a migração versionada para incluir collectedAshOfWarIds, preservando integralmente o progresso existente dos chefes.
+## Progresso v2 concluído
+
+Foram implementadas a migração v1 para v2, a persistência coordenada de
+`collectedAshOfWarIds`, as operações otimistas com rollback e os seletores de
+progresso de Chefes, Cinzas e total combinado (324). A interface não foi
+alterada.
+
+Próxima etapa: Implementar a nova tela geral de Todos os Chefes com 208 encontros divididos em Jogo base e Shadow of the Erdtree, sem alterar ainda a Home ou o Drawer.
+## Todos os Chefes geral concluído
+
+Foi criada a rota `/all-bosses`, mantendo as duas rotas específicas existentes.
+A tela apresenta progresso único de 208 encontros e duas seções, com busca,
+filtros, ordenação localizada e estado preservado ao retornar dos detalhes.
+Home e Drawer permanecem inalterados e a revisão manual está pendente.
+
+Próxima etapa: Implementar as três telas de Cinzas da Guerra e o card compacto com indicador de fantasma, sem alterar ainda a Home ou o Drawer.
+## Listas e detalhes das Cinzas concluídos
+
+As três listas e os detalhes das 116 Cinzas da Guerra foram implementados sobre
+o catálogo e o progresso v2 existentes. Busca, filtros, ordenação, fallback,
+coleta otimista, rollback e retorno preservado possuem cobertura automatizada.
+Revisão manual pendente.
+
+Próxima etapa: Integrar a Home e o Drawer às novas telas gerais de Chefes e Cinzas da Guerra, mantendo o acordeão mutuamente exclusivo entre categorias.
+## Home e Drawer por categoria
+
+Implementados o progresso combinado de 324 na Home, os dois cards de categoria
+e a navegação completa do Drawer para Todos os chefes, listas por pacote,
+regiões e as três listas de Cinzas da Guerra. Os acordeões principais são
+mutuamente exclusivos e o estado ativo é determinado pelas rotas públicas.
+
+Próxima etapa:
+`Pesquisar e validar os nomes e demais campos oficiais em português do Brasil das 116 Cinzas da Guerra, substituindo gradualmente os fallbacks em inglês sem alterar IDs ou progresso.`
+
+## Finalização das Cinzas da Guerra
+
+Catálogo, progresso v2, tela geral de Chefes, listas e detalhes de Cinzas, Home
+e Drawer estão implementados. A revisão manual foi concluída, o estado de
+progresso foi limpo e não há regressão conhecida. A suíte deve conservar todos
+os testes específicos; remoção, consolidação indevida ou desativação de testes
+continua proibida.

@@ -59,6 +59,48 @@ function getNestedRegionId(route: unknown): string | undefined {
   return getNestedRegionId(state.routes[index]);
 }
 
+function getNestedRouteName(route: unknown): string | undefined {
+  if (typeof route !== 'object' || route === null) return undefined;
+  if ('state' in route) {
+    const state = route.state;
+    if (
+      typeof state === 'object' &&
+      state !== null &&
+      'routes' in state &&
+      Array.isArray(state.routes) &&
+      state.routes.length > 0
+    ) {
+      const index =
+        'index' in state && typeof state.index === 'number'
+          ? state.index
+          : state.routes.length - 1;
+      return getNestedRouteName(state.routes[index]);
+    }
+  }
+  return 'name' in route && typeof route.name === 'string'
+    ? route.name
+    : undefined;
+}
+
+export function hasPreviousBossListRoute(state: unknown): boolean {
+  if (
+    typeof state !== 'object' ||
+    state === null ||
+    !('routes' in state) ||
+    !Array.isArray(state.routes) ||
+    !('index' in state) ||
+    typeof state.index !== 'number' ||
+    state.index < 1
+  ) {
+    return false;
+  }
+  const routeName = getNestedRouteName(state.routes[state.index - 1]);
+  return (
+    routeName === 'all-bosses/index' ||
+    routeName === 'all-bosses/[contentPack]'
+  );
+}
+
 export function getPreviousRegionId(state: unknown): string | undefined {
   if (
     typeof state !== 'object' ||
@@ -115,6 +157,7 @@ export default function BossDetailScreen() {
   const navigation = useNavigation();
   const rootNavigationState = useRootNavigationState();
   const previousRegionId = getPreviousRegionId(rootNavigationState);
+  const hasPreviousBossList = hasPreviousBossListRoute(rootNavigationState);
   const isRedirectingRef = useRef(false);
   const bossId = getBossId(bossIdParameter);
   const resolved = useMemo(
@@ -125,6 +168,7 @@ export default function BossDetailScreen() {
   useEffect(() => {
     if (
       !resolved ||
+      hasPreviousBossList ||
       previousRegionId === resolved.region.id
     ) {
       return;
@@ -139,7 +183,7 @@ export default function BossDetailScreen() {
         params: { regionId: resolved.region.id },
       });
     });
-  }, [navigation, previousRegionId, resolved]);
+  }, [hasPreviousBossList, navigation, previousRegionId, resolved]);
 
   if (!resolved) {
     return (

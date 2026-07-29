@@ -1,14 +1,15 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { storageKeys } from './keys';
-import { normalizeBossId, validateDefeatedBossIds } from './validators';
+import { normalizeProgressId, normalizeProgressIds } from './validators';
 
 let progressMutationQueue: Promise<void> = Promise.resolve();
-export const PROGRESS_SCHEMA_VERSION = 1;
+export const PROGRESS_SCHEMA_VERSION = 2;
 
-interface StoredProgress {
+export interface ProgressStateV2 {
   readonly schemaVersion: typeof PROGRESS_SCHEMA_VERSION;
   readonly defeatedBossIds: readonly string[];
+  readonly collectedAshOfWarIds: readonly string[];
 }
 
 function enqueueProgressMutation<Result>(
@@ -22,23 +23,60 @@ function enqueueProgressMutation<Result>(
   return result;
 }
 
-function createStoredProgress(ids: readonly string[]): StoredProgress {
-  return { schemaVersion: PROGRESS_SCHEMA_VERSION, defeatedBossIds: ids };
+function createProgressState(
+  defeatedBossIds: unknown = [],
+  collectedAshOfWarIds: unknown = [],
+): ProgressStateV2 {
+  return {
+    schemaVersion: PROGRESS_SCHEMA_VERSION,
+    defeatedBossIds: normalizeProgressIds(defeatedBossIds),
+    collectedAshOfWarIds: normalizeProgressIds(collectedAshOfWarIds),
+  };
 }
 
-async function readDefeatedBossIds(): Promise<string[]> {
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function parseProgressState(value: unknown): {
+  readonly state: ProgressStateV2;
+  readonly shouldPersist: boolean;
+} {
+  if (Array.isArray(value)) {
+    return { state: createProgressState(value), shouldPersist: true };
+  }
+
+  if (!isRecord(value)) {
+    return { state: createProgressState(), shouldPersist: false };
+  }
+
+  const state = createProgressState(
+    value.defeatedBossIds,
+    value.collectedAshOfWarIds,
+  );
+  const canonicalValue = JSON.stringify(state);
+
+  return {
+    state,
+    shouldPersist:
+      value.schemaVersion !== PROGRESS_SCHEMA_VERSION ||
+      JSON.stringify(value) !== canonicalValue,
+  };
+}
+
+async function readProgressState(): Promise<ProgressStateV2> {
   let storedValue: string | null;
 
   try {
     storedValue = await AsyncStorage.getItem(storageKeys.defeatedBossIds);
   } catch (error: unknown) {
-    throw new Error('Failed to read defeated boss IDs from local storage.', {
+    throw new Error('Failed to read progress from local storage.', {
       cause: error,
     });
   }
 
   if (storedValue === null) {
-    return [];
+    return createProgressState();
   }
 
   let parsedValue: unknown;
@@ -46,118 +84,140 @@ async function readDefeatedBossIds(): Promise<string[]> {
   try {
     parsedValue = JSON.parse(storedValue) as unknown;
   } catch {
-    return [];
+    return createProgressState();
   }
 
-  const legacyIds = validateDefeatedBossIds(parsedValue);
-  const currentIds =
-    typeof parsedValue === 'object' &&
-    parsedValue !== null &&
-    !Array.isArray(parsedValue) &&
-    'schemaVersion' in parsedValue &&
-    parsedValue.schemaVersion === PROGRESS_SCHEMA_VERSION &&
-    'defeatedBossIds' in parsedValue
-      ? validateDefeatedBossIds(parsedValue.defeatedBossIds)
-      : null;
-  const sourceIds = currentIds ?? legacyIds;
+  const { state, shouldPersist } = parseProgressState(parsedValue);
 
-  if (sourceIds === null) {
-    return [];
+  if (shouldPersist) {
+    await writeProgressState(state);
   }
 
-  const migratedIds = sourceIds.filter((id) => !id.startsWith('sample-'));
-  const requiresWrite =
-    currentIds === null ||
-    migratedIds.length !== sourceIds.length ||
-    JSON.stringify(parsedValue) !== JSON.stringify(createStoredProgress(migratedIds));
-
-  if (requiresWrite) {
-    await writeDefeatedBossIds(migratedIds);
-  }
-
-  return migratedIds;
+  return state;
 }
 
-async function writeDefeatedBossIds(ids: readonly string[]): Promise<void> {
+async function writeProgressState(state: ProgressStateV2): Promise<void> {
+  const normalizedState = createProgressState(
+    state.defeatedBossIds,
+    state.collectedAshOfWarIds,
+  );
+
   try {
     await AsyncStorage.setItem(
       storageKeys.defeatedBossIds,
-      JSON.stringify(createStoredProgress(ids)),
+      JSON.stringify(normalizedState),
     );
   } catch (error: unknown) {
-    throw new Error('Failed to save defeated boss IDs to local storage.', {
+    throw new Error('Failed to save progress to local storage.', {
       cause: error,
     });
   }
 }
 
-function requireValidBossId(id: unknown): string {
-  const normalizedId = normalizeBossId(id);
+function requireProgressId(id: unknown, label: string): string {
+  const normalizedId = normalizeProgressId(id);
 
   if (normalizedId === null) {
-    throw new TypeError('Boss ID must be a non-empty string.');
+    throw new TypeError(`${label} ID must be a non-empty string.`);
   }
 
   return normalizedId;
 }
 
-export async function loadDefeatedBossIds(): Promise<string[]> {
+async function updateProgressIds(
+  field: 'defeatedBossIds' | 'collectedAshOfWarIds',
+  id: string,
+  shouldInclude: boolean,
+): Promise<void> {
+  const current = await readProgressState();
+  const currentIds = current[field];
+  const includesId = currentIds.includes(id);
+
+  if (includesId === shouldInclude) {
+    return;
+  }
+
+  const nextIds = shouldInclude
+    ? [...currentIds, id]
+    : currentIds.filter((currentId) => currentId !== id);
+
+  await writeProgressState({ ...current, [field]: nextIds });
+}
+
+export async function loadProgressState(): Promise<ProgressStateV2> {
   await progressMutationQueue;
-  return readDefeatedBossIds();
+  return readProgressState();
+}
+
+export async function loadDefeatedBossIds(): Promise<string[]> {
+  return [...(await loadProgressState()).defeatedBossIds];
+}
+
+export async function loadCollectedAshOfWarIds(): Promise<string[]> {
+  return [...(await loadProgressState()).collectedAshOfWarIds];
 }
 
 export async function saveDefeatedBossIds(ids: readonly string[]): Promise<void> {
-  const normalizedIds = validateDefeatedBossIds(ids);
-
-  if (normalizedIds === null) {
-    throw new TypeError('Defeated boss IDs must be non-empty strings.');
-  }
-
-  return enqueueProgressMutation(() => writeDefeatedBossIds(normalizedIds));
+  return enqueueProgressMutation(async () => {
+    const current = await readProgressState();
+    await writeProgressState({ ...current, defeatedBossIds: normalizeProgressIds(ids) });
+  });
 }
 
 export async function addDefeatedBossId(id: string): Promise<void> {
-  const normalizedId = requireValidBossId(id);
-
-  return enqueueProgressMutation(async () => {
-    const currentIds = await readDefeatedBossIds();
-
-    if (currentIds.includes(normalizedId)) {
-      return;
-    }
-
-    await writeDefeatedBossIds([...currentIds, normalizedId]);
-  });
+  const normalizedId = requireProgressId(id, 'Boss');
+  return enqueueProgressMutation(() =>
+    updateProgressIds('defeatedBossIds', normalizedId, true),
+  );
 }
 
 export async function removeDefeatedBossId(id: string): Promise<void> {
-  const normalizedId = requireValidBossId(id);
-
-  return enqueueProgressMutation(async () => {
-    const currentIds = await readDefeatedBossIds();
-    const updatedIds = currentIds.filter(
-      (currentId) => currentId !== normalizedId,
-    );
-
-    if (updatedIds.length === currentIds.length) {
-      return;
-    }
-
-    await writeDefeatedBossIds(updatedIds);
-  });
+  const normalizedId = requireProgressId(id, 'Boss');
+  return enqueueProgressMutation(() =>
+    updateProgressIds('defeatedBossIds', normalizedId, false),
+  );
 }
 
 export async function isBossDefeated(id: string): Promise<boolean> {
-  const normalizedId = normalizeBossId(id);
+  const normalizedId = normalizeProgressId(id);
+  return normalizedId === null
+    ? false
+    : (await loadProgressState()).defeatedBossIds.includes(normalizedId);
+}
 
-  if (normalizedId === null) {
-    return false;
-  }
+export async function addCollectedAshOfWarId(id: string): Promise<void> {
+  const normalizedId = requireProgressId(id, 'Ash of War');
+  return enqueueProgressMutation(() =>
+    updateProgressIds('collectedAshOfWarIds', normalizedId, true),
+  );
+}
 
-  const currentIds = await loadDefeatedBossIds();
-  return currentIds.includes(normalizedId);
+export async function removeCollectedAshOfWarId(id: string): Promise<void> {
+  const normalizedId = requireProgressId(id, 'Ash of War');
+  return enqueueProgressMutation(() =>
+    updateProgressIds('collectedAshOfWarIds', normalizedId, false),
+  );
+}
+
+export async function toggleCollectedAshOfWarId(id: string): Promise<void> {
+  const normalizedId = requireProgressId(id, 'Ash of War');
+  return enqueueProgressMutation(async () => {
+    const current = await readProgressState();
+    await updateProgressIds(
+      'collectedAshOfWarIds',
+      normalizedId,
+      !current.collectedAshOfWarIds.includes(normalizedId),
+    );
+  });
+}
+
+export async function isAshOfWarCollected(id: string): Promise<boolean> {
+  const normalizedId = normalizeProgressId(id);
+  return normalizedId === null
+    ? false
+    : (await loadProgressState()).collectedAshOfWarIds.includes(normalizedId);
 }
 
 export async function clearProgress(): Promise<void> {
-  return enqueueProgressMutation(() => writeDefeatedBossIds([]));
+  return enqueueProgressMutation(() => writeProgressState(createProgressState()));
 }

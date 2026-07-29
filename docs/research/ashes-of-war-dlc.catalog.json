@@ -1,0 +1,1602 @@
+[
+  {
+    "id": "savage-lions-claw",
+    "contentPack": "shadow-of-the-erdtree",
+    "name": {
+      "ptBR": null,
+      "en": "Savage Lion's Claw"
+    },
+    "primaryLocation": {
+      "ptBR": null,
+      "en": "Run-Down Traveler's Rest"
+    },
+    "primaryAcquisition": {
+      "ptBR": null,
+      "en": "Gravesite Plain * Ash of War: Savage Lion's Claw is found in a small camp northwest of the Three-Path Cross Site of Grace and directly west of Run-Down Traveler's Rest. Head north along the cliff just west of the Site of Grace to find it more easily."
+    },
+    "acquisitionMethods": [
+      {
+        "location": {
+          "ptBR": null,
+          "en": "Run-Down Traveler's Rest"
+        },
+        "method": {
+          "ptBR": null,
+          "en": "Gravesite Plain * Ash of War: Savage Lion's Claw is found in a small camp northwest of the Three-Path Cross Site of Grace and directly west of Run-Down Traveler's Rest. Head north along the cliff just west of the Site of Grace to find it more easily."
+        },
+        "notes": {
+          "ptBR": null,
+          "en": "Lost Ashes of War duplication is intentionally excluded."
+        }
+      }
+    ],
+    "summary": {
+      "ptBR": null,
+      "en": "Provides the Savage Lion's Claw skill with Heavy as its native affinity; usable on any sword, axe, or hammer (except for Daggers, Throwing Blades, Thrusting Swords, or Heavy Thrusting Swords): Straight Swords, Light Greatswords Shadow of the Erdtree, Greatswords, Colossal Swords, Curved Swords, Curved Greatswords, Katanas, Great Katanas Shadow of the Erdtree, Twinblades, Axes, Greataxes, Hammers, Flails, Great Hammers, and Colossal Weapons."
+    },
+    "skillType": null,
+    "affinity": {
+      "ptBR": null,
+      "en": "Heavy"
+    },
+    "compatibleEquipment": {
+      "ptBR": null,
+      "en": [
+        "any sword, axe, or hammer (except for Daggers, Throwing Blades, Thrusting Swords, or Heavy Thrusting Swords): Straight Swords, Light Greatswords Shadow of the Erdtree, Greatswords, Colossal Swords, Curved Swords, Curved Greatswords, Katanas, Great Katanas Shadow of the Erdtree, Twinblades, Axes, Greataxes, Hammers, Flails, Great Hammers, and Colossal Weapons"
+      ]
+    },
+    "fpCost": null,
+    "specialEffects": null,
+    "limitations": {
+      "ptBR": null,
+      "en": "Cannot be applied to incompatible or non-infusable armaments; affinity choices can depend on owned whetblades."
+    },
+    "relevantNotes": {
+      "ptBR": null,
+      "en": "Official Brazilian Portuguese localization and FP cost remain pending direct in-game verification."
+    },
+    "sourceRefs": [
+      "fandom-savage-lions-claw",
+      "wiki-gg-dlc-ashes",
+      "gamingbolt-dlc-ashes",
+      "saika-dlc-ptbr"
+    ],
+    "verificationStatus": "partial"
+  },
+  {
+    "id": "spinning-gravity-thrust",
+    "contentPack": "shadow-of-the-erdtree",
+    "name": {
+      "ptBR": null,
+      "en": "Spinning Gravity Thrust"
+    },
+    "primaryLocation": {
+      "ptBR": null,
+      "en": "Category:Ashes of War"
+    },
+    "primaryAcquisition": {
+      "ptBR": null,
+      "en": "Comes equipped to the Sword Lance, one of the possible rewards when trading Remembrance of the Wild Boar Rider with Enia at the Roundtable Hold. Category:Ashes of War"
+    },
+    "acquisitionMethods": [
+      {
+        "location": {
+          "ptBR": null,
+          "en": "Category:Ashes of War"
+        },
+        "method": {
+          "ptBR": null,
+          "en": "Comes equipped to the Sword Lance, one of the possible rewards when trading Remembrance of the Wild Boar Rider with Enia at the Roundtable Hold. Category:Ashes of War"
+        },
+        "notes": {
+          "ptBR": null,
+          "en": "Lost Ashes of War duplication is intentionally excluded."
+        }
+      }
+    ],
+    "summary": {
+      "ptBR": null,
+      "en": "Provides the Spinning Gravity Thrust skill with Heavy as its native affinity; usable on any large or colossal sword: Greatswords, Colossal Swords, Heavy Thrusting Swords, Curved Greatswords, Great Katanas Shadow of the Erdtree."
+    },
+    "skillType": null,
+    "affinity": {
+      "ptBR": null,
+      "en": "Heavy"
+    },
+    "compatibleEquipment": {
+      "ptBR": null,
+      "en": [
+        "any large or colossal sword: Greatswords, Colossal Swords, Heavy Thrusting Swords, Curved Greatswords, Great Katanas Shadow of the Erdtree"
+      ]
+    },
+    "fpCost": null,
+    "specialEffects": null,
+    "limitations": {
+      "ptBR": null,
+      "en": "Cannot be applied to incompatible or non-infusable armaments; affinity choices can depend on owned whetblades."
+    },
+    "relevantNotes": {
+      "ptBR": null,
+      "en": "Official Brazilian Portuguese localization and FP cost remain pending direct in-game verification."
+    },
+    "sourceRefs": [
+      "fandom-spinning-gravity-thrust",
+      "wiki-gg-dlc-ashes",
+      "gamingbolt-dlc-ashes",
+      "saika-dlc-ptbr"
+    ],
+    "verificationStatus": "partial"
+  },
+  {
+    "id": "blind-spot",
+    "contentPack": "shadow-of-the-erdtree",
+    "name": {
+      "ptBR": null,
+      "en": "Blind Spot"
+    },
+    "primaryLocation": {
+      "ptBR": null,
+      "en": "Three-Path Cross"
+    },
+    "primaryAcquisition": {
+      "ptBR": null,
+      "en": "Gravesite Plain Found pre-equipped on the Backhand Blade, which is found in a small stone building north-northeast of Scorched Ruins or east-southeast of Three-Path Cross Site of Grace."
+    },
+    "acquisitionMethods": [
+      {
+        "location": {
+          "ptBR": null,
+          "en": "Three-Path Cross"
+        },
+        "method": {
+          "ptBR": null,
+          "en": "Gravesite Plain Found pre-equipped on the Backhand Blade, which is found in a small stone building north-northeast of Scorched Ruins or east-southeast of Three-Path Cross Site of Grace."
+        },
+        "notes": {
+          "ptBR": null,
+          "en": "Lost Ashes of War duplication is intentionally excluded."
+        }
+      }
+    ],
+    "summary": {
+      "ptBR": null,
+      "en": "Provides the Blind Spot skill with Keen as its native affinity; usable on any infusable Backhand Blades Shadow of the Erdtree."
+    },
+    "skillType": null,
+    "affinity": {
+      "ptBR": null,
+      "en": "Keen"
+    },
+    "compatibleEquipment": {
+      "ptBR": null,
+      "en": [
+        "any infusable Backhand Blades Shadow of the Erdtree"
+      ]
+    },
+    "fpCost": null,
+    "specialEffects": null,
+    "limitations": {
+      "ptBR": null,
+      "en": "Cannot be applied to incompatible or non-infusable armaments; affinity choices can depend on owned whetblades."
+    },
+    "relevantNotes": {
+      "ptBR": null,
+      "en": "Official Brazilian Portuguese localization and FP cost remain pending direct in-game verification."
+    },
+    "sourceRefs": [
+      "fandom-blind-spot",
+      "wiki-gg-dlc-ashes",
+      "gamingbolt-dlc-ashes",
+      "saika-dlc-ptbr"
+    ],
+    "verificationStatus": "partial"
+  },
+  {
+    "id": "swift-slash",
+    "contentPack": "shadow-of-the-erdtree",
+    "name": {
+      "ptBR": null,
+      "en": "Swift Slash"
+    },
+    "primaryLocation": {
+      "ptBR": null,
+      "en": "Messmer the Impaler"
+    },
+    "primaryAcquisition": {
+      "ptBR": null,
+      "en": "Missable Loot: Shadow Keep Shadow of the Erdtree * Given by Hornsent for using a golden summon sign to aid him against Needle Knight Leda when she invades him in Shadow Keep, on the battlements just before the Storehouse, First Floor Site of Grace. ** Given alongside Leda's Rune Shadow of the Erdtree and is mutually exclusive with Ansbach's Longbow Shadow of the Erdtree, Lacerating Crossed-Tree Shadow of the Erdtree, and Retaliatory Crossed-Tree Shadow of the Erdtree, and ends Leda's questline until Enir-Ilim. ** <font color=\"red\">WARNING:</font> If Messmer the Impaler is encountered before the summon sign is used, it will disappear."
+    },
+    "acquisitionMethods": [
+      {
+        "location": {
+          "ptBR": null,
+          "en": "Messmer the Impaler"
+        },
+        "method": {
+          "ptBR": null,
+          "en": "Missable Loot: Shadow Keep Shadow of the Erdtree * Given by Hornsent for using a golden summon sign to aid him against Needle Knight Leda when she invades him in Shadow Keep, on the battlements just before the Storehouse, First Floor Site of Grace. ** Given alongside Leda's Rune Shadow of the Erdtree and is mutually exclusive with Ansbach's Longbow Shadow of the Erdtree, Lacerating Crossed-Tree Shadow of the Erdtree, and Retaliatory Crossed-Tree Shadow of the Erdtree, and ends Leda's questline until Enir-Ilim. ** <font color=\"red\">WARNING:</font> If Messmer the Impaler is encountered before the summon sign is used, it will disappear."
+        },
+        "notes": {
+          "ptBR": null,
+          "en": "Lost Ashes of War duplication is intentionally excluded."
+        }
+      }
+    ],
+    "summary": {
+      "ptBR": null,
+      "en": "Provides the Swift Slash skill with Keen as its native affinity; usable on any infusable Backhand Blades Shadow of the Erdtree."
+    },
+    "skillType": null,
+    "affinity": {
+      "ptBR": null,
+      "en": "Keen"
+    },
+    "compatibleEquipment": {
+      "ptBR": null,
+      "en": [
+        "any infusable Backhand Blades Shadow of the Erdtree"
+      ]
+    },
+    "fpCost": null,
+    "specialEffects": null,
+    "limitations": {
+      "ptBR": null,
+      "en": "Cannot be applied to incompatible or non-infusable armaments; affinity choices can depend on owned whetblades."
+    },
+    "relevantNotes": {
+      "ptBR": null,
+      "en": "Official Brazilian Portuguese localization and FP cost remain pending direct in-game verification."
+    },
+    "sourceRefs": [
+      "fandom-swift-slash",
+      "wiki-gg-dlc-ashes",
+      "gamingbolt-dlc-ashes",
+      "saika-dlc-ptbr"
+    ],
+    "verificationStatus": "partial"
+  },
+  {
+    "id": "overhead-stance",
+    "contentPack": "shadow-of-the-erdtree",
+    "name": {
+      "ptBR": null,
+      "en": "Overhead Stance"
+    },
+    "primaryLocation": {
+      "ptBR": null,
+      "en": "Ghostflame Dragon"
+    },
+    "primaryAcquisition": {
+      "ptBR": null,
+      "en": "Gravesite Plain *Found equipped to the Great Katana, which in turn is found in the middle of the lake in between Belurat Gaol and Abandoned Ailing Village. Guarded by a sleeping Ghostflame Dragon."
+    },
+    "acquisitionMethods": [
+      {
+        "location": {
+          "ptBR": null,
+          "en": "Ghostflame Dragon"
+        },
+        "method": {
+          "ptBR": null,
+          "en": "Gravesite Plain *Found equipped to the Great Katana, which in turn is found in the middle of the lake in between Belurat Gaol and Abandoned Ailing Village. Guarded by a sleeping Ghostflame Dragon."
+        },
+        "notes": {
+          "ptBR": null,
+          "en": "Lost Ashes of War duplication is intentionally excluded."
+        }
+      }
+    ],
+    "summary": {
+      "ptBR": null,
+      "en": "Provides the Overhead Stance skill with Keen as its native affinity; usable on Great Katanas."
+    },
+    "skillType": null,
+    "affinity": {
+      "ptBR": null,
+      "en": "Keen"
+    },
+    "compatibleEquipment": {
+      "ptBR": null,
+      "en": [
+        "Great Katanas"
+      ]
+    },
+    "fpCost": null,
+    "specialEffects": null,
+    "limitations": {
+      "ptBR": null,
+      "en": "Cannot be applied to incompatible or non-infusable armaments; affinity choices can depend on owned whetblades."
+    },
+    "relevantNotes": {
+      "ptBR": null,
+      "en": "Official Brazilian Portuguese localization and FP cost remain pending direct in-game verification."
+    },
+    "sourceRefs": [
+      "fandom-overhead-stance",
+      "wiki-gg-dlc-ashes",
+      "gamingbolt-dlc-ashes",
+      "saika-dlc-ptbr"
+    ],
+    "verificationStatus": "partial"
+  },
+  {
+    "id": "savage-claws",
+    "contentPack": "shadow-of-the-erdtree",
+    "name": {
+      "ptBR": null,
+      "en": "Savage Claws"
+    },
+    "primaryLocation": {
+      "ptBR": null,
+      "en": "Scorched Ruins"
+    },
+    "primaryAcquisition": {
+      "ptBR": null,
+      "en": "Gravesite Plain * Equipped to the Beast Claw, dropped by Logur, Beast Claw in southern Gravesite Plain. Found southeast of the Gravesite Plain Site of Grace or far south of Scorched Ruins."
+    },
+    "acquisitionMethods": [
+      {
+        "location": {
+          "ptBR": null,
+          "en": "Scorched Ruins"
+        },
+        "method": {
+          "ptBR": null,
+          "en": "Gravesite Plain * Equipped to the Beast Claw, dropped by Logur, Beast Claw in southern Gravesite Plain. Found southeast of the Gravesite Plain Site of Grace or far south of Scorched Ruins."
+        },
+        "notes": {
+          "ptBR": null,
+          "en": "Lost Ashes of War duplication is intentionally excluded."
+        }
+      }
+    ],
+    "summary": {
+      "ptBR": null,
+      "en": "Provides the Savage Claws skill with Keen as its native affinity; usable on any infusable Beast Claws Shadow of the Erdtree."
+    },
+    "skillType": null,
+    "affinity": {
+      "ptBR": null,
+      "en": "Keen"
+    },
+    "compatibleEquipment": {
+      "ptBR": null,
+      "en": [
+        "any infusable Beast Claws Shadow of the Erdtree"
+      ]
+    },
+    "fpCost": null,
+    "specialEffects": null,
+    "limitations": {
+      "ptBR": null,
+      "en": "Cannot be applied to incompatible or non-infusable armaments; affinity choices can depend on owned whetblades."
+    },
+    "relevantNotes": {
+      "ptBR": null,
+      "en": "Official Brazilian Portuguese localization and FP cost remain pending direct in-game verification."
+    },
+    "sourceRefs": [
+      "fandom-savage-claws",
+      "wiki-gg-dlc-ashes",
+      "gamingbolt-dlc-ashes",
+      "saika-dlc-ptbr"
+    ],
+    "verificationStatus": "partial"
+  },
+  {
+    "id": "raging-beast",
+    "contentPack": "shadow-of-the-erdtree",
+    "name": {
+      "ptBR": null,
+      "en": "Raging Beast"
+    },
+    "primaryLocation": {
+      "ptBR": null,
+      "en": "Bonny Village"
+    },
+    "primaryAcquisition": {
+      "ptBR": null,
+      "en": "Scadu Altus * Dropped by a teleporting Teardrop Scarab found on a small hill east of the road leading north-northeast from the Eastern Nameless Mausoleum and Bridge Leading to the Village Site of Grace. The Scarab is slightly visible from the road. ** The location is also southeast of the Cathedral of Manus Metyr and northeast of Bonny Village."
+    },
+    "acquisitionMethods": [
+      {
+        "location": {
+          "ptBR": null,
+          "en": "Bonny Village"
+        },
+        "method": {
+          "ptBR": null,
+          "en": "Scadu Altus * Dropped by a teleporting Teardrop Scarab found on a small hill east of the road leading north-northeast from the Eastern Nameless Mausoleum and Bridge Leading to the Village Site of Grace. The Scarab is slightly visible from the road. ** The location is also southeast of the Cathedral of Manus Metyr and northeast of Bonny Village."
+        },
+        "notes": {
+          "ptBR": null,
+          "en": "Lost Ashes of War duplication is intentionally excluded."
+        }
+      }
+    ],
+    "summary": {
+      "ptBR": null,
+      "en": "Provides the Raging Beast skill with Keen as its native affinity; usable on any infusable Beast Claws Shadow of the Erdtree."
+    },
+    "skillType": null,
+    "affinity": {
+      "ptBR": null,
+      "en": "Keen"
+    },
+    "compatibleEquipment": {
+      "ptBR": null,
+      "en": [
+        "any infusable Beast Claws Shadow of the Erdtree"
+      ]
+    },
+    "fpCost": null,
+    "specialEffects": null,
+    "limitations": {
+      "ptBR": null,
+      "en": "Cannot be applied to incompatible or non-infusable armaments; affinity choices can depend on owned whetblades."
+    },
+    "relevantNotes": {
+      "ptBR": null,
+      "en": "Official Brazilian Portuguese localization and FP cost remain pending direct in-game verification."
+    },
+    "sourceRefs": [
+      "fandom-raging-beast",
+      "wiki-gg-dlc-ashes",
+      "gamingbolt-dlc-ashes",
+      "saika-dlc-ptbr"
+    ],
+    "verificationStatus": "partial"
+  },
+  {
+    "id": "piercing-throw",
+    "contentPack": "shadow-of-the-erdtree",
+    "name": {
+      "ptBR": null,
+      "en": "Piercing Throw"
+    },
+    "primaryLocation": {
+      "ptBR": null,
+      "en": "Misbegotten"
+    },
+    "primaryAcquisition": {
+      "ptBR": null,
+      "en": "Scadu Altus * Dropped by an explosive Teardrop Scarab found by one of the pillars just east of the Ruined Forge of Starfall Past. ** It's guarded by a small group of Misbegotten."
+    },
+    "acquisitionMethods": [
+      {
+        "location": {
+          "ptBR": null,
+          "en": "Misbegotten"
+        },
+        "method": {
+          "ptBR": null,
+          "en": "Scadu Altus * Dropped by an explosive Teardrop Scarab found by one of the pillars just east of the Ruined Forge of Starfall Past. ** It's guarded by a small group of Misbegotten."
+        },
+        "notes": {
+          "ptBR": null,
+          "en": "Lost Ashes of War duplication is intentionally excluded."
+        }
+      }
+    ],
+    "summary": {
+      "ptBR": null,
+      "en": "Provides the Piercing Throw skill with Keen as its native affinity; usable on any infusable Throwing Blades Shadow of the Erdtree."
+    },
+    "skillType": null,
+    "affinity": {
+      "ptBR": null,
+      "en": "Keen"
+    },
+    "compatibleEquipment": {
+      "ptBR": null,
+      "en": [
+        "any infusable Throwing Blades Shadow of the Erdtree"
+      ]
+    },
+    "fpCost": null,
+    "specialEffects": null,
+    "limitations": {
+      "ptBR": null,
+      "en": "Cannot be applied to incompatible or non-infusable armaments; affinity choices can depend on owned whetblades."
+    },
+    "relevantNotes": {
+      "ptBR": null,
+      "en": "Official Brazilian Portuguese localization and FP cost remain pending direct in-game verification."
+    },
+    "sourceRefs": [
+      "fandom-piercing-throw",
+      "wiki-gg-dlc-ashes",
+      "gamingbolt-dlc-ashes",
+      "saika-dlc-ptbr"
+    ],
+    "verificationStatus": "partial"
+  },
+  {
+    "id": "scattershot-throw",
+    "contentPack": "shadow-of-the-erdtree",
+    "name": {
+      "ptBR": null,
+      "en": "Scattershot Throw"
+    },
+    "primaryLocation": {
+      "ptBR": null,
+      "en": "Taylew's Ruined Forge"
+    },
+    "primaryAcquisition": {
+      "ptBR": null,
+      "en": "Ancient Ruins of Rauh * Dropped by a hanging Teardrop Scarab found on a small pillar next to the foot of the large bridge south of Taylew's Ruined Forge. ** The pillar is one of the ones in the lower area of Rauh, on the eastern side of the road heading south from the Forge, and is just south of the bridge itself."
+    },
+    "acquisitionMethods": [
+      {
+        "location": {
+          "ptBR": null,
+          "en": "Taylew's Ruined Forge"
+        },
+        "method": {
+          "ptBR": null,
+          "en": "Ancient Ruins of Rauh * Dropped by a hanging Teardrop Scarab found on a small pillar next to the foot of the large bridge south of Taylew's Ruined Forge. ** The pillar is one of the ones in the lower area of Rauh, on the eastern side of the road heading south from the Forge, and is just south of the bridge itself."
+        },
+        "notes": {
+          "ptBR": null,
+          "en": "Lost Ashes of War duplication is intentionally excluded."
+        }
+      }
+    ],
+    "summary": {
+      "ptBR": null,
+      "en": "Provides the Scattershot Throw skill with Keen as its native affinity; usable on any infusable Throwing Blades Shadow of the Erdtree."
+    },
+    "skillType": null,
+    "affinity": {
+      "ptBR": null,
+      "en": "Keen"
+    },
+    "compatibleEquipment": {
+      "ptBR": null,
+      "en": [
+        "any infusable Throwing Blades Shadow of the Erdtree"
+      ]
+    },
+    "fpCost": null,
+    "specialEffects": null,
+    "limitations": {
+      "ptBR": null,
+      "en": "Cannot be applied to incompatible or non-infusable armaments; affinity choices can depend on owned whetblades."
+    },
+    "relevantNotes": {
+      "ptBR": null,
+      "en": "Official Brazilian Portuguese localization and FP cost remain pending direct in-game verification."
+    },
+    "sourceRefs": [
+      "fandom-scattershot-throw",
+      "wiki-gg-dlc-ashes",
+      "gamingbolt-dlc-ashes",
+      "saika-dlc-ptbr"
+    ],
+    "verificationStatus": "partial"
+  },
+  {
+    "id": "wing-stance",
+    "contentPack": "shadow-of-the-erdtree",
+    "name": {
+      "ptBR": null,
+      "en": "Wing Stance"
+    },
+    "primaryLocation": {
+      "ptBR": null,
+      "en": "Castle-Lord's Chamber"
+    },
+    "primaryAcquisition": {
+      "ptBR": null,
+      "en": "Castle Ensis * Found in a chest in a small tower found by taking the east exit from the Castle-Lord's Chamber Site of Grace and then jumping over the north railing and falling down to the cliffside below. Continuing south and falling down three times more leads to the tower, and climbing to the top of it leads to the chest."
+    },
+    "acquisitionMethods": [
+      {
+        "location": {
+          "ptBR": null,
+          "en": "Castle-Lord's Chamber"
+        },
+        "method": {
+          "ptBR": null,
+          "en": "Castle Ensis * Found in a chest in a small tower found by taking the east exit from the Castle-Lord's Chamber Site of Grace and then jumping over the north railing and falling down to the cliffside below. Continuing south and falling down three times more leads to the tower, and climbing to the top of it leads to the chest."
+        },
+        "notes": {
+          "ptBR": null,
+          "en": "Lost Ashes of War duplication is intentionally excluded."
+        }
+      }
+    ],
+    "summary": {
+      "ptBR": null,
+      "en": "Provides the Wing Stance skill with Quality as its native affinity; usable on any infusable Light Greatswords."
+    },
+    "skillType": null,
+    "affinity": {
+      "ptBR": null,
+      "en": "Quality"
+    },
+    "compatibleEquipment": {
+      "ptBR": null,
+      "en": [
+        "any infusable Light Greatswords"
+      ]
+    },
+    "fpCost": null,
+    "specialEffects": null,
+    "limitations": {
+      "ptBR": null,
+      "en": "Cannot be applied to incompatible or non-infusable armaments; affinity choices can depend on owned whetblades."
+    },
+    "relevantNotes": {
+      "ptBR": null,
+      "en": "Official Brazilian Portuguese localization and FP cost remain pending direct in-game verification."
+    },
+    "sourceRefs": [
+      "fandom-wing-stance",
+      "wiki-gg-dlc-ashes",
+      "gamingbolt-dlc-ashes",
+      "saika-dlc-ptbr"
+    ],
+    "verificationStatus": "partial"
+  },
+  {
+    "id": "carian-sovereignty",
+    "contentPack": "shadow-of-the-erdtree",
+    "name": {
+      "ptBR": null,
+      "en": "Carian Sovereignty"
+    },
+    "primaryLocation": {
+      "ptBR": null,
+      "en": "Cathedral of Manus Metyr"
+    },
+    "primaryAcquisition": {
+      "ptBR": null,
+      "en": "Guaranteed Loot: Cathedral of Manus Metyr (Scadu Altus) Dropped by a Scarab hanging from the roof of a cave southwest of Cathedral of Manus Metyr. The cave is found by heading further west when starting to take the road to the Cathedral of Manus Metyr, and then heading as far south as possible along the plateau, keeping an eye on the left/to the east towards the end."
+    },
+    "acquisitionMethods": [
+      {
+        "location": {
+          "ptBR": null,
+          "en": "Cathedral of Manus Metyr"
+        },
+        "method": {
+          "ptBR": null,
+          "en": "Guaranteed Loot: Cathedral of Manus Metyr (Scadu Altus) Dropped by a Scarab hanging from the roof of a cave southwest of Cathedral of Manus Metyr. The cave is found by heading further west when starting to take the road to the Cathedral of Manus Metyr, and then heading as far south as possible along the plateau, keeping an eye on the left/to the east towards the end."
+        },
+        "notes": {
+          "ptBR": null,
+          "en": "Lost Ashes of War duplication is intentionally excluded."
+        }
+      }
+    ],
+    "summary": {
+      "ptBR": null,
+      "en": "Provides the Carian Sovereignty skill with Magic as its native affinity; usable on any infusable sword (except for Backhand Blades and Colossal Swords): Daggers, Throwing Blades Shadow of the Erdtree, Light Greatswords Shadow of the Erdtree, Greatswords, Thrusting Swords, Heavy Thrusting Swords, Curved Swords, Curved Greatswords, Katanas, Great Katanas Shadow of the Erdtree, and Twinblades."
+    },
+    "skillType": null,
+    "affinity": {
+      "ptBR": null,
+      "en": "Magic"
+    },
+    "compatibleEquipment": {
+      "ptBR": null,
+      "en": [
+        "any infusable sword (except for Backhand Blades and Colossal Swords): Daggers, Throwing Blades Shadow of the Erdtree, Light Greatswords Shadow of the Erdtree, Greatswords, Thrusting Swords, Heavy Thrusting Swords, Curved Swords, Curved Greatswords, Katanas, Great Katanas Shadow of the Erdtree, and Twinblades"
+      ]
+    },
+    "fpCost": null,
+    "specialEffects": null,
+    "limitations": {
+      "ptBR": null,
+      "en": "Cannot be applied to incompatible or non-infusable armaments; affinity choices can depend on owned whetblades."
+    },
+    "relevantNotes": {
+      "ptBR": null,
+      "en": "Official Brazilian Portuguese localization and FP cost remain pending direct in-game verification."
+    },
+    "sourceRefs": [
+      "fandom-carian-sovereignty",
+      "wiki-gg-dlc-ashes",
+      "gamingbolt-dlc-ashes",
+      "saika-dlc-ptbr"
+    ],
+    "verificationStatus": "partial"
+  },
+  {
+    "id": "flame-skewer",
+    "contentPack": "shadow-of-the-erdtree",
+    "name": {
+      "ptBR": null,
+      "en": "Flame Skewer"
+    },
+    "primaryLocation": {
+      "ptBR": null,
+      "en": "Horned Warrior"
+    },
+    "primaryAcquisition": {
+      "ptBR": null,
+      "en": "Church of the Crusade or Belurat, Tower Settlement * Dropped by Fire Knight Queelign during his second invasion. If the first invasion was in Belurat, he will invade again when entering the Church of the Crusade. If the first invasion was in the Church, he will invade again when entering a small plaza filled with Shadow Undead in eastern Belurat, Tower Settlement (head out the north door from the Small Private Altar Site of Grace, then head down the stairs east past a Horned Warrior, and finally go north to reach the spot). ** This second invasion will only happen if his previous invasion has been defeated. The invasions will keep happening until he has been defeated at each respective spot."
+    },
+    "acquisitionMethods": [
+      {
+        "location": {
+          "ptBR": null,
+          "en": "Horned Warrior"
+        },
+        "method": {
+          "ptBR": null,
+          "en": "Church of the Crusade or Belurat, Tower Settlement * Dropped by Fire Knight Queelign during his second invasion. If the first invasion was in Belurat, he will invade again when entering the Church of the Crusade. If the first invasion was in the Church, he will invade again when entering a small plaza filled with Shadow Undead in eastern Belurat, Tower Settlement (head out the north door from the Small Private Altar Site of Grace, then head down the stairs east past a Horned Warrior, and finally go north to reach the spot). ** This second invasion will only happen if his previous invasion has been defeated. The invasions will keep happening until he has been defeated at each respective spot."
+        },
+        "notes": {
+          "ptBR": null,
+          "en": "Lost Ashes of War duplication is intentionally excluded."
+        }
+      }
+    ],
+    "summary": {
+      "ptBR": null,
+      "en": "Provides the Flame Skewer skill with Flame Art as its native affinity; usable on any infusable medium, large, or colossal weapon capable of thrusting, and thrusting shields: Straight Swords, Light Greatswords Shadow of the Erdtree, Greatswords, Colossal Swords, Thrusting Swords, Heavy Thrusting Swords, Katanas, Great Katanas Shadow of the Erdtree, Twinblades, Spears, Great Spears, Halberds, and Thrusting Shields Shadow of the Erdtree."
+    },
+    "skillType": null,
+    "affinity": {
+      "ptBR": null,
+      "en": "Flame Art"
+    },
+    "compatibleEquipment": {
+      "ptBR": null,
+      "en": [
+        "any infusable medium, large, or colossal weapon capable of thrusting, and thrusting shields: Straight Swords, Light Greatswords Shadow of the Erdtree, Greatswords, Colossal Swords, Thrusting Swords, Heavy Thrusting Swords, Katanas, Great Katanas Shadow of the Erdtree, Twinblades, Spears, Great Spears, Halberds, and Thrusting Shields Shadow of the Erdtree"
+      ]
+    },
+    "fpCost": null,
+    "specialEffects": null,
+    "limitations": {
+      "ptBR": null,
+      "en": "Cannot be applied to incompatible or non-infusable armaments; affinity choices can depend on owned whetblades."
+    },
+    "relevantNotes": {
+      "ptBR": null,
+      "en": "Official Brazilian Portuguese localization and FP cost remain pending direct in-game verification."
+    },
+    "sourceRefs": [
+      "fandom-flame-skewer",
+      "wiki-gg-dlc-ashes",
+      "gamingbolt-dlc-ashes",
+      "saika-dlc-ptbr"
+    ],
+    "verificationStatus": "partial"
+  },
+  {
+    "id": "flame-spear",
+    "contentPack": "shadow-of-the-erdtree",
+    "name": {
+      "ptBR": null,
+      "en": "Flame Spear"
+    },
+    "primaryLocation": {
+      "ptBR": null,
+      "en": "Storehouse, Seventh Floor"
+    },
+    "primaryAcquisition": {
+      "ptBR": null,
+      "en": "Shadow Keep * Dropped by Fire Knight Kood, along with the Winged Serpent Helm. He's found by climbing the statue in the middle of the sixth floor, most easily reached by heading north from the Storehouse, Seventh Floor Site of Grace and dropping down a floor, then turning around and walking up the central pillar before crossing a statue to a doorway in the eastern wall. Go up the stairs to the right and cross the bridge to meet him."
+    },
+    "acquisitionMethods": [
+      {
+        "location": {
+          "ptBR": null,
+          "en": "Storehouse, Seventh Floor"
+        },
+        "method": {
+          "ptBR": null,
+          "en": "Shadow Keep * Dropped by Fire Knight Kood, along with the Winged Serpent Helm. He's found by climbing the statue in the middle of the sixth floor, most easily reached by heading north from the Storehouse, Seventh Floor Site of Grace and dropping down a floor, then turning around and walking up the central pillar before crossing a statue to a doorway in the eastern wall. Go up the stairs to the right and cross the bridge to meet him."
+        },
+        "notes": {
+          "ptBR": null,
+          "en": "Lost Ashes of War duplication is intentionally excluded."
+        }
+      }
+    ],
+    "summary": {
+      "ptBR": null,
+      "en": "Provides the Flame Spear skill with Flame Art as its native affinity; usable on any infusable weapon capable of thrusting, and thrusting shields (except for Throwing Blades, Claws, and Backhand Blades): Daggers, Straight Swords, Light Greatswords Shadow of the Erdtree, Greatswords, Colossal Swords, Thrusting Swords, Heavy Thrusting Swords, Katanas, Great Katanas Shadow of the Erdtree, Twinblades, Spears, Great Spears, Halberds, and Thrusting Shields Shadow of the Erdtree."
+    },
+    "skillType": null,
+    "affinity": {
+      "ptBR": null,
+      "en": "Flame Art"
+    },
+    "compatibleEquipment": {
+      "ptBR": null,
+      "en": [
+        "any infusable weapon capable of thrusting, and thrusting shields (except for Throwing Blades, Claws, and Backhand Blades): Daggers, Straight Swords, Light Greatswords Shadow of the Erdtree, Greatswords, Colossal Swords, Thrusting Swords, Heavy Thrusting Swords, Katanas, Great Katanas Shadow of the Erdtree, Twinblades, Spears, Great Spears, Halberds, and Thrusting Shields Shadow of the Erdtree"
+      ]
+    },
+    "fpCost": null,
+    "specialEffects": null,
+    "limitations": {
+      "ptBR": null,
+      "en": "Cannot be applied to incompatible or non-infusable armaments; affinity choices can depend on owned whetblades."
+    },
+    "relevantNotes": {
+      "ptBR": null,
+      "en": "Official Brazilian Portuguese localization and FP cost remain pending direct in-game verification."
+    },
+    "sourceRefs": [
+      "fandom-flame-spear",
+      "wiki-gg-dlc-ashes",
+      "gamingbolt-dlc-ashes",
+      "saika-dlc-ptbr"
+    ],
+    "verificationStatus": "partial"
+  },
+  {
+    "id": "blinkbolt",
+    "contentPack": "shadow-of-the-erdtree",
+    "name": {
+      "ptBR": null,
+      "en": "Blinkbolt"
+    },
+    "primaryLocation": {
+      "ptBR": null,
+      "en": "Fog Rift Catacombs"
+    },
+    "primaryAcquisition": {
+      "ptBR": null,
+      "en": "Guaranteed Loot: Fog Rift Catacombs * From the Fog Rift Catacombs Site of Grace proceed to the third room with a dropping, spiked ceiling. Reach the end of the room, being mindful of the hole in the second safe cubbyhole, and use the altar to jump into a hole in the spiked ceiling after it has fallen down. Jumping out of the hole once the ceiling is at the top leads to a platform with a chest holding the Ash of War."
+    },
+    "acquisitionMethods": [
+      {
+        "location": {
+          "ptBR": null,
+          "en": "Fog Rift Catacombs"
+        },
+        "method": {
+          "ptBR": null,
+          "en": "Guaranteed Loot: Fog Rift Catacombs * From the Fog Rift Catacombs Site of Grace proceed to the third room with a dropping, spiked ceiling. Reach the end of the room, being mindful of the hole in the second safe cubbyhole, and use the altar to jump into a hole in the spiked ceiling after it has fallen down. Jumping out of the hole once the ceiling is at the top leads to a platform with a chest holding the Ash of War."
+        },
+        "notes": {
+          "ptBR": null,
+          "en": "Lost Ashes of War duplication is intentionally excluded."
+        }
+      }
+    ],
+    "summary": {
+      "ptBR": null,
+      "en": "Provides the Blinkbolt skill with Lightning as its native affinity; usable on any infusable melee weapon or Thrusting Shield (except for Perfume Bottles): Daggers, Throwing Blades Shadow of the Erdtree, Straight Swords, Light Greatswords Shadow of the Erdtree, Greatswords, Colossal Swords, Thrusting Swords, Heavy Thrusting Swords, Curved Swords, Curved Greatswords, Backhand Blades Shadow of the Erdtree, Katanas, Great Katanas Shadow of the Erdtree, Twinblades, Axes, Greataxes, Hammers, Flails, Great Hammers, Colossal Weapons, Spears, Great Spears, Halberds, Reapers, Whips, Fists, Hand-to-Hand Shadow of the Erdtree, Claws, Beast Claws Shadow of the Erdtree, and Thrusting Shields Shadow of the Erdtree."
+    },
+    "skillType": null,
+    "affinity": {
+      "ptBR": null,
+      "en": "Lightning"
+    },
+    "compatibleEquipment": {
+      "ptBR": null,
+      "en": [
+        "any infusable melee weapon or Thrusting Shield (except for Perfume Bottles): Daggers, Throwing Blades Shadow of the Erdtree, Straight Swords, Light Greatswords Shadow of the Erdtree, Greatswords, Colossal Swords, Thrusting Swords, Heavy Thrusting Swords, Curved Swords, Curved Greatswords, Backhand Blades Shadow of the Erdtree, Katanas, Great Katanas Shadow of the Erdtree, Twinblades, Axes, Greataxes, Hammers, Flails, Great Hammers, Colossal Weapons, Spears, Great Spears, Halberds, Reapers, Whips, Fists, Hand-to-Hand Shadow of the Erdtree, Claws, Beast Claws Shadow of the Erdtree, and Thrusting Shields Shadow of the Erdtree"
+      ]
+    },
+    "fpCost": null,
+    "specialEffects": null,
+    "limitations": {
+      "ptBR": null,
+      "en": "Cannot be applied to incompatible or non-infusable armaments; affinity choices can depend on owned whetblades."
+    },
+    "relevantNotes": {
+      "ptBR": null,
+      "en": "Official Brazilian Portuguese localization and FP cost remain pending direct in-game verification."
+    },
+    "sourceRefs": [
+      "fandom-blinkbolt",
+      "wiki-gg-dlc-ashes",
+      "gamingbolt-dlc-ashes",
+      "saika-dlc-ptbr"
+    ],
+    "verificationStatus": "partial"
+  },
+  {
+    "id": "aspects-of-the-crucible-wings",
+    "contentPack": "shadow-of-the-erdtree",
+    "name": {
+      "ptBR": null,
+      "en": "Aspects of the Crucible: Wings"
+    },
+    "primaryLocation": {
+      "ptBR": null,
+      "en": "Scadu Altus"
+    },
+    "primaryAcquisition": {
+      "ptBR": null,
+      "en": "Ash of War: Aspects of the Crucible: Wings is acquired upon defeating the Black Knight Edredd boss at the Fort of Reprimand, located on the Scadu Altus."
+    },
+    "acquisitionMethods": [
+      {
+        "location": {
+          "ptBR": null,
+          "en": "Scadu Altus"
+        },
+        "method": {
+          "ptBR": null,
+          "en": "Ash of War: Aspects of the Crucible: Wings is acquired upon defeating the Black Knight Edredd boss at the Fort of Reprimand, located on the Scadu Altus."
+        },
+        "notes": {
+          "ptBR": null,
+          "en": "Lost Ashes of War duplication is intentionally excluded."
+        }
+      }
+    ],
+    "summary": {
+      "ptBR": null,
+      "en": "Provides the Aspects of the Crucible: Wings skill with Sacred as its native affinity; usable on compatible infusable armaments."
+    },
+    "skillType": null,
+    "affinity": {
+      "ptBR": null,
+      "en": "Sacred"
+    },
+    "compatibleEquipment": {
+      "ptBR": null,
+      "en": [
+        "compatible infusable armaments"
+      ]
+    },
+    "fpCost": null,
+    "specialEffects": null,
+    "limitations": {
+      "ptBR": null,
+      "en": "Cannot be applied to incompatible or non-infusable armaments; affinity choices can depend on owned whetblades."
+    },
+    "relevantNotes": {
+      "ptBR": null,
+      "en": "Official Brazilian Portuguese localization and FP cost remain pending direct in-game verification."
+    },
+    "sourceRefs": [
+      "fandom-aspects-of-the-crucible-wings",
+      "wiki-gg-dlc-ashes",
+      "gamingbolt-dlc-ashes",
+      "saika-dlc-ptbr"
+    ],
+    "verificationStatus": "partial"
+  },
+  {
+    "id": "the-poison-flower-blooms-twice",
+    "contentPack": "shadow-of-the-erdtree",
+    "name": {
+      "ptBR": null,
+      "en": "The Poison Flower Blooms Twice"
+    },
+    "primaryLocation": {
+      "ptBR": null,
+      "en": "Rauh Base"
+    },
+    "primaryAcquisition": {
+      "ptBR": null,
+      "en": "Ancient Ruins of Rauh * Dropped by a Teardrop Scarab found by starting at the Ravine North Site of Grace in Rauh Base, then heading south to cross the river and find it in a small pool of rot near some ruins (north of the large bridge above)."
+    },
+    "acquisitionMethods": [
+      {
+        "location": {
+          "ptBR": null,
+          "en": "Rauh Base"
+        },
+        "method": {
+          "ptBR": null,
+          "en": "Ancient Ruins of Rauh * Dropped by a Teardrop Scarab found by starting at the Ravine North Site of Grace in Rauh Base, then heading south to cross the river and find it in a small pool of rot near some ruins (north of the large bridge above)."
+        },
+        "notes": {
+          "ptBR": null,
+          "en": "Lost Ashes of War duplication is intentionally excluded."
+        }
+      }
+    ],
+    "summary": {
+      "ptBR": null,
+      "en": "Provides the The Poison Flower Blooms Twice skill with Poison as its native affinity; usable on any infusable melee weapon or Thrusting Shield (except for Perfume Bottles): Daggers, Throwing Blades Shadow of the Erdtree, Straight Swords, Light Greatswords Shadow of the Erdtree, Greatswords, Colossal Swords, Thrusting Swords, Heavy Thrusting Swords, Curved Swords, Curved Greatswords, Backhand Blades Shadow of the Erdtree, Katanas, Great Katanas Shadow of the Erdtree, Twinblades, Axes, Greataxes, Hammers, Flails, Great Hammers, Colossal Weapons, Spears, Great Spears, Halberds, Reapers, Whips, Fists, Hand-to-Hand Shadow of the Erdtree, Claws, Beast Claws Shadow of the Erdtree, and Thrusting Shields Shadow of the Erdtree."
+    },
+    "skillType": null,
+    "affinity": {
+      "ptBR": null,
+      "en": "Poison"
+    },
+    "compatibleEquipment": {
+      "ptBR": null,
+      "en": [
+        "any infusable melee weapon or Thrusting Shield (except for Perfume Bottles): Daggers, Throwing Blades Shadow of the Erdtree, Straight Swords, Light Greatswords Shadow of the Erdtree, Greatswords, Colossal Swords, Thrusting Swords, Heavy Thrusting Swords, Curved Swords, Curved Greatswords, Backhand Blades Shadow of the Erdtree, Katanas, Great Katanas Shadow of the Erdtree, Twinblades, Axes, Greataxes, Hammers, Flails, Great Hammers, Colossal Weapons, Spears, Great Spears, Halberds, Reapers, Whips, Fists, Hand-to-Hand Shadow of the Erdtree, Claws, Beast Claws Shadow of the Erdtree, and Thrusting Shields Shadow of the Erdtree"
+      ]
+    },
+    "fpCost": null,
+    "specialEffects": null,
+    "limitations": {
+      "ptBR": null,
+      "en": "Cannot be applied to incompatible or non-infusable armaments; affinity choices can depend on owned whetblades."
+    },
+    "relevantNotes": {
+      "ptBR": null,
+      "en": "Official Brazilian Portuguese localization and FP cost remain pending direct in-game verification."
+    },
+    "sourceRefs": [
+      "fandom-the-poison-flower-blooms-twice",
+      "wiki-gg-dlc-ashes",
+      "gamingbolt-dlc-ashes",
+      "saika-dlc-ptbr"
+    ],
+    "verificationStatus": "partial"
+  },
+  {
+    "id": "ghostflame-call",
+    "contentPack": "shadow-of-the-erdtree",
+    "name": {
+      "ptBR": null,
+      "en": "Ghostflame Call"
+    },
+    "primaryLocation": {
+      "ptBR": null,
+      "en": "Charo's Hidden Grave"
+    },
+    "primaryAcquisition": {
+      "ptBR": null,
+      "en": "Charo's Hidden Grave * Dropped by a Death Rite Bird found in the body of water northwest of Charo's Hidden Grave Site of Grace. It only appears after approaching the big central grave."
+    },
+    "acquisitionMethods": [
+      {
+        "location": {
+          "ptBR": null,
+          "en": "Charo's Hidden Grave"
+        },
+        "method": {
+          "ptBR": null,
+          "en": "Charo's Hidden Grave * Dropped by a Death Rite Bird found in the body of water northwest of Charo's Hidden Grave Site of Grace. It only appears after approaching the big central grave."
+        },
+        "notes": {
+          "ptBR": null,
+          "en": "Lost Ashes of War duplication is intentionally excluded."
+        }
+      }
+    ],
+    "summary": {
+      "ptBR": null,
+      "en": "Provides the Ghostflame Call skill with Cold as its native affinity; usable on any infusable sword or spear (except for small- and fist-sized weapons, Twinblades, and Backhand Blades): Straight Swords, Light Greatswords Shadow of the Erdtree, Greatswords, Colossal Swords, Thrusting Swords, Heavy Thrusting Swords, Curved Swords, Curved Greatswords, Katanas, Great Katanas Shadow of the Erdtree, Spears, Great Spears, and Halberds."
+    },
+    "skillType": null,
+    "affinity": {
+      "ptBR": null,
+      "en": "Cold"
+    },
+    "compatibleEquipment": {
+      "ptBR": null,
+      "en": [
+        "any infusable sword or spear (except for small- and fist-sized weapons, Twinblades, and Backhand Blades): Straight Swords, Light Greatswords Shadow of the Erdtree, Greatswords, Colossal Swords, Thrusting Swords, Heavy Thrusting Swords, Curved Swords, Curved Greatswords, Katanas, Great Katanas Shadow of the Erdtree, Spears, Great Spears, and Halberds"
+      ]
+    },
+    "fpCost": null,
+    "specialEffects": null,
+    "limitations": {
+      "ptBR": null,
+      "en": "Cannot be applied to incompatible or non-infusable armaments; affinity choices can depend on owned whetblades."
+    },
+    "relevantNotes": {
+      "ptBR": null,
+      "en": "Official Brazilian Portuguese localization and FP cost remain pending direct in-game verification."
+    },
+    "sourceRefs": [
+      "fandom-ghostflame-call",
+      "wiki-gg-dlc-ashes",
+      "gamingbolt-dlc-ashes",
+      "saika-dlc-ptbr"
+    ],
+    "verificationStatus": "partial"
+  },
+  {
+    "id": "divine-beast-frost-stomp",
+    "contentPack": "shadow-of-the-erdtree",
+    "name": {
+      "ptBR": null,
+      "en": "Divine Beast Frost Stomp"
+    },
+    "primaryLocation": {
+      "ptBR": null,
+      "en": "Location pending precise normalization"
+    },
+    "primaryAcquisition": {
+      "ptBR": null,
+      "en": "Acquisition pending cross-source verification"
+    },
+    "acquisitionMethods": [
+      {
+        "location": {
+          "ptBR": null,
+          "en": "Location pending precise normalization"
+        },
+        "method": {
+          "ptBR": null,
+          "en": "Acquire the removable Ash of War item in the base game"
+        },
+        "notes": {
+          "ptBR": null,
+          "en": "Lost Ashes of War duplication is intentionally excluded."
+        }
+      }
+    ],
+    "summary": {
+      "ptBR": null,
+      "en": "Provides the Divine Beast Frost Stomp skill with Cold as its native affinity; usable on compatible infusable armaments."
+    },
+    "skillType": null,
+    "affinity": {
+      "ptBR": null,
+      "en": "Cold"
+    },
+    "compatibleEquipment": {
+      "ptBR": null,
+      "en": [
+        "compatible infusable armaments"
+      ]
+    },
+    "fpCost": null,
+    "specialEffects": null,
+    "limitations": {
+      "ptBR": null,
+      "en": "Cannot be applied to incompatible or non-infusable armaments; affinity choices can depend on owned whetblades."
+    },
+    "relevantNotes": {
+      "ptBR": null,
+      "en": "Official Brazilian Portuguese localization and FP cost remain pending direct in-game verification."
+    },
+    "sourceRefs": [
+      "fandom-divine-beast-frost-stomp",
+      "wiki-gg-dlc-ashes",
+      "gamingbolt-dlc-ashes",
+      "saika-dlc-ptbr"
+    ],
+    "verificationStatus": "partial"
+  },
+  {
+    "id": "shriek-of-sorrow",
+    "contentPack": "shadow-of-the-erdtree",
+    "name": {
+      "ptBR": null,
+      "en": "Shriek of Sorrow"
+    },
+    "primaryLocation": {
+      "ptBR": null,
+      "en": "Horned Warrior"
+    },
+    "primaryAcquisition": {
+      "ptBR": null,
+      "en": "Guaranteed Loot: Belurat, Tower Settlement * Found behind a statue in the middle of a plaza in Belurat. Head out the north door from the Small Private Altar Site of Grace, then head down the stairs east past a Horned Warrior, and finally go north to reach the plaza with the statue."
+    },
+    "acquisitionMethods": [
+      {
+        "location": {
+          "ptBR": null,
+          "en": "Horned Warrior"
+        },
+        "method": {
+          "ptBR": null,
+          "en": "Guaranteed Loot: Belurat, Tower Settlement * Found behind a statue in the middle of a plaza in Belurat. Head out the north door from the Small Private Altar Site of Grace, then head down the stairs east past a Horned Warrior, and finally go north to reach the plaza with the statue."
+        },
+        "notes": {
+          "ptBR": null,
+          "en": "Lost Ashes of War duplication is intentionally excluded."
+        }
+      }
+    ],
+    "summary": {
+      "ptBR": null,
+      "en": "Provides the Shriek of Sorrow skill with Occult as its native affinity; usable on any infusable melee weapon or Thrusting Shield (except for Perfume Bottles): Daggers, Throwing Blades Shadow of the Erdtree, Straight Swords, Light Greatswords Shadow of the Erdtree, Greatswords, Colossal Swords, Thrusting Swords, Heavy Thrusting Swords, Curved Swords, Curved Greatswords, Backhand Blades Shadow of the Erdtree, Katanas, Great Katanas Shadow of the Erdtree, Twinblades, Axes, Greataxes, Hammers, Flails, Great Hammers, Colossal Weapons, Spears, Great Spears, Halberds, Reapers, Whips, Fists, Hand-to-Hand Shadow of the Erdtree, Claws, Beast Claws Shadow of the Erdtree, and Thrusting Shields Shadow of the Erdtree."
+    },
+    "skillType": null,
+    "affinity": {
+      "ptBR": null,
+      "en": "Occult"
+    },
+    "compatibleEquipment": {
+      "ptBR": null,
+      "en": [
+        "any infusable melee weapon or Thrusting Shield (except for Perfume Bottles): Daggers, Throwing Blades Shadow of the Erdtree, Straight Swords, Light Greatswords Shadow of the Erdtree, Greatswords, Colossal Swords, Thrusting Swords, Heavy Thrusting Swords, Curved Swords, Curved Greatswords, Backhand Blades Shadow of the Erdtree, Katanas, Great Katanas Shadow of the Erdtree, Twinblades, Axes, Greataxes, Hammers, Flails, Great Hammers, Colossal Weapons, Spears, Great Spears, Halberds, Reapers, Whips, Fists, Hand-to-Hand Shadow of the Erdtree, Claws, Beast Claws Shadow of the Erdtree, and Thrusting Shields Shadow of the Erdtree"
+      ]
+    },
+    "fpCost": null,
+    "specialEffects": null,
+    "limitations": {
+      "ptBR": null,
+      "en": "Cannot be applied to incompatible or non-infusable armaments; affinity choices can depend on owned whetblades."
+    },
+    "relevantNotes": {
+      "ptBR": null,
+      "en": "Official Brazilian Portuguese localization and FP cost remain pending direct in-game verification."
+    },
+    "sourceRefs": [
+      "fandom-shriek-of-sorrow",
+      "wiki-gg-dlc-ashes",
+      "gamingbolt-dlc-ashes",
+      "saika-dlc-ptbr"
+    ],
+    "verificationStatus": "partial"
+  },
+  {
+    "id": "palm-blast",
+    "contentPack": "shadow-of-the-erdtree",
+    "name": {
+      "ptBR": null,
+      "en": "Palm Blast"
+    },
+    "primaryLocation": {
+      "ptBR": null,
+      "en": "Ancient Ruins of Rauh"
+    },
+    "primaryAcquisition": {
+      "ptBR": null,
+      "en": "Gravesite Plain * Equipped to the Dryleaf Arts given by Dryleaf Dane after defeating him in combat at the northwest section Moorth Ruins (requires the May the Best Win gesture). ** <span style=\"color:red;\">WARNING:</span> Dane will disappear from this spot after the Sealing Tree in Ancient Ruins of Rauh is burnt."
+    },
+    "acquisitionMethods": [
+      {
+        "location": {
+          "ptBR": null,
+          "en": "Ancient Ruins of Rauh"
+        },
+        "method": {
+          "ptBR": null,
+          "en": "Gravesite Plain * Equipped to the Dryleaf Arts given by Dryleaf Dane after defeating him in combat at the northwest section Moorth Ruins (requires the May the Best Win gesture). ** <span style=\"color:red;\">WARNING:</span> Dane will disappear from this spot after the Sealing Tree in Ancient Ruins of Rauh is burnt."
+        },
+        "notes": {
+          "ptBR": null,
+          "en": "Lost Ashes of War duplication is intentionally excluded."
+        }
+      }
+    ],
+    "summary": {
+      "ptBR": null,
+      "en": "Provides the Palm Blast skill with Standard as its native affinity; usable on any infusable Hand-to-Hand Shadow of the Erdtree weapon."
+    },
+    "skillType": null,
+    "affinity": {
+      "ptBR": null,
+      "en": "Standard"
+    },
+    "compatibleEquipment": {
+      "ptBR": null,
+      "en": [
+        "any infusable Hand-to-Hand Shadow of the Erdtree weapon"
+      ]
+    },
+    "fpCost": null,
+    "specialEffects": null,
+    "limitations": {
+      "ptBR": null,
+      "en": "Cannot be applied to incompatible or non-infusable armaments; affinity choices can depend on owned whetblades."
+    },
+    "relevantNotes": {
+      "ptBR": null,
+      "en": "Official Brazilian Portuguese localization and FP cost remain pending direct in-game verification."
+    },
+    "sourceRefs": [
+      "fandom-palm-blast",
+      "wiki-gg-dlc-ashes",
+      "gamingbolt-dlc-ashes",
+      "saika-dlc-ptbr"
+    ],
+    "verificationStatus": "partial"
+  },
+  {
+    "id": "dryleaf-whirlwind",
+    "contentPack": "shadow-of-the-erdtree",
+    "name": {
+      "ptBR": null,
+      "en": "Dryleaf Whirlwind"
+    },
+    "primaryLocation": {
+      "ptBR": null,
+      "en": "Rauh Ancient Ruins, East"
+    },
+    "primaryAcquisition": {
+      "ptBR": null,
+      "en": "Guaranteed Loot: Ancient Ruins of Rauh * Found just northeast of the Rauh Ancient Ruins, East Site of Grace, at the top of a waterfall (the top of the waterfall is on the same level as the Site of Grace)."
+    },
+    "acquisitionMethods": [
+      {
+        "location": {
+          "ptBR": null,
+          "en": "Rauh Ancient Ruins, East"
+        },
+        "method": {
+          "ptBR": null,
+          "en": "Guaranteed Loot: Ancient Ruins of Rauh * Found just northeast of the Rauh Ancient Ruins, East Site of Grace, at the top of a waterfall (the top of the waterfall is on the same level as the Site of Grace)."
+        },
+        "notes": {
+          "ptBR": null,
+          "en": "Lost Ashes of War duplication is intentionally excluded."
+        }
+      }
+    ],
+    "summary": {
+      "ptBR": null,
+      "en": "Provides the Dryleaf Whirlwind skill with Standard as its native affinity; usable on any infusable Hand-to-Hand Shadow of the Erdtree weapon."
+    },
+    "skillType": null,
+    "affinity": {
+      "ptBR": null,
+      "en": "Standard"
+    },
+    "compatibleEquipment": {
+      "ptBR": null,
+      "en": [
+        "any infusable Hand-to-Hand Shadow of the Erdtree weapon"
+      ]
+    },
+    "fpCost": null,
+    "specialEffects": null,
+    "limitations": {
+      "ptBR": null,
+      "en": "Cannot be applied to incompatible or non-infusable armaments; affinity choices can depend on owned whetblades."
+    },
+    "relevantNotes": {
+      "ptBR": null,
+      "en": "Official Brazilian Portuguese localization and FP cost remain pending direct in-game verification."
+    },
+    "sourceRefs": [
+      "fandom-dryleaf-whirlwind",
+      "wiki-gg-dlc-ashes",
+      "gamingbolt-dlc-ashes",
+      "saika-dlc-ptbr"
+    ],
+    "verificationStatus": "partial"
+  },
+  {
+    "id": "wall-of-sparks",
+    "contentPack": "shadow-of-the-erdtree",
+    "name": {
+      "ptBR": null,
+      "en": "Wall of Sparks"
+    },
+    "primaryLocation": {
+      "ptBR": null,
+      "en": "Hermit Jar Dweller"
+    },
+    "primaryAcquisition": {
+      "ptBR": null,
+      "en": "Guaranteed Loot: Shadow Keep * From the Storehouse, First Floor Site of Grace, head west to an elevator going down a floor. Take the first right exit and then the one out to a balcony on the left (guarded by an ambushing Hermit Jar Dweller) to find the item."
+    },
+    "acquisitionMethods": [
+      {
+        "location": {
+          "ptBR": null,
+          "en": "Hermit Jar Dweller"
+        },
+        "method": {
+          "ptBR": null,
+          "en": "Guaranteed Loot: Shadow Keep * From the Storehouse, First Floor Site of Grace, head west to an elevator going down a floor. Take the first right exit and then the one out to a balcony on the left (guarded by an ambushing Hermit Jar Dweller) to find the item."
+        },
+        "notes": {
+          "ptBR": null,
+          "en": "Lost Ashes of War duplication is intentionally excluded."
+        }
+      }
+    ],
+    "summary": {
+      "ptBR": null,
+      "en": "Provides the Wall of Sparks skill with Standard as its native affinity; usable on any infusable Perfume Bottles Shadow of the Erdtree."
+    },
+    "skillType": null,
+    "affinity": {
+      "ptBR": null,
+      "en": "Standard"
+    },
+    "compatibleEquipment": {
+      "ptBR": null,
+      "en": [
+        "any infusable Perfume Bottles Shadow of the Erdtree"
+      ]
+    },
+    "fpCost": null,
+    "specialEffects": null,
+    "limitations": {
+      "ptBR": null,
+      "en": "Cannot be applied to incompatible or non-infusable armaments; affinity choices can depend on owned whetblades."
+    },
+    "relevantNotes": {
+      "ptBR": null,
+      "en": "Official Brazilian Portuguese localization and FP cost remain pending direct in-game verification."
+    },
+    "sourceRefs": [
+      "fandom-wall-of-sparks",
+      "wiki-gg-dlc-ashes",
+      "gamingbolt-dlc-ashes",
+      "saika-dlc-ptbr"
+    ],
+    "verificationStatus": "partial"
+  },
+  {
+    "id": "rolling-sparks",
+    "contentPack": "shadow-of-the-erdtree",
+    "name": {
+      "ptBR": null,
+      "en": "Rolling Sparks"
+    },
+    "primaryLocation": {
+      "ptBR": null,
+      "en": "Shadow Keep Main Gate"
+    },
+    "primaryAcquisition": {
+      "ptBR": null,
+      "en": "Scadu Altus * Dropped by a flying Scarab on top of a hill east of the northern parts of the Messmer Soldier encampment a bit south of Shadow Keep. Also directly south of the Shadow Keep Main Gate Site of Grace."
+    },
+    "acquisitionMethods": [
+      {
+        "location": {
+          "ptBR": null,
+          "en": "Shadow Keep Main Gate"
+        },
+        "method": {
+          "ptBR": null,
+          "en": "Scadu Altus * Dropped by a flying Scarab on top of a hill east of the northern parts of the Messmer Soldier encampment a bit south of Shadow Keep. Also directly south of the Shadow Keep Main Gate Site of Grace."
+        },
+        "notes": {
+          "ptBR": null,
+          "en": "Lost Ashes of War duplication is intentionally excluded."
+        }
+      }
+    ],
+    "summary": {
+      "ptBR": null,
+      "en": "Provides the Rolling Sparks skill with Standard as its native affinity; usable on any infusable Perfume Bottles Shadow of the Erdtree."
+    },
+    "skillType": null,
+    "affinity": {
+      "ptBR": null,
+      "en": "Standard"
+    },
+    "compatibleEquipment": {
+      "ptBR": null,
+      "en": [
+        "any infusable Perfume Bottles Shadow of the Erdtree"
+      ]
+    },
+    "fpCost": null,
+    "specialEffects": null,
+    "limitations": {
+      "ptBR": null,
+      "en": "Cannot be applied to incompatible or non-infusable armaments; affinity choices can depend on owned whetblades."
+    },
+    "relevantNotes": {
+      "ptBR": null,
+      "en": "Official Brazilian Portuguese localization and FP cost remain pending direct in-game verification."
+    },
+    "sourceRefs": [
+      "fandom-rolling-sparks",
+      "wiki-gg-dlc-ashes",
+      "gamingbolt-dlc-ashes",
+      "saika-dlc-ptbr"
+    ],
+    "verificationStatus": "partial"
+  },
+  {
+    "id": "igons-drake-hunt",
+    "contentPack": "shadow-of-the-erdtree",
+    "name": {
+      "ptBR": null,
+      "en": "Igon's Drake Hunt"
+    },
+    "primaryLocation": {
+      "ptBR": null,
+      "en": "Bayle the Dread"
+    },
+    "primaryAcquisition": {
+      "ptBR": null,
+      "en": "Guaranteed Loot: Jagged Peak * Found on Igon's body if he was summoned to help kill Bayle the Dread (Igon needs to have been summoned for the successful attempt, but need not have survived). ** <span style=\"color:red;\">WARNING:</span> This Ash of War will not be gained if Bayle is killed without Igon having been summoned, or if Igon is killed by the player."
+    },
+    "acquisitionMethods": [
+      {
+        "location": {
+          "ptBR": null,
+          "en": "Bayle the Dread"
+        },
+        "method": {
+          "ptBR": null,
+          "en": "Guaranteed Loot: Jagged Peak * Found on Igon's body if he was summoned to help kill Bayle the Dread (Igon needs to have been summoned for the successful attempt, but need not have survived). ** <span style=\"color:red;\">WARNING:</span> This Ash of War will not be gained if Bayle is killed without Igon having been summoned, or if Igon is killed by the player."
+        },
+        "notes": {
+          "ptBR": null,
+          "en": "Lost Ashes of War duplication is intentionally excluded."
+        }
+      }
+    ],
+    "summary": {
+      "ptBR": null,
+      "en": "Provides the Igon's Drake Hunt skill with Standard as its native affinity; usable on any infusable Greatbows."
+    },
+    "skillType": null,
+    "affinity": {
+      "ptBR": null,
+      "en": "Standard"
+    },
+    "compatibleEquipment": {
+      "ptBR": null,
+      "en": [
+        "any infusable Greatbows"
+      ]
+    },
+    "fpCost": null,
+    "specialEffects": null,
+    "limitations": {
+      "ptBR": null,
+      "en": "Cannot be applied to incompatible or non-infusable armaments; affinity choices can depend on owned whetblades."
+    },
+    "relevantNotes": {
+      "ptBR": null,
+      "en": "Official Brazilian Portuguese localization and FP cost remain pending direct in-game verification."
+    },
+    "sourceRefs": [
+      "fandom-igons-drake-hunt",
+      "wiki-gg-dlc-ashes",
+      "gamingbolt-dlc-ashes",
+      "saika-dlc-ptbr"
+    ],
+    "verificationStatus": "partial"
+  },
+  {
+    "id": "shield-strike",
+    "contentPack": "shadow-of-the-erdtree",
+    "name": {
+      "ptBR": null,
+      "en": "Shield Strike"
+    },
+    "primaryLocation": {
+      "ptBR": null,
+      "en": "Fire Knight"
+    },
+    "primaryAcquisition": {
+      "ptBR": null,
+      "en": "Guaranteed Loot: Shadow Keep * Found pre-equipped to the Dueling Shield, which in turn is found by taking the stairs up on the other side of the statue at the Storehouse, First Floor Site of Grace then taking a left and going up the first stairs to the right. Continue on that path to another set of stairs to another floor up to find a balcony to the right. Get past the Fire Knight there then go to the bridge on the left and jump off its left side onto a small stone pillar leading to a small stone floor with the loot."
+    },
+    "acquisitionMethods": [
+      {
+        "location": {
+          "ptBR": null,
+          "en": "Fire Knight"
+        },
+        "method": {
+          "ptBR": null,
+          "en": "Guaranteed Loot: Shadow Keep * Found pre-equipped to the Dueling Shield, which in turn is found by taking the stairs up on the other side of the statue at the Storehouse, First Floor Site of Grace then taking a left and going up the first stairs to the right. Continue on that path to another set of stairs to another floor up to find a balcony to the right. Get past the Fire Knight there then go to the bridge on the left and jump off its left side onto a small stone pillar leading to a small stone floor with the loot."
+        },
+        "notes": {
+          "ptBR": null,
+          "en": "Lost Ashes of War duplication is intentionally excluded."
+        }
+      }
+    ],
+    "summary": {
+      "ptBR": null,
+      "en": "Provides the Shield Strike skill with Standard as its native affinity; usable on compatible infusable armaments."
+    },
+    "skillType": null,
+    "affinity": {
+      "ptBR": null,
+      "en": "Standard"
+    },
+    "compatibleEquipment": {
+      "ptBR": null,
+      "en": [
+        "compatible infusable armaments"
+      ]
+    },
+    "fpCost": null,
+    "specialEffects": null,
+    "limitations": {
+      "ptBR": null,
+      "en": "Cannot be applied to incompatible or non-infusable armaments; affinity choices can depend on owned whetblades."
+    },
+    "relevantNotes": {
+      "ptBR": null,
+      "en": "Official Brazilian Portuguese localization and FP cost remain pending direct in-game verification."
+    },
+    "sourceRefs": [
+      "fandom-shield-strike",
+      "wiki-gg-dlc-ashes",
+      "gamingbolt-dlc-ashes",
+      "saika-dlc-ptbr"
+    ],
+    "verificationStatus": "partial"
+  }
+]

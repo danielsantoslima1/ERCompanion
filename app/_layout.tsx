@@ -49,6 +49,10 @@ function RootNavigation() {
               name="bosses/[bossId]"
               options={{ title: translations.bossDetails.details }}
             />
+            <Stack.Screen
+              name="ashes-of-war/[ashOfWarId]"
+              options={{ title: translations.ashesOfWar.details }}
+            />
           </Stack>
         )}
         <StatusBar style={resolvedTheme === 'dark' ? 'light' : 'dark'} />

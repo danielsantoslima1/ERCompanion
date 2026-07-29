@@ -42,6 +42,7 @@ export function BossCard({
       <View
         accessibilityLabel={translations.region.bossCardAccessibility(
           name,
+          regionName,
           location,
           status,
         )}

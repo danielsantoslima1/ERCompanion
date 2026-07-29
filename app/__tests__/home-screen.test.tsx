@@ -4,140 +4,114 @@ import { StyleSheet } from 'react-native';
 
 import HomeScreen from '../(drawer)/index';
 import type { AppContextValue } from '../../src/contexts/app-context';
+import type { CompletionProgress } from '../../src/data';
 import { getTranslationDictionary } from '../../src/i18n';
 import { lightTheme } from '../../src/theme';
-import type { BossEncounter, CatalogRegion } from '../../src/data/catalog';
-import {
-  bossEncounters,
-  catalogRegions,
-} from '../../src/data/catalog';
 
-const testRegions: readonly CatalogRegion[] = [
-  { id: 'base', name: { 'pt-BR': 'Base', en: 'Base' }, contentPack: 'base-game', displayOrder: 1 },
-  { id: 'dlc', name: { 'pt-BR': 'DLC', en: 'DLC' }, contentPack: 'shadow-of-the-erdtree', displayOrder: 1 },
-];
-const testBosses: readonly BossEncounter[] = [
-  { id: 'base-a', name: { 'pt-BR': 'A', en: 'A' }, location: { 'pt-BR': 'A', en: 'A' }, regionId: 'base' },
-  { id: 'base-b', name: { 'pt-BR': 'B', en: 'B' }, location: { 'pt-BR': 'B', en: 'B' }, regionId: 'base' },
-  { id: 'dlc-a', name: { 'pt-BR': 'C', en: 'C' }, location: { 'pt-BR': 'C', en: 'C' }, regionId: 'dlc' },
-];
-let mockAppState: Pick<AppContextValue, 'defeatedBossIds' | 'language' | 'theme' | 'translations'>;
-interface MockDataControl {
-  setMockData: (
-    regions: readonly CatalogRegion[],
-    bosses: readonly BossEncounter[],
-  ) => void;
-}
+let mockAppState: Pick<
+  AppContextValue,
+  'ashOfWarProgress' | 'bossProgress' | 'combinedProgress' | 'theme' | 'translations'
+>;
 
 jest.mock('expo-router', () => ({ router: { push: jest.fn() } }));
-jest.mock('../../src/data', () => {
-  const actual = jest.requireActual('../../src/data');
-  const regionList: CatalogRegion[] = [];
-  const bossList: BossEncounter[] = [];
+jest.mock('../../src/hooks/use-app', () => ({
+  useApp: jest.fn(() => mockAppState),
+}));
+
+function progress(completed: number, total: number): CompletionProgress {
   return {
-    ...actual,
-    regions: regionList,
-    bosses: bossList,
-    setMockData(nextRegions: readonly CatalogRegion[], nextBosses: readonly BossEncounter[]) {
-      regionList.splice(0, regionList.length, ...nextRegions);
-      bossList.splice(0, bossList.length, ...nextBosses);
-    },
+    completed,
+    percentage: total === 0 ? 0 : Math.round((completed / total) * 100),
+    total,
   };
-});
-jest.mock('../../src/hooks/use-app', () => ({ useApp: jest.fn(() => mockAppState) }));
-const mockDataControl = jest.requireMock<MockDataControl>('../../src/data');
+}
 
 beforeEach(() => {
   jest.clearAllMocks();
-  mockDataControl.setMockData(testRegions, testBosses);
   mockAppState = {
-    defeatedBossIds: [],
-    language: 'pt-BR',
+    ashOfWarProgress: progress(0, 116),
+    bossProgress: progress(0, 208),
+    combinedProgress: progress(0, 324),
     theme: lightTheme,
     translations: getTranslationDictionary('pt-BR'),
   };
 });
 
-describe('HomeScreen', () => {
-  it('shows overall progress and exactly two content cards without regions', async () => {
+describe('HomeScreen category integration', () => {
+  it('shows combined progress and exactly two category cards', async () => {
     await render(<HomeScreen />);
-    expect(screen.getByText('0/3')).toBeOnTheScreen();
+    expect(screen.getByText('0/324')).toBeOnTheScreen();
+    expect(screen.getAllByText('0%')).toHaveLength(3);
     expect(screen.getAllByRole('button')).toHaveLength(2);
-    expect(screen.getByText(mockAppState.translations.common.baseGame)).toBeOnTheScreen();
-    expect(screen.getByText(mockAppState.translations.common.expansion)).toBeOnTheScreen();
-    expect(screen.queryByText('Base')).toBeNull();
-    expect(screen.queryByText('DLC')).toBeNull();
-    expect(screen.getByText('0/2')).toBeOnTheScreen();
-    expect(screen.getByText('0/1')).toBeOnTheScreen();
-    for (const values of screen.getAllByTestId('progress-values')) {
-      expect(StyleSheet.flatten(values.props.style)).toMatchObject({
-        alignItems: 'center',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        width: '100%',
-      });
-    }
-    expect(screen.getAllByTestId('progress-track')).toHaveLength(2);
+    expect(screen.getByText('Chefes')).toBeOnTheScreen();
+    expect(screen.getByText('Cinzas da Guerra')).toBeOnTheScreen();
+    expect(screen.getByText('0/208')).toBeOnTheScreen();
+    expect(screen.getByText('0/116')).toBeOnTheScreen();
+    expect(screen.queryByText('Progresso do Jogo Base')).toBeNull();
+    expect(screen.queryByText('Progresso da expansão')).toBeNull();
   });
 
-  it('shows the approved content totals with the shared horizontal pattern', async () => {
-    mockDataControl.setMockData(catalogRegions, bossEncounters);
+  it('uses the horizontal progress pattern in both category cards', async () => {
     await render(<HomeScreen />);
-
-    expect(screen.getByText('0/165')).toBeOnTheScreen();
-    expect(screen.getByText('0/43')).toBeOnTheScreen();
     expect(screen.getAllByTestId('progress-values')).toHaveLength(2);
     expect(screen.getAllByTestId('progress-track')).toHaveLength(2);
+    for (const values of screen.getAllByTestId('progress-values')) {
+      expect(StyleSheet.flatten(values.props.style)).toMatchObject({
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+      });
+    }
   });
 
-  it('calculates total and per-content progress while ignoring unknown IDs', async () => {
+  it('renders independent category and combined progress updates', async () => {
     mockAppState = {
       ...mockAppState,
-      defeatedBossIds: ['base-a', 'dlc-a', 'unknown-real-id'],
+      ashOfWarProgress: progress(1, 116),
+      bossProgress: progress(1, 208),
+      combinedProgress: progress(2, 324),
     };
     await render(<HomeScreen />);
-    expect(screen.getByText('2/3')).toBeOnTheScreen();
-    expect(screen.getByText('67%')).toBeOnTheScreen();
-    expect(screen.getByText('1/2')).toBeOnTheScreen();
-    expect(screen.getByText('50%')).toBeOnTheScreen();
-    expect(screen.getByText('1/1')).toBeOnTheScreen();
-    expect(screen.getByText('100%')).toBeOnTheScreen();
+    expect(screen.getByText('2/324')).toBeOnTheScreen();
+    expect(screen.getByText('1/208')).toBeOnTheScreen();
+    expect(screen.getByText('1/116')).toBeOnTheScreen();
   });
 
-  it('opens the two typed All bosses routes', async () => {
-    await render(<HomeScreen />);
-    await fireEvent.press(
-      screen.getByRole('button', {
-        name: mockAppState.translations.home.openAllBosses(
-          mockAppState.translations.common.baseGame,
-        ),
-      }),
-    );
-    expect(router.push).toHaveBeenCalledWith({
-      pathname: '/all-bosses/[contentPack]',
-      params: { contentPack: 'base-game' },
-    });
-    await fireEvent.press(
-      screen.getByRole('button', {
-        name: mockAppState.translations.home.openAllBosses(
-          mockAppState.translations.common.expansion,
-        ),
-      }),
-    );
-    expect(router.push).toHaveBeenCalledWith({
-      pathname: '/all-bosses/[contentPack]',
-      params: { contentPack: 'shadow-of-the-erdtree' },
-    });
-  });
-
-  it('updates localized labels and keeps theme rendering', async () => {
+  it('shows bounded complete progress', async () => {
     mockAppState = {
       ...mockAppState,
-      language: 'en',
+      ashOfWarProgress: progress(116, 116),
+      bossProgress: progress(208, 208),
+      combinedProgress: progress(324, 324),
+    };
+    await render(<HomeScreen />);
+    expect(screen.getByText('324/324')).toBeOnTheScreen();
+    expect(screen.getAllByText('100%')).toHaveLength(3);
+  });
+
+  it('opens the two public category routes', async () => {
+    await render(<HomeScreen />);
+    await fireEvent.press(
+      screen.getByRole('button', { name: /Chefes: 0 de 208/ }),
+    );
+    expect(router.push).toHaveBeenCalledWith('/all-bosses');
+    await fireEvent.press(
+      screen.getByRole('button', { name: /Cinzas da Guerra: 0 de 116/ }),
+    );
+    expect(router.push).toHaveBeenCalledWith('/ashes-of-war');
+  });
+
+  it('provides localized accessible labels in English', async () => {
+    mockAppState = {
+      ...mockAppState,
       translations: getTranslationDictionary('en'),
     };
     await render(<HomeScreen />);
-    expect(screen.getByText('Base game')).toBeOnTheScreen();
-    expect(screen.getByText('Shadow of the Erdtree')).toBeOnTheScreen();
+    expect(screen.getByText('Overall Progress')).toBeOnTheScreen();
+    expect(
+      screen.getByRole('button', { name: /Bosses: 0 of 208/ }),
+    ).toBeOnTheScreen();
+    expect(
+      screen.getByRole('button', { name: /Ashes of War: 0 of 116/ }),
+    ).toBeOnTheScreen();
   });
 });

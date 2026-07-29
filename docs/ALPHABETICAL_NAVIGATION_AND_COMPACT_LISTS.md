@@ -34,10 +34,16 @@ Somente um grupo de conteúdo permanece aberto. Fechar Bosses, abrir Home ou abr
 
 As rotas públicas são:
 
+- `/all-bosses`, com 208 encontros em seções de jogo base e expansão;
 - `/all-bosses/base-game`, com 165 encontros;
 - `/all-bosses/shadow-of-the-erdtree`, com 43 encontros.
 
 Cada tela apresenta progresso por conteúdo, busca, filtros e uma lista única alfabetizada, sem agrupamento regional. A busca considera nome, região, localização e disponibilidade localizada. Conteúdo inválido recebe estado seguro.
+
+Na rota combinada, o progresso é único para os 208 encontros; os cabeçalhos
+das duas seções não possuem progresso adicional. Busca e filtros atuam nas duas
+seções, e seções sem resultados são ocultadas. A revisão manual dessa nova
+rota permanece pendente.
 
 ## Home
 
@@ -108,4 +114,15 @@ O reset do progresso foi concluído. O estado final ficou em `0/208`, `0/165` e 
 
 ## Próxima etapa
 
-Planejar a pesquisa e a modelagem dos itens do jogo, reutilizando as 26 regiões aprovadas e a regra de ordenação alfabética.
+`Pesquisar e validar os nomes e demais campos oficiais em português do Brasil das 116 Cinzas da Guerra, substituindo gradualmente os fallbacks em inglês sem alterar IDs ou progresso.`
+
+## Drawer integrado por categoria
+
+A ordenação alfabética localizada das 16 regiões do jogo base e das 10 regiões
+da expansão foi preservada. Todos os chefes continua como primeira opção de
+Chefes e Todas as Cinzas como primeira opção de Cinzas da Guerra. A ordem dos
+grupos principais é fixa e não usa `displayOrder`.
+
+A revisão manual confirmou a ordenação localizada, o padrão compacto, a regra
+horizontal dos cards de progresso e a ausência de cortes e sobreposições nos
+temas Claro, Escuro e Sistema.

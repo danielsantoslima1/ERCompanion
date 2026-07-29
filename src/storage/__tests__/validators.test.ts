@@ -3,6 +3,7 @@ import {
   isSettings,
   isThemePreference,
   validateDefeatedBossIds,
+  normalizeProgressIds,
 } from '../validators';
 
 describe('storage validators', () => {
@@ -83,5 +84,26 @@ describe('storage validators', () => {
   it('rejects arrays containing non-string values', () => {
     expect(validateDefeatedBossIds(['boss-a', 2])).toBeNull();
     expect(validateDefeatedBossIds(['boss-a', null])).toBeNull();
+  });
+});
+
+describe('normalizeProgressIds', () => {
+  it('keeps valid unknown IDs in first-occurrence order without mutating input', () => {
+    const input: unknown[] = [
+      ' future-id ',
+      2,
+      '',
+      'sample-temporary',
+      'known-id',
+      'future-id',
+    ];
+    const snapshot = [...input];
+
+    expect(normalizeProgressIds(input)).toEqual(['future-id', 'known-id']);
+    expect(input).toEqual(snapshot);
+  });
+
+  it('returns an empty array for a non-array value', () => {
+    expect(normalizeProgressIds({ id: 'boss-a' })).toEqual([]);
   });
 });

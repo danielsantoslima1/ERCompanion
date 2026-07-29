@@ -12,13 +12,21 @@ import {
   getTranslationDictionary,
   type TranslationDictionary,
 } from '../i18n';
-import { bosses, getValidDefeatedBossIds } from '../data';
 import {
+  calculateAshOfWarProgress,
+  calculateBossCatalogProgress,
+  calculateCombinedProgress,
+  type CompletionProgress,
+} from '../data';
+import {
+  addCollectedAshOfWarId,
   addDefeatedBossId,
   clearProgress,
   defaultSettings,
+  loadCollectedAshOfWarIds,
   loadDefeatedBossIds,
   loadSettings,
+  removeCollectedAshOfWarId,
   removeDefeatedBossId,
   restoreDefaultSettings,
   saveSettings,
@@ -44,6 +52,8 @@ interface ProviderRuntime {
   currentSettings: Settings;
   currentDefeatedBossIds: string[];
   currentDefeatedBossIdSet: ReadonlySet<string>;
+  currentCollectedAshOfWarIds: string[];
+  currentCollectedAshOfWarIdSet: ReadonlySet<string>;
 }
 
 type QueueKey = 'settingsQueue' | 'progressQueue';
@@ -56,7 +66,11 @@ export interface AppContextValue {
   theme: AppTheme;
   translations: TranslationDictionary;
   defeatedBossIds: readonly string[];
+  collectedAshOfWarIds: readonly string[];
   defeatedBossCount: number;
+  bossProgress: CompletionProgress;
+  ashOfWarProgress: CompletionProgress;
+  combinedProgress: CompletionProgress;
   isHydrated: boolean;
   initializationError: Error | null;
   setLanguage: (language: Language) => Promise<void>;
@@ -65,6 +79,10 @@ export interface AppContextValue {
   markBossNotDefeated: (id: string) => Promise<void>;
   toggleBossDefeated: (id: string) => Promise<void>;
   isBossDefeated: (id: string) => Promise<boolean>;
+  markAshOfWarCollected: (id: string) => Promise<void>;
+  markAshOfWarNotCollected: (id: string) => Promise<void>;
+  toggleAshOfWarCollected: (id: string) => Promise<void>;
+  isAshOfWarCollected: (id: string) => Promise<boolean>;
   resetProgress: () => Promise<void>;
   resetSettings: () => Promise<void>;
   retryInitialization: () => Promise<void>;
@@ -85,11 +103,11 @@ function enqueueAction(
   return result;
 }
 
-function requireBossId(id: string): string {
+function requireProgressId(id: string, label: string): string {
   const normalizedId = id.trim();
 
   if (normalizedId.length === 0) {
-    throw new TypeError('Boss ID must be a non-empty string.');
+    throw new TypeError(`${label} ID must be a non-empty string.`);
   }
 
   return normalizedId;
@@ -105,6 +123,7 @@ export function AppProvider({ children }: AppProviderProps) {
     ...defaultSettings,
   }));
   const [defeatedBossIds, setDefeatedBossIds] = useState<string[]>([]);
+  const [collectedAshOfWarIds, setCollectedAshOfWarIds] = useState<string[]>([]);
   const [isHydrated, setIsHydrated] = useState(false);
   const [initializationError, setInitializationError] = useState<Error | null>(
     null,
@@ -117,6 +136,8 @@ export function AppProvider({ children }: AppProviderProps) {
     currentSettings: { ...defaultSettings },
     currentDefeatedBossIds: [],
     currentDefeatedBossIdSet: new Set<string>(),
+    currentCollectedAshOfWarIds: [],
+    currentCollectedAshOfWarIdSet: new Set<string>(),
   }));
 
   const hydrate = useCallback(async (): Promise<void> => {
@@ -131,9 +152,14 @@ export function AppProvider({ children }: AppProviderProps) {
     try {
       await Promise.all([runtime.settingsQueue, runtime.progressQueue]);
 
-      const [loadedSettings, loadedDefeatedBossIds] = await Promise.all([
+      const [
+        loadedSettings,
+        loadedDefeatedBossIds,
+        loadedCollectedAshOfWarIds,
+      ] = await Promise.all([
         loadSettings(),
         loadDefeatedBossIds(),
+        loadCollectedAshOfWarIds(),
       ]);
 
       if (
@@ -146,8 +172,13 @@ export function AppProvider({ children }: AppProviderProps) {
       runtime.currentSettings = loadedSettings;
       runtime.currentDefeatedBossIds = loadedDefeatedBossIds;
       runtime.currentDefeatedBossIdSet = new Set(loadedDefeatedBossIds);
+      runtime.currentCollectedAshOfWarIds = loadedCollectedAshOfWarIds;
+      runtime.currentCollectedAshOfWarIdSet = new Set(
+        loadedCollectedAshOfWarIds,
+      );
       setSettings(loadedSettings);
       setDefeatedBossIds(loadedDefeatedBossIds);
+      setCollectedAshOfWarIds(loadedCollectedAshOfWarIds);
     } catch (error: unknown) {
       if (
         runtime.isMounted &&
@@ -246,7 +277,7 @@ export function AppProvider({ children }: AppProviderProps) {
       id: string,
       nextDefeatedState: boolean | 'toggle',
     ): Promise<void> => {
-      const normalizedId = requireBossId(id);
+      const normalizedId = requireProgressId(id, 'Boss');
 
       return enqueueAction(runtime, 'progressQueue', async () => {
         const previousIds = runtime.currentDefeatedBossIds;
@@ -319,19 +350,98 @@ export function AppProvider({ children }: AppProviderProps) {
     [runtime],
   );
 
+  const updateAshOfWarCollectedState = useCallback(
+    async (
+      id: string,
+      nextCollectedState: boolean | 'toggle',
+    ): Promise<void> => {
+      const normalizedId = requireProgressId(id, 'Ash of War');
+
+      return enqueueAction(runtime, 'progressQueue', async () => {
+        const previousIds = runtime.currentCollectedAshOfWarIds;
+        const previousIdSet = runtime.currentCollectedAshOfWarIdSet;
+        const wasCollected = previousIdSet.has(normalizedId);
+        const shouldBeCollected =
+          nextCollectedState === 'toggle'
+            ? !wasCollected
+            : nextCollectedState;
+
+        if (wasCollected === shouldBeCollected) return;
+
+        const nextIds = shouldBeCollected
+          ? [...previousIds, normalizedId]
+          : previousIds.filter((currentId) => currentId !== normalizedId);
+        runtime.currentCollectedAshOfWarIds = nextIds;
+        runtime.currentCollectedAshOfWarIdSet = new Set(nextIds);
+        if (runtime.isMounted) setCollectedAshOfWarIds(nextIds);
+
+        try {
+          if (shouldBeCollected) {
+            await addCollectedAshOfWarId(normalizedId);
+          } else {
+            await removeCollectedAshOfWarId(normalizedId);
+          }
+        } catch (error: unknown) {
+          runtime.currentCollectedAshOfWarIds = previousIds;
+          runtime.currentCollectedAshOfWarIdSet = previousIdSet;
+          if (runtime.isMounted) setCollectedAshOfWarIds(previousIds);
+          throw createContextError(
+            'Failed to update Ash of War progress.',
+            error,
+          );
+        }
+      });
+    },
+    [runtime],
+  );
+
+  const markAshOfWarCollected = useCallback(
+    (id: string) => updateAshOfWarCollectedState(id, true),
+    [updateAshOfWarCollectedState],
+  );
+  const markAshOfWarNotCollected = useCallback(
+    (id: string) => updateAshOfWarCollectedState(id, false),
+    [updateAshOfWarCollectedState],
+  );
+  const toggleAshOfWarCollected = useCallback(
+    (id: string) => updateAshOfWarCollectedState(id, 'toggle'),
+    [updateAshOfWarCollectedState],
+  );
+  const isAshOfWarCollected = useCallback(
+    async (id: string): Promise<boolean> => {
+      const normalizedId = id.trim();
+      if (normalizedId.length === 0) return false;
+      await runtime.progressQueue;
+      return runtime.currentCollectedAshOfWarIdSet.has(normalizedId);
+    },
+    [runtime],
+  );
+
   const resetProgress = useCallback(
     async (): Promise<void> =>
       enqueueAction(runtime, 'progressQueue', async () => {
+        const previousBossIds = runtime.currentDefeatedBossIds;
+        const previousAshIds = runtime.currentCollectedAshOfWarIds;
+        runtime.currentDefeatedBossIds = [];
+        runtime.currentDefeatedBossIdSet = new Set<string>();
+        runtime.currentCollectedAshOfWarIds = [];
+        runtime.currentCollectedAshOfWarIdSet = new Set<string>();
+        if (runtime.isMounted) {
+          setDefeatedBossIds([]);
+          setCollectedAshOfWarIds([]);
+        }
         try {
           await clearProgress();
         } catch (error: unknown) {
+          runtime.currentDefeatedBossIds = previousBossIds;
+          runtime.currentDefeatedBossIdSet = new Set(previousBossIds);
+          runtime.currentCollectedAshOfWarIds = previousAshIds;
+          runtime.currentCollectedAshOfWarIdSet = new Set(previousAshIds);
+          if (runtime.isMounted) {
+            setDefeatedBossIds(previousBossIds);
+            setCollectedAshOfWarIds(previousAshIds);
+          }
           throw createContextError('Failed to reset boss progress.', error);
-        }
-
-        runtime.currentDefeatedBossIds = [];
-        runtime.currentDefeatedBossIdSet = new Set<string>();
-        if (runtime.isMounted) {
-          setDefeatedBossIds([]);
         }
       }),
     [runtime],
@@ -374,9 +484,17 @@ export function AppProvider({ children }: AppProviderProps) {
     () => getTranslationDictionary(language),
     [language],
   );
-  const validDefeatedBossCount = useMemo(
-    () => getValidDefeatedBossIds(bosses, new Set(defeatedBossIds)).size,
+  const bossProgress = useMemo(
+    () => calculateBossCatalogProgress(defeatedBossIds),
     [defeatedBossIds],
+  );
+  const ashOfWarProgress = useMemo(
+    () => calculateAshOfWarProgress(collectedAshOfWarIds),
+    [collectedAshOfWarIds],
+  );
+  const combinedProgress = useMemo(
+    () => calculateCombinedProgress(defeatedBossIds, collectedAshOfWarIds),
+    [collectedAshOfWarIds, defeatedBossIds],
   );
 
   const contextValue = useMemo<AppContextValue>(
@@ -388,7 +506,11 @@ export function AppProvider({ children }: AppProviderProps) {
       theme,
       translations: translationDictionary,
       defeatedBossIds,
-        defeatedBossCount: validDefeatedBossCount,
+      collectedAshOfWarIds,
+      defeatedBossCount: bossProgress.completed,
+      bossProgress,
+      ashOfWarProgress,
+      combinedProgress,
       isHydrated,
       initializationError,
       setLanguage,
@@ -397,19 +519,29 @@ export function AppProvider({ children }: AppProviderProps) {
       markBossNotDefeated,
       toggleBossDefeated,
       isBossDefeated,
+      markAshOfWarCollected,
+      markAshOfWarNotCollected,
+      toggleAshOfWarCollected,
+      isAshOfWarCollected,
       resetProgress,
       resetSettings,
       retryInitialization,
     }),
     [
-        defeatedBossIds,
-        validDefeatedBossCount,
+      ashOfWarProgress,
+      bossProgress,
+      collectedAshOfWarIds,
+      combinedProgress,
+      defeatedBossIds,
       initializationError,
       isBossDefeated,
+      isAshOfWarCollected,
       isHydrated,
       language,
       markBossDefeated,
       markBossNotDefeated,
+      markAshOfWarCollected,
+      markAshOfWarNotCollected,
       resetProgress,
       resetSettings,
       resolvedTheme,
@@ -420,6 +552,7 @@ export function AppProvider({ children }: AppProviderProps) {
       theme,
       themePreference,
       toggleBossDefeated,
+      toggleAshOfWarCollected,
       translationDictionary,
     ],
   );

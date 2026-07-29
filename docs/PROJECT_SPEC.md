@@ -683,3 +683,58 @@ A revisão manual no Expo Go validou a Home com exatamente dois cards de conteú
 Não foram encontrados cortes, sobreposições, rotas inválidas ou ocorrências conhecidas de `Unmatched Route`. O reset de progresso foi concluído, deixando `0/208`, `0/165` e `0/43`; idioma e tema permaneceram preservados.
 
 Próxima etapa: Planejar a pesquisa e a modelagem dos itens do jogo, reutilizando as 26 regiões aprovadas e a regra de ordenação alfabética.
+
+## Planejamento aprovado das Cinzas da Guerra
+
+O catálogo documental de 116 Cinzas da Guerra foi aprovado provisoriamente para implementação: 91 do jogo base e 25 de Shadow of the Erdtree. As pendências de localização oficial pt-BR, custos de FP e normalização não são consideradas resolvidas.
+
+A implementação futura usará inglês como fallback quando o campo pt-BR estiver ausente. A tela de detalhes mostrará aviso discreto de tradução oficial pendente; cards compactos não mostrarão esse aviso. A busca em português encontrará tanto conteúdo localizado quanto termos ingleses relevantes, e traduções futuras não alterarão IDs ou progresso.
+
+O progresso geral combinará 208 chefes e 116 Cinzas, totalizando 324 unidades de mesmo peso. A Home terá exatamente dois cards de categoria, Chefes e Cinzas da Guerra. O Drawer terá os grupos principais Chefes e Cinzas da Guerra em acordeão, além de Home e Settings.
+
+A especificação técnica completa de catálogo, rotas, migração, componentes, testes e etapas está em `docs/ASHES_OF_WAR_IMPLEMENTATION_PLAN.md`.
+
+### Catálogo de produção das Cinzas da Guerra
+
+O catálogo de produção isolado foi criado com 116 entradas: 91 do jogo base e 25 da expansão. IDs foram preservados; URLs, fontes e metadados editoriais ficaram somente na documentação. Fallback pt-BR é derivado de campos `null`, e a ordenação localizada usa o ID como desempate.
+
+O catálogo passou a ser consumido pela interface, rotas e persistência nas
+etapas posteriores descritas abaixo.
+## Progresso persistido v2
+
+O progresso persistido reúne Chefes e Cinzas da Guerra no schema v2. IDs
+desconhecidos válidos são preservados, mas somente os 208 Chefes e as 116
+Cinzas catalogadas contam no progresso visual, cujo total combinado é 324. O
+reset limpa ambas as categorias e preserva idioma, tema e demais preferências.
+## Tela geral Todos os Chefes
+
+A rota `/all-bosses` reúne os 208 encontros em duas seções contínuas: Jogo base
+com 165 e Shadow of the Erdtree com 43. A tela possui progresso único, busca e
+filtros aplicados às duas seções, ordenação localizada e retorno de detalhes
+com o estado da lista preservado. Seções sem resultados são ocultadas.
+
+Home e Drawer apontam para essa rota.
+## Listas e detalhes das Cinzas da Guerra
+
+As rotas públicas de Cinzas oferecem uma lista combinada 91/25, duas listas
+específicas e detalhes completos. Todas usam progresso v2, busca, filtros,
+ordenação localizada e fallback inglês. O card compacto usa fantasma para não
+coletada e check para coletada. Home e Drawer estão integrados.
+## Integração final da Home e navegação por categoria
+
+A Home apresenta progresso geral combinado de 324 unidades e exatamente dois
+cards: Chefes (208) e Cinzas da Guerra (116). O Drawer segue a ordem Home,
+Chefes, Cinzas da Guerra e Settings; os dois grupos de conteúdo são
+mutuamente exclusivos e indicam a rota ativa sem depender do idioma.
+
+Próxima etapa:
+`Pesquisar e validar os nomes e demais campos oficiais em português do Brasil das 116 Cinzas da Guerra, substituindo gradualmente os fallbacks em inglês sem alterar IDs ou progresso.`
+
+## Estado final das Cinzas da Guerra
+
+A implementação foi concluída e revisada no Expo Go: 116 Cinzas, progresso v2,
+Home com total 324, Drawer por categoria, listas e detalhes. O progresso de
+revisão foi resetado, preservando idioma e tema. O catálogo está aprovado
+provisoriamente para a interface; campos pt-BR ainda pendentes usam fallback
+inglês e custos de FP desconhecidos são omitidos. Todos os cards de progresso
+mantêm razão e percentual na mesma linha e barra abaixo.

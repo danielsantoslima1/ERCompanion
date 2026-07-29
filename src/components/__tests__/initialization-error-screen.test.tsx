@@ -73,7 +73,11 @@ function createAppValue(
     theme: lightTheme,
     translations: getTranslationDictionary('pt-BR'),
     defeatedBossIds: [],
+    collectedAshOfWarIds: [],
     defeatedBossCount: 0,
+    bossProgress: { completed: 0, total: 208, percentage: 0 },
+    ashOfWarProgress: { completed: 0, total: 116, percentage: 0 },
+    combinedProgress: { completed: 0, total: 324, percentage: 0 },
     isHydrated: true,
     initializationError: new Error('sensitive storage details'),
     setLanguage: jest
@@ -112,6 +116,10 @@ function createAppValue(
         Parameters<AppContextValue['isBossDefeated']>
       >()
       .mockResolvedValue(false),
+    markAshOfWarCollected: async () => undefined,
+    markAshOfWarNotCollected: async () => undefined,
+    toggleAshOfWarCollected: async () => undefined,
+    isAshOfWarCollected: jest.fn().mockResolvedValue(false),
     resetProgress: jest
       .fn<Promise<void>, []>()
       .mockResolvedValue(),

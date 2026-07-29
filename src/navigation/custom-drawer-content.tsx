@@ -94,8 +94,13 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
   const isBossRoute =
     pathname.startsWith('/bosses/') ||
     pathname.startsWith('/regions/') ||
+    pathname === '/all-bosses' ||
     pathname.startsWith('/all-bosses/');
+  const isAshRoute =
+    pathname === '/ashes-of-war' ||
+    pathname.startsWith('/ashes-of-war/');
   const [isBossesExpanded, setIsBossesExpanded] = useState(isBossRoute);
+  const [isAshesExpanded, setIsAshesExpanded] = useState(isAshRoute);
   const routeRegion = regions.find(
     (region) => pathname === `/regions/${region.id}`,
   );
@@ -139,10 +144,21 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
   useEffect(() => {
     if (isBossRoute) {
       setIsBossesExpanded(true);
+      setIsAshesExpanded(false);
       setIsBaseGameExpanded(activeContentPack === 'base-game');
       setIsExpansionExpanded(activeContentPack === 'shadow-of-the-erdtree');
+    } else if (isAshRoute) {
+      setIsAshesExpanded(true);
+      setIsBossesExpanded(false);
+      setIsBaseGameExpanded(false);
+      setIsExpansionExpanded(false);
+    } else if (pathname === '/' || pathname === '/settings') {
+      setIsBossesExpanded(false);
+      setIsAshesExpanded(false);
+      setIsBaseGameExpanded(false);
+      setIsExpansionExpanded(false);
     }
-  }, [activeContentPack, isBossRoute, pathname]);
+  }, [activeContentPack, isAshRoute, isBossRoute, pathname]);
 
   const closeDrawer = useCallback(() => {
     props.navigation.closeDrawer();
@@ -154,6 +170,7 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
       destination: '/' | '/settings',
     ) => {
       setIsBossesExpanded(false);
+      setIsAshesExpanded(false);
       setIsBaseGameExpanded(false);
       setIsExpansionExpanded(false);
       if (pathname !== destination) {
@@ -169,6 +186,7 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
       const destination = `/regions/${regionId}`;
       const targetRegion = regions.find((region) => region.id === regionId);
       setIsBossesExpanded(true);
+      setIsAshesExpanded(false);
       setIsBaseGameExpanded(targetRegion?.contentPack === 'base-game');
       setIsExpansionExpanded(
         targetRegion?.contentPack === 'shadow-of-the-erdtree',
@@ -186,6 +204,7 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
     (contentPack: ContentPack) => {
       const destination = `/all-bosses/${contentPack}`;
       setIsBossesExpanded(true);
+      setIsAshesExpanded(false);
       setIsBaseGameExpanded(contentPack === 'base-game');
       setIsExpansionExpanded(contentPack === 'shadow-of-the-erdtree');
       if (pathname !== destination) {
@@ -196,7 +215,42 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
     [closeDrawer, pathname, props.navigation],
   );
 
+  const navigateToCombinedBosses = useCallback(() => {
+    setIsBossesExpanded(true);
+    setIsAshesExpanded(false);
+    setIsBaseGameExpanded(false);
+    setIsExpansionExpanded(false);
+    if (pathname !== '/all-bosses') {
+      props.navigation.navigate('all-bosses/index');
+    }
+    closeDrawer();
+  }, [closeDrawer, pathname, props.navigation]);
+
+  const navigateToAshes = useCallback(
+    (
+      routeName:
+        | 'ashes-of-war/index'
+        | 'ashes-of-war/base-game'
+        | 'ashes-of-war/shadow-of-the-erdtree',
+      destination:
+        | '/ashes-of-war'
+        | '/ashes-of-war/base-game'
+        | '/ashes-of-war/shadow-of-the-erdtree',
+    ) => {
+      setIsAshesExpanded(true);
+      setIsBossesExpanded(false);
+      setIsBaseGameExpanded(false);
+      setIsExpansionExpanded(false);
+      if (pathname !== destination) {
+        props.navigation.navigate(routeName);
+      }
+      closeDrawer();
+    },
+    [closeDrawer, pathname, props.navigation],
+  );
+
   const toggleBosses = useCallback(() => {
+    setIsAshesExpanded(false);
     setIsBossesExpanded((currentValue) => {
       if (currentValue) {
         setIsBaseGameExpanded(false);
@@ -204,6 +258,13 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
       }
       return !currentValue;
     });
+  }, []);
+
+  const toggleAshes = useCallback(() => {
+    setIsBossesExpanded(false);
+    setIsBaseGameExpanded(false);
+    setIsExpansionExpanded(false);
+    setIsAshesExpanded((currentValue) => !currentValue);
   }, []);
 
   const toggleContentPack = useCallback((contentPack: ContentPack) => {
@@ -320,6 +381,12 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
 
         {isBossesExpanded ? (
           <View style={{ gap: theme.spacing.small }}>
+            <DrawerItem
+              isNested
+              isSelected={pathname === '/all-bosses'}
+              label={translations.navigation.allBosses}
+              onPress={navigateToCombinedBosses}
+            />
             {regionGroups.baseGame.length + regionGroups.expansion.length ===
             0 ? (
               <Text
@@ -387,6 +454,106 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
             </DrawerGroup>
               </>
             )}
+          </View>
+        ) : null}
+
+        <Pressable
+          accessibilityLabel={
+            isAshesExpanded
+              ? translations.navigation.collapseAshesOfWar
+              : translations.navigation.expandAshesOfWar
+          }
+          accessibilityRole="button"
+          accessibilityState={{
+            expanded: isAshesExpanded,
+            selected: isAshRoute,
+          }}
+          onPress={toggleAshes}
+          style={({ pressed }) => [
+            styles.item,
+            {
+              backgroundColor: isAshRoute
+                ? theme.colors.drawerActiveBackground
+                : 'transparent',
+              borderColor: isAshRoute
+                ? theme.colors.primary
+                : 'transparent',
+              borderRadius: theme.borderRadius.medium,
+              opacity: pressed ? 0.7 : 1,
+              paddingHorizontal: theme.spacing.medium,
+            },
+          ]}>
+          <Text
+            style={[
+              styles.itemLabel,
+              {
+                color: isAshRoute
+                  ? theme.colors.drawerActiveText
+                  : theme.colors.textPrimary,
+              },
+            ]}>
+            {translations.navigation.ashesOfWar}
+          </Text>
+          {isAshRoute ? (
+            <Text
+              accessibilityElementsHidden
+              importantForAccessibility="no-hide-descendants"
+              style={[
+                styles.internalRouteIndicator,
+                { color: theme.colors.drawerActiveText },
+              ]}>
+              •
+            </Text>
+          ) : null}
+          <Text
+            accessibilityElementsHidden
+            importantForAccessibility="no-hide-descendants"
+            style={[
+              styles.expandIndicator,
+              {
+                color: isAshRoute
+                  ? theme.colors.drawerActiveText
+                  : theme.colors.textSecondary,
+              },
+            ]}>
+            {isAshesExpanded ? '−' : '+'}
+          </Text>
+        </Pressable>
+
+        {isAshesExpanded ? (
+          <View style={{ gap: theme.spacing.small }}>
+            <DrawerItem
+              isNested
+              isSelected={pathname === '/ashes-of-war'}
+              label={translations.navigation.allAshesOfWar}
+              onPress={() =>
+                navigateToAshes('ashes-of-war/index', '/ashes-of-war')
+              }
+            />
+            <DrawerItem
+              isNested
+              isSelected={pathname === '/ashes-of-war/base-game'}
+              label={translations.common.baseGame}
+              onPress={() =>
+                navigateToAshes(
+                  'ashes-of-war/base-game',
+                  '/ashes-of-war/base-game',
+                )
+              }
+            />
+            <DrawerItem
+              isNested
+              isSelected={
+                pathname === '/ashes-of-war/shadow-of-the-erdtree'
+              }
+              label={translations.common.expansion}
+              onPress={() =>
+                navigateToAshes(
+                  'ashes-of-war/shadow-of-the-erdtree',
+                  '/ashes-of-war/shadow-of-the-erdtree',
+                )
+              }
+            />
           </View>
         ) : null}
 

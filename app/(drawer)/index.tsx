@@ -1,55 +1,33 @@
-import { router } from 'expo-router';
-import { useMemo } from 'react';
+import { router, type Href } from 'expo-router';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ProgressCircle } from '@/src/components/progress-circle';
 import { RegionProgressItem } from '@/src/components/region-progress-item';
-import {
-  bosses,
-  calculateContentPackProgress,
-  calculateTotalProgress,
-  regions,
-  type ContentPack,
-} from '@/src/data';
 import { useApp } from '@/src/hooks/use-app';
 
-const CONTENT_PACKS: readonly ContentPack[] = [
-  'base-game',
-  'shadow-of-the-erdtree',
-];
-
 export default function HomeScreen() {
-  const { defeatedBossIds, theme, translations } = useApp();
-  const defeatedBossIdSet = useMemo(
-    () => new Set(defeatedBossIds),
-    [defeatedBossIds],
-  );
-  const totalProgress = useMemo(
-    () => calculateTotalProgress(bosses, defeatedBossIdSet),
-    [defeatedBossIdSet],
-  );
-  const contentProgress = useMemo(
-    () =>
-      CONTENT_PACKS.map((contentPack) => ({
-        contentPack,
-        label:
-          contentPack === 'base-game'
-            ? translations.common.baseGame
-            : translations.common.expansion,
-        title:
-          contentPack === 'base-game'
-            ? translations.home.baseGameProgress
-            : translations.home.expansionProgress,
-        progress: calculateContentPackProgress(
-          bosses,
-          regions,
-          contentPack,
-          defeatedBossIdSet,
-        ),
-      })),
-    [defeatedBossIdSet, translations],
-  );
+  const {
+    ashOfWarProgress,
+    bossProgress,
+    combinedProgress,
+    theme,
+    translations,
+  } = useApp();
+  const categories = [
+    {
+      id: 'bosses',
+      label: translations.navigation.bosses,
+      progress: bossProgress,
+      route: '/all-bosses' as const,
+    },
+    {
+      id: 'ashes-of-war',
+      label: translations.ashesOfWar.title,
+      progress: ashOfWarProgress,
+      route: '/ashes-of-war' as const,
+    },
+  ] as const;
 
   return (
     <SafeAreaView
@@ -84,32 +62,32 @@ export default function HomeScreen() {
             },
           ]}>
           <Text style={[styles.sectionTitle, { color: theme.colors.textPrimary }]}>
-            {translations.home.totalProgress}
+            {translations.home.overallProgress}
           </Text>
           <ProgressCircle
-            accessibilityLabel={translations.home.totalProgressAccessibility(
-              totalProgress.defeated,
-              totalProgress.total,
-              totalProgress.percentage,
+            accessibilityLabel={translations.home.overallProgressAccessibility(
+              combinedProgress.completed,
+              combinedProgress.total,
+              combinedProgress.percentage,
             )}
-            defeated={totalProgress.defeated}
-            percentage={totalProgress.percentage}
-            total={totalProgress.total}
+            defeated={combinedProgress.completed}
+            percentage={combinedProgress.percentage}
+            total={combinedProgress.total}
           />
         </View>
 
         <View style={{ gap: theme.spacing.medium }}>
-          {contentProgress.map(({ contentPack, label, progress, title }) => (
+          {categories.map(({ id, label, progress, route }) => (
             <Pressable
-              key={contentPack}
-              accessibilityLabel={translations.home.openAllBosses(label)}
+              key={id}
+              accessibilityLabel={translations.home.categoryProgressAccessibility(
+                label,
+                progress.completed,
+                progress.total,
+                progress.percentage,
+              )}
               accessibilityRole="button"
-              onPress={() =>
-                router.push({
-                  pathname: '/all-bosses/[contentPack]',
-                  params: { contentPack },
-                })
-              }
+              onPress={() => router.push(route as Href)}
               style={({ pressed }) => [
                 styles.contentCard,
                 {
@@ -124,11 +102,8 @@ export default function HomeScreen() {
               <Text style={[styles.contentTitle, { color: theme.colors.textPrimary }]}>
                 {label}
               </Text>
-              <Text style={[styles.contentSubtitle, { color: theme.colors.accent }]}>
-                {title}
-              </Text>
               <RegionProgressItem
-                defeated={progress.defeated}
+                defeated={progress.completed}
                 percentage={progress.percentage}
                 total={progress.total}
               />
@@ -149,5 +124,4 @@ const styles = StyleSheet.create({
   sectionTitle: { fontSize: 21, fontWeight: '700' },
   contentCard: { borderWidth: 1 },
   contentTitle: { fontSize: 21, fontWeight: '700' },
-  contentSubtitle: { fontSize: 15, fontWeight: '600' },
 });
