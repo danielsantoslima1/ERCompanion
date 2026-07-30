@@ -55,6 +55,7 @@ beforeEach(() => {
 describe('AshOfWarListScreen totals and routes', () => {
   it('shows all 116 entries in base-game then expansion sections', async () => {
     await render(<AshOfWarListScreen mode="all" />);
+    expect(screen.getByTestId('ash-of-war-filter-group').type).toBe('View');
     expect(screen.getByText('116 resultados encontrados')).toBeOnTheScreen();
     expect(screen.getByTestId('ash-section-base-game')).toHaveTextContent(
       'Jogo base',

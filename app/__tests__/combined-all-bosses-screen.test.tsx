@@ -114,6 +114,7 @@ beforeEach(() => {
 describe('CombinedAllBossesScreen route and sections', () => {
   it('renders the stable combined route screen without an unmatched state', async () => {
     await render(<CombinedAllBossesScreen />);
+    expect(screen.getByTestId('boss-filter-group').type).toBe('View');
     expect(
       screen.getByRole('header', { name: 'Todos os chefes' }),
     ).toBeOnTheScreen();

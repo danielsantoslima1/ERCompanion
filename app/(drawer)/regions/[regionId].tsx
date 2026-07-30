@@ -17,6 +17,7 @@ import { AppTextInput as TextInput } from '@/src/components/app-text-input';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { BossCard } from '@/src/components/boss-card';
+import { FilterButtonGroup } from '@/src/components/filter-button-group';
 import { RegionProgressItem } from '@/src/components/region-progress-item';
 import {
   bosses,
@@ -226,9 +227,7 @@ export default function RegionScreen() {
         />
       </View>
 
-      <View
-        accessibilityRole="radiogroup"
-        style={[styles.filters, { gap: theme.spacing.small }]}>
+      <FilterButtonGroup testID="region-boss-filter-group">
         {filters.map((option) => {
           const isActive = option.id === filter;
 
@@ -267,7 +266,7 @@ export default function RegionScreen() {
             </Pressable>
           );
         })}
-      </View>
+      </FilterButtonGroup>
 
       <Text
         accessibilityLiveRegion="polite"
@@ -350,12 +349,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     minHeight: 48,
   },
-  filters: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-  },
   filter: {
     borderWidth: 1,
+    flexShrink: 0,
     minHeight: 44,
     justifyContent: 'center',
   },

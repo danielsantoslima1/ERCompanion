@@ -30,6 +30,7 @@ import {
   type SpellFilter,
 } from '../data';
 import { useApp } from '../hooks/use-app';
+import { FilterButtonGroup } from './filter-button-group';
 import {
   OriginFilterButtons,
   type OriginFilter,
@@ -200,16 +201,17 @@ export function SpellListScreen({ category, mode }: Props) {
         ]}
         value={query}
       />
-      {mode === 'all' ? (
-        <OriginFilterButtons
-          activeOrigin={originFilter}
-          baseLabel={translations.common.baseFilter}
-          dlcLabel={translations.common.dlcFilter}
-          getAccessibilityLabel={translations.common.filterByOrigin}
-          onChange={setOriginFilter}
-        />
-      ) : null}
-      <View style={[styles.filters, { gap: theme.spacing.small }]}>
+      <FilterButtonGroup testID={`${category}-filter-group`}>
+        {mode === 'all' ? (
+          <OriginFilterButtons
+            activeOrigin={originFilter}
+            baseLabel={translations.common.baseFilter}
+            dlcLabel={translations.common.dlcFilter}
+            embedded
+            getAccessibilityLabel={translations.common.filterByOrigin}
+            onChange={setOriginFilter}
+          />
+        ) : null}
         {([
           ['legendary', translations.spells.legendary],
           ['missable', translations.spells.missable],
@@ -237,7 +239,7 @@ export function SpellListScreen({ category, mode }: Props) {
             </Pressable>
           );
         })}
-      </View>
+      </FilterButtonGroup>
       <Text accessibilityLiveRegion="polite" style={{ color: theme.colors.textSecondary }}>
         {translations.spells.resultCount(visibleCount)}
       </Text>
@@ -286,7 +288,11 @@ const styles = StyleSheet.create({
   progressTitle: { fontSize: 20, fontWeight: '700' },
   section: { fontSize: 20, fontWeight: '700', paddingVertical: 8 },
   input: { borderWidth: 1, fontSize: 16, minHeight: 48 },
-  filters: { flexDirection: 'row', flexWrap: 'wrap' },
-  filter: { borderWidth: 1, justifyContent: 'center', minHeight: 44 },
+  filter: {
+    borderWidth: 1,
+    flexShrink: 0,
+    justifyContent: 'center',
+    minHeight: 44,
+  },
   empty: { fontSize: 16, padding: 16 },
 });

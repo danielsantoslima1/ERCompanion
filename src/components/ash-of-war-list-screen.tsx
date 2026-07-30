@@ -25,6 +25,7 @@ import {
 } from '../data';
 import { useApp } from '../hooks/use-app';
 import { AshOfWarCard } from './ash-of-war-card';
+import { FilterButtonGroup } from './filter-button-group';
 import {
   OriginFilterButtons,
   type OriginFilter,
@@ -226,18 +227,17 @@ export function AshOfWarListScreen({
         ]}
         value={query}
       />
-      {mode === 'all' ? (
-        <OriginFilterButtons
-          activeOrigin={originFilter}
-          baseLabel={translations.common.baseFilter}
-          dlcLabel={translations.common.dlcFilter}
-          getAccessibilityLabel={translations.common.filterByOrigin}
-          onChange={setOriginFilter}
-        />
-      ) : null}
-      <View
-        accessibilityRole="radiogroup"
-        style={[styles.filters, { gap: theme.spacing.small }]}>
+      <FilterButtonGroup testID="ash-of-war-filter-group">
+        {mode === 'all' ? (
+          <OriginFilterButtons
+            activeOrigin={originFilter}
+            baseLabel={translations.common.baseFilter}
+            dlcLabel={translations.common.dlcFilter}
+            embedded
+            getAccessibilityLabel={translations.common.filterByOrigin}
+            onChange={setOriginFilter}
+          />
+        ) : null}
         {([
           ['all', translations.ashesOfWar.all],
           ['collected', translations.ashesOfWar.collected],
@@ -277,7 +277,7 @@ export function AshOfWarListScreen({
             </Pressable>
           );
         })}
-      </View>
+      </FilterButtonGroup>
       <Text
         accessibilityLiveRegion="polite"
         style={{ color: theme.colors.textSecondary }}>
@@ -365,7 +365,11 @@ const styles = StyleSheet.create({
   progressTitle: { fontSize: 20, fontWeight: '700' },
   sectionTitle: { fontSize: 20, fontWeight: '700' },
   input: { borderWidth: 1, fontSize: 16, minHeight: 48 },
-  filters: { flexDirection: 'row', flexWrap: 'wrap' },
-  filter: { borderWidth: 1, justifyContent: 'center', minHeight: 44 },
+  filter: {
+    borderWidth: 1,
+    flexShrink: 0,
+    justifyContent: 'center',
+    minHeight: 44,
+  },
   empty: { borderWidth: 1, fontSize: 16 },
 });

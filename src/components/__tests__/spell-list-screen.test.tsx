@@ -52,11 +52,28 @@ beforeEach(() => {
 describe('SpellListScreen', () => {
   it('shows 84 sorceries with one category progress and ordered sections', async () => {
     await render(<SpellListScreen category="sorcery" mode="all" />);
+    expect(screen.getByTestId('sorcery-filter-group').type).toBe('View');
     expect(screen.getByText('84 resultados encontrados')).toBeOnTheScreen();
     expect(screen.getByText('0/84')).toBeOnTheScreen();
     expect(screen.getByText('Jogo base')).toBeOnTheScreen();
     expect(getSorceriesByContentPack('base-game')).toHaveLength(70);
     expect(getSorceriesByContentPack('shadow-of-the-erdtree')).toHaveLength(14);
+  });
+
+  it('uses the same wrapping group for Incantation origin and spell filters', async () => {
+    await render(<SpellListScreen category="incantation" mode="all" />);
+    const group = screen.getByTestId('incantation-filter-group');
+    expect(group.type).toBe('View');
+    expect(group.props.horizontal).toBeUndefined();
+    expect(
+      screen.getByRole('button', { name: 'Filtrar por origem: Base' }),
+    ).toBeOnTheScreen();
+    expect(
+      screen.getByText(mockApp.translations.spells.legendary),
+    ).toBeOnTheScreen();
+    expect(
+      screen.getByText(mockApp.translations.spells.missable),
+    ).toBeOnTheScreen();
   });
 
   it.each([

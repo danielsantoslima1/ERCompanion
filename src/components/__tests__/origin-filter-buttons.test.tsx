@@ -40,6 +40,7 @@ beforeEach(() => {
 describe('OriginFilterButtons', () => {
   it('starts unselected and exposes localized accessible button state', async () => {
     await render(<FilterHarness />);
+    expect(screen.getByTestId('origin-filter-buttons').type).toBe('View');
     expect(
       screen.getByRole('button', { name: 'Filtrar por origem: Base' }).props
         .accessibilityState,
@@ -51,6 +52,24 @@ describe('OriginFilterButtons', () => {
     expect(screen.getByText('Base')).toHaveStyle({
       fontFamily: typography.bodyBold,
     });
+  });
+
+  it('supports embedding the origin controls in a shared filter row', async () => {
+    const translations = mockApp.translations;
+    await render(
+      <OriginFilterButtons
+        activeOrigin="all"
+        baseLabel={translations.common.baseFilter}
+        dlcLabel={translations.common.dlcFilter}
+        embedded
+        getAccessibilityLabel={translations.common.filterByOrigin}
+        onChange={jest.fn()}
+      />,
+    );
+    expect(screen.queryByTestId('origin-filter-buttons')).toBeNull();
+    expect(
+      screen.getByRole('button', { name: 'Filtrar por origem: Base' }),
+    ).toBeOnTheScreen();
   });
 
   it('supports the English labels and accessible actions', async () => {

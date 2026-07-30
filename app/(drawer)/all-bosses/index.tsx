@@ -13,6 +13,7 @@ import { AppTextInput as TextInput } from '@/src/components/app-text-input';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { BossCard } from '@/src/components/boss-card';
+import { FilterButtonGroup } from '@/src/components/filter-button-group';
 import {
   OriginFilterButtons,
   type OriginFilter,
@@ -224,13 +225,6 @@ export default function CombinedAllBossesScreen() {
                 percentage={progress.percentage}
                 total={progress.total}
               />
-              <OriginFilterButtons
-                activeOrigin={originFilter}
-                baseLabel={translations.common.baseFilter}
-                dlcLabel={translations.common.dlcFilter}
-                getAccessibilityLabel={translations.common.filterByOrigin}
-                onChange={setOriginFilter}
-              />
               <TextInput
                 accessibilityLabel={translations.region.search}
                 autoCapitalize="none"
@@ -251,9 +245,15 @@ export default function CombinedAllBossesScreen() {
                 ]}
                 value={query}
               />
-              <View
-                accessibilityRole="radiogroup"
-                style={[styles.filters, { gap: theme.spacing.small }]}>
+              <FilterButtonGroup testID="boss-filter-group">
+                <OriginFilterButtons
+                  activeOrigin={originFilter}
+                  baseLabel={translations.common.baseFilter}
+                  dlcLabel={translations.common.dlcFilter}
+                  embedded
+                  getAccessibilityLabel={translations.common.filterByOrigin}
+                  onChange={setOriginFilter}
+                />
                 {filters.map((option) => {
                   const active = option.id === filter;
                   return (
@@ -289,7 +289,7 @@ export default function CombinedAllBossesScreen() {
                     </Pressable>
                   );
                 })}
-              </View>
+              </FilterButtonGroup>
               <Text
                 accessibilityLiveRegion="polite"
                 style={{ color: theme.colors.textSecondary }}>
@@ -310,7 +310,11 @@ const styles = StyleSheet.create({
   progressTitle: { fontSize: 20, fontWeight: '700' },
   sectionTitle: { fontSize: 20, fontWeight: '700' },
   input: { borderWidth: 1, fontSize: 16, minHeight: 48 },
-  filters: { flexDirection: 'row', flexWrap: 'wrap' },
-  filter: { borderWidth: 1, justifyContent: 'center', minHeight: 44 },
+  filter: {
+    borderWidth: 1,
+    flexShrink: 0,
+    justifyContent: 'center',
+    minHeight: 44,
+  },
   empty: { borderWidth: 1, fontSize: 16 },
 });

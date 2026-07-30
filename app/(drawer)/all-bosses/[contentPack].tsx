@@ -13,6 +13,7 @@ import { AppTextInput as TextInput } from '@/src/components/app-text-input';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { BossCard } from '@/src/components/boss-card';
+import { FilterButtonGroup } from '@/src/components/filter-button-group';
 import { RegionProgressItem } from '@/src/components/region-progress-item';
 import {
   bosses,
@@ -234,7 +235,7 @@ export default function AllBossesScreen() {
                 ]}
                 value={query}
               />
-              <View accessibilityRole="radiogroup" style={[styles.filters, { gap: theme.spacing.small }]}>
+              <FilterButtonGroup testID="content-pack-boss-filter-group">
                 {filters.map((option) => {
                   const active = option.id === filter;
                   return (
@@ -262,7 +263,7 @@ export default function AllBossesScreen() {
                     </Pressable>
                   );
                 })}
-              </View>
+              </FilterButtonGroup>
               <Text accessibilityLiveRegion="polite" style={{ color: theme.colors.textSecondary }}>
                 {translations.region.resultCount(visibleBosses.length)}
               </Text>
@@ -281,8 +282,12 @@ const styles = StyleSheet.create({
   title: { fontSize: 30, fontWeight: '700' },
   sectionTitle: { fontSize: 20, fontWeight: '700' },
   input: { borderWidth: 1, fontSize: 16, minHeight: 48 },
-  filters: { flexDirection: 'row', flexWrap: 'wrap' },
-  filter: { borderWidth: 1, justifyContent: 'center', minHeight: 44 },
+  filter: {
+    borderWidth: 1,
+    flexShrink: 0,
+    justifyContent: 'center',
+    minHeight: 44,
+  },
   empty: { borderWidth: 1, fontSize: 16 },
   backButton: { alignItems: 'center', minHeight: 48 },
 });

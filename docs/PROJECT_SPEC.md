@@ -813,3 +813,16 @@ largura 260. O overlay separa emblema e `AppText`, respeita áreas seguras, apli
 176–220 dp e título de 22–28 dp, considerando a escala máxima de 1,015.
 A revisão manual no Expo Go foi concluída e aprovada; a splash nativa ainda
 deverá ser validada futuramente em build Android instalado.
+
+## Grupo responsivo compartilhado de filtros
+
+Todo grupo com dois ou mais filtros de pesquisa ou listagem deve usar
+`FilterButtonGroup`. Os controles mantêm largura baseada no conteúdo e são
+distribuídos em quantas linhas forem necessárias. Corte, truncamento, compressão
+excessiva e rolagem horizontal não são permitidos.
+
+A regra vale para filtros de origem, estado e propriedades e deve ser reutilizada
+por categorias futuras. Ela preserva seleção acessível por controle, Spectral,
+tokens semânticos nos temas Claro, Escuro e Sistema, rolagem vertical da lista e
+interseção com busca e demais filtros. Rotas sem determinado filtro não devem
+criá-lo apenas para preencher a linha.

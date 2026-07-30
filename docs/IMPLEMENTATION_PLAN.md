@@ -346,3 +346,18 @@ em grupo centralizado dentro da área segura, com limites responsivos de largura
 altura, título e escala máxima de 1,015. A revisão manual no Expo Go foi
 concluída e aprovada. A validação nativa permanece planejada para um build
 Android instalado.
+
+## Phase 2 — grupo responsivo compartilhado de filtros
+
+As listas de Chefes, Cinzas da Guerra, Feitiços e Encantamentos passam a compor
+seus filtros no componente compartilhado `FilterButtonGroup`. O grupo usa `View`
+com quebra automática, cresce verticalmente, não comprime chips e não interfere
+na rolagem vertical da lista. `OriginFilterButtons` mantém sua lógica e fornece
+botões diretamente para composição com filtros de estado, Lendárias e Perdíveis.
+
+Para categorias futuras, qualquer conjunto de dois ou mais filtros deverá
+reutilizar a mesma estrutura, com quantas linhas forem necessárias, estados
+acessíveis individuais, Spectral e tokens semânticos nos temas
+Claro/Escuro/Sistema. Controles nunca devem ser cortados nem exigir rolagem
+horizontal. A lógica de busca, seleção e interseção permanece fora do componente
+visual. A revisão manual no Expo Go foi concluída e aprovada.
