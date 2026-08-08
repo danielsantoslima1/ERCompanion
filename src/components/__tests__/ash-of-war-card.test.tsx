@@ -4,7 +4,7 @@ import { Alert } from 'react-native';
 import { AshOfWarCard } from '../ash-of-war-card';
 import type { AppContextValue } from '../../contexts/app-context';
 import { getTranslationDictionary } from '../../i18n';
-import { lightTheme } from '../../theme';
+import { darkTheme, lightTheme } from '../../theme';
 
 jest.mock('@expo/vector-icons/MaterialCommunityIcons', () => {
   const { Text } = jest.requireActual('react-native');
@@ -47,6 +47,34 @@ describe('AshOfWarCard', () => {
     expect(screen.getByText('View details')).toBeOnTheScreen();
     expect(screen.queryByText('FP cost')).toBeNull();
     expect(screen.queryByText('Affinity')).toBeNull();
+  });
+
+  it('uses the shared dark card accent tokens without replacing success', async () => {
+    mockAppState = { ...mockAppState, theme: darkTheme };
+    const view = await render(
+      <AshOfWarCard
+        id="kick"
+        isCollected={false}
+        location="Location"
+        name="Kick"
+        onViewDetails={jest.fn()}
+      />,
+    );
+    expect(screen.getByText('Kick')).toHaveStyle({
+      color: darkTheme.colors.cardAccentText,
+    });
+    await view.rerender(
+      <AshOfWarCard
+        id="kick"
+        isCollected
+        location="Location"
+        name="Kick"
+        onViewDetails={jest.fn()}
+      />,
+    );
+    expect(screen.getByText('✓', { includeHiddenElements: true })).toHaveStyle({
+      color: darkTheme.colors.success,
+    });
   });
 
   it('uses a decorative ghost when not collected', async () => {

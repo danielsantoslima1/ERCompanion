@@ -28,8 +28,10 @@ export function SpellCard(props: SpellCardProps) {
       {
         backgroundColor: props.isCollected
           ? theme.colors.successBackground
-          : theme.colors.surface,
-        borderColor: props.isCollected ? theme.colors.success : theme.colors.border,
+          : theme.colors.cardAccent,
+        borderColor: props.isCollected
+          ? theme.colors.success
+          : theme.colors.cardAccentBorder,
         borderRadius: theme.borderRadius.medium,
         gap: theme.spacing.medium,
         padding: theme.spacing.medium,
@@ -43,7 +45,7 @@ export function SpellCard(props: SpellCardProps) {
         )}
         accessible>
         <View style={[styles.heading, { gap: theme.spacing.small }]}>
-          <Text style={[styles.name, { color: theme.colors.textPrimary }]}>
+          <Text style={[styles.name, { color: theme.colors.cardAccentText }]}>
             {props.name}
           </Text>
           <View
@@ -56,7 +58,7 @@ export function SpellCard(props: SpellCardProps) {
               <Text style={[styles.check, { color: theme.colors.success }]}>✓</Text>
             ) : (
               <Ionicons
-                color={theme.colors.textSecondary}
+                color={theme.colors.cardAccentIcon}
                 name={props.category === 'sorcery' ? 'sparkles-outline' : 'sunny-outline'}
                 size={24}
               />

@@ -9,7 +9,7 @@ import type { TestInstance } from 'test-renderer';
 
 import type { AppContextValue } from '../../contexts/app-context';
 import { getTranslationDictionary } from '../../i18n';
-import { lightTheme, typography } from '../../theme';
+import { darkTheme, lightTheme, typography } from '../../theme';
 import { BossCard } from '../boss-card';
 
 interface ControlledVoidPromise {
@@ -144,6 +144,45 @@ describe('BossCard', () => {
     expect(screen.getByText('View details')).toHaveStyle({
       fontFamily: typography.bodyBold,
     });
+  });
+
+  it('uses semantic gold details over structural green in the dark theme', async () => {
+    mockAppState = { ...mockAppState, theme: darkTheme };
+    await render(
+      <BossCard
+        id="test-boss"
+        isDefeated={false}
+        location="Test Location"
+        name="Test Boss"
+      />,
+    );
+
+    expect(screen.getByText('Test Boss')).toHaveStyle({
+      color: darkTheme.colors.cardAccentText,
+    });
+    expect(
+      screen.getByTestId('boss-status-icon-not-defeated', {
+        includeHiddenElements: true,
+      }),
+    ).toHaveStyle({ color: darkTheme.colors.cardAccentIcon });
+  });
+
+  it('preserves green success semantics on a defeated dark-theme card', async () => {
+    mockAppState = { ...mockAppState, theme: darkTheme };
+    await render(
+      <BossCard
+        id="test-boss"
+        isDefeated
+        location="Test Location"
+        name="Test Boss"
+      />,
+    );
+
+    expect(
+      screen.getByTestId('boss-status-icon-defeated', {
+        includeHiddenElements: true,
+      }),
+    ).toHaveStyle({ color: darkTheme.colors.success });
   });
 
   it('changes progress without opening details', async () => {

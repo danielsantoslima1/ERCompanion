@@ -828,6 +828,15 @@ antecipadas. `Index` é somente o nome visual do grupo do Drawer.
 de rotas, e seu card de Chefes abre `/all-bosses`. A revisão manual
 está novamente pendente.
 
+## Regra cromática de cards
+
+Cards atuais e futuros usam verde profundo como estrutura no tema escuro e
+ouro envelhecido em detalhes semânticos, sem grandes superfícies douradas.
+Chefes, Cinzas da Guerra, Feitiços e Encantamentos compartilham tokens tipados.
+Sucesso, erro, foco e seleção continuam distinguíveis por mais de um sinal, e
+o tema claro preserva sua aparência anterior. Combinações críticas possuem
+validação automatizada de contraste.
+
 ## Grupo responsivo compartilhado de filtros
 
 Todo grupo com dois ou mais filtros de pesquisa ou listagem deve usar

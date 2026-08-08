@@ -377,3 +377,12 @@ permite acrescentar categorias futuras somente após aprovação. A retirada de
 `app/(drawer)/index/index.tsx` preserva a Home atual e evita padrões duplicados.
 Revisão manual novamente
 pendente.
+
+## Phase 2 — identidade dourada dos cards escuros
+
+Chefes, Cinzas da Guerra, Feitiços e Encantamentos passam a consumir tokens
+semânticos compartilhados para superfície verde e detalhes em ouro envelhecido
+no tema escuro. Estados concluídos continuam verdes; o tema claro reutiliza os
+valores anteriores. Testes verificam paridade, contraste e consumo dos tokens.
+Cards futuros devem seguir a mesma regra sem depender apenas de cor. Revisão
+manual pendente.

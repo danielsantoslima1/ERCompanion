@@ -114,3 +114,21 @@ Cores pertencentes a imagens e ativos não são reinterpretadas pelo tema.
 A revisão manual nos temas Claro, Escuro e Sistema ainda está pendente. Ela
 deve conferir navegação, Drawer, cards, filtros, inputs, progresso, detalhes,
 Settings, estados de erro e legibilidade em telas estreitas.
+
+## Identidade cromática dos cards no tema escuro
+
+Cards de Chefes, Cinzas da Guerra, Feitiços e Encantamentos compartilham
+`cardAccent`, `cardAccentBorder`, `cardAccentText`, `cardAccentIcon` e
+`cardAccentMuted`. No tema escuro, a superfície permanece verde-escura,
+enquanto borda, título e ícone decorativo recebem ouro envelhecido de forma
+controlada. Estados concluídos preservam fundo, borda, ícone e significado
+verdes de sucesso; dourado não substitui sucesso, erro ou ação destrutiva.
+
+No tema claro, os tokens reutilizam os valores anteriores para impedir mudança
+visual perceptível. Testes protegem o contraste crítico do texto e da borda.
+
+Todo card futuro de item, chefe, magia ou entidade deve usar verde como
+estrutura no tema escuro e dourado somente em detalhes semânticos. Grandes
+superfícies douradas são proibidas; estados não podem depender apenas de cor;
+os tokens devem ser centralizados, tipados e compatíveis com Light, Dark e
+System, preservando Cinzel Decorative e Spectral em suas funções aprovadas.

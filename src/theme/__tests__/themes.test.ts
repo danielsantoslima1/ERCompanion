@@ -37,6 +37,11 @@ const requiredTokens = [
   'circularProgressFill',
   'circularProgressAccentTrack',
   'circularProgressAccentFill',
+  'cardAccent',
+  'cardAccentBorder',
+  'cardAccentText',
+  'cardAccentIcon',
+  'cardAccentMuted',
   'selectedBackground',
   'selectedBorder',
   'focusRing',
@@ -136,6 +141,34 @@ describe('semantic color themes', () => {
     );
     expect(darkTheme.colors.circularProgressAccentFill).toBe(
       darkTheme.colors.circularProgressFill,
+    );
+  });
+
+  it('gives dark cards a structural green surface with accessible gold details', () => {
+    expect(darkTheme.colors.cardAccent).toBe(darkTheme.colors.surface);
+    expect(darkTheme.colors.cardAccentBorder).toBe('#927A45');
+    expect(darkTheme.colors.cardAccentText).toBe('#E2B34A');
+    expect(darkTheme.colors.cardAccentIcon).toBe('#E2B34A');
+    expect(
+      getContrastRatio(
+        darkTheme.colors.cardAccentText,
+        darkTheme.colors.cardAccent,
+      ),
+    ).toBeGreaterThanOrEqual(4.5);
+    expect(
+      getContrastRatio(
+        darkTheme.colors.cardAccentBorder,
+        darkTheme.colors.cardAccent,
+      ),
+    ).toBeGreaterThanOrEqual(3);
+  });
+
+  it('preserves the previous light-card appearance through semantic aliases', () => {
+    expect(lightTheme.colors.cardAccent).toBe(lightTheme.colors.surface);
+    expect(lightTheme.colors.cardAccentBorder).toBe(lightTheme.colors.border);
+    expect(lightTheme.colors.cardAccentText).toBe(lightTheme.colors.text);
+    expect(lightTheme.colors.cardAccentIcon).toBe(
+      lightTheme.colors.textSecondary,
     );
   });
 

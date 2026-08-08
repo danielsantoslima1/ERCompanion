@@ -35,6 +35,11 @@ export interface ThemeColors {
   circularProgressFill: string;
   circularProgressAccentTrack: string;
   circularProgressAccentFill: string;
+  cardAccent: string;
+  cardAccentBorder: string;
+  cardAccentText: string;
+  cardAccentIcon: string;
+  cardAccentMuted: string;
   selectedBackground: string;
   selectedBorder: string;
   focusRing: string;
