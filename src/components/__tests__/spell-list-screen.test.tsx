@@ -134,7 +134,7 @@ describe('SpellListScreen', () => {
     expect(screen.getByText('Nenhuma entrada encontrada.')).toBeOnTheScreen();
   });
 
-  it('normalizes accents and exposes pending locations without inventing one', async () => {
+  it('normalizes accents and displays the audited summarized location', async () => {
     await render(<SpellListScreen category="sorcery" mode="all" />);
     expect(screen.getByLabelText('Buscar magias')).toHaveStyle({
       fontFamily: typography.body,
@@ -144,19 +144,17 @@ describe('SpellListScreen', () => {
       "adula's moonblade",
     );
     expect(screen.getByText("Adula's Moonblade")).toBeOnTheScreen();
-    expect(screen.getByText('Localização pendente')).toBeOnTheScreen();
+    expect(screen.getByText('Glintstone Dragon Adula - Moonlight Altar')).toBeOnTheScreen();
   });
 
-  it('finds protected content but displays only the neutral spoiler match', async () => {
+  it('searches an audited quest location without exposing acquisition steps', async () => {
     await render(<SpellListScreen category="incantation" mode="all" />);
     await fireEvent.changeText(
       screen.getByLabelText('Buscar magias'),
-      'Jagged Peak',
+      'Dragon Communion Altar',
     );
-    expect(
-      screen.getByText('Correspondência em conteúdo com spoiler'),
-    ).toBeOnTheScreen();
-    expect(screen.queryByText('Jagged Peak')).toBeNull();
+    expect(screen.getByText("Agheel's Flame")).toBeOnTheScreen();
+    expect(screen.queryByText('Complete the documented acquisition')).toBeNull();
   });
 
   it('intersects origin, Legendary, and search and preserves origin on details', async () => {

@@ -34,12 +34,13 @@ beforeEach(() => {
 });
 
 describe('SpellDetailScreen', () => {
-  it('shows approved fields, pending location, and one fallback notice', async () => {
+  it('shows summarized location and typed technical data with one fallback notice', async () => {
     await render(<SpellDetailScreen category="sorcery" id="sorcery-adulas-moonblade" />);
     expect(screen.getByText("Adula's Moonblade")).toBeOnTheScreen();
-    expect(screen.getByText('Localização pendente')).toBeOnTheScreen();
+    expect(screen.getByText('Glintstone Dragon Adula - Moonlight Altar')).toBeOnTheScreen();
     expect(screen.getAllByText('Conteúdo em inglês — tradução oficial pendente')).toHaveLength(1);
-    expect(screen.queryByText(/Custo de FP/i)).toBeNull();
+    expect(screen.getByText('FP cost: 22')).toBeOnTheScreen();
+    expect(screen.getByText('Slots used: 1')).toBeOnTheScreen();
   });
 
   it('does not show the fallback notice in English', async () => {
@@ -51,9 +52,9 @@ describe('SpellDetailScreen', () => {
   it('keeps quest spoiler content collapsed until explicitly expanded', async () => {
     await render(<SpellDetailScreen category="incantation" id="incantation-dragonbolt-of-florissax" />);
     expect(screen.getByText('Contém spoilers de missão')).toBeOnTheScreen();
-    expect(screen.queryByText('Jagged Peak')).toBeNull();
+    expect(screen.queryByText(/Thiollier's Concoction/)).toBeNull();
     await fireEvent.press(screen.getByRole('button', { name: 'Expandir conteúdo com spoiler' }));
-    expect(screen.getByText(/Jagged Peak/)).toBeOnTheScreen();
+    expect(screen.getByText(/Thiollier's Concoction/)).toBeOnTheScreen();
   });
 
   it('uses the correct collection action without changing the other category', async () => {

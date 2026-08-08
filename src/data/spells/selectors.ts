@@ -107,6 +107,8 @@ export function getSpellSearchableText(entry: Spell): readonly string[] {
       method.npc.ptBR,
       method.requiredItem.en,
       method.requiredItem.ptBR,
+      method.requirements.en,
+      ...method.steps.map((step) => step.en),
       ...method.protectedSearchTerms,
     );
   }
@@ -150,11 +152,15 @@ function getSpellSearchFields(
       getLocalizedSearchValues(method.npc),
     ),
     requiredItems: entry.acquisitionMethods.flatMap((method) =>
-      getLocalizedSearchValues(method.requiredItem),
+      [...getLocalizedSearchValues(method.requiredItem), ...getLocalizedSearchValues(method.requirements)],
     ),
-    metadata: entry.acquisitionMethods.flatMap(
-      (method) => method.protectedSearchTerms,
-    ),
+    metadata: [
+      ...getLocalizedSearchValues(entry.technical.effect),
+      ...entry.acquisitionMethods.flatMap((method) => [
+        ...method.protectedSearchTerms,
+        ...method.steps.flatMap(getLocalizedSearchValues),
+      ]),
+    ],
   };
 }
 
@@ -204,6 +210,8 @@ export function spellUsesEnglishFallback(
       method.source,
       method.npc,
       method.requiredItem,
+      method.requirements,
+      ...method.steps,
       method.spoilerSafeText,
     ]),
   ];

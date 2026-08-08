@@ -24,11 +24,18 @@ function acquisition(method) {
     method.requirements?.en,
   ].filter((value) => typeof value === 'string' && value.trim());
   return {
+    type: method.methodType,
     method: localized(method.method),
     location: localized(method.location),
+    region: localized(method.region),
+    nearestSiteOfGrace: localized(method.nearestSiteOfGrace),
     source: localized(method.source),
     npc: localized(method.npc),
     requiredItem: localized(method.requiredItem),
+    requirements: localized(method.requirements),
+    steps: Array.isArray(method.steps?.values)
+      ? method.steps.values.map((step) => localized(step.text))
+      : [],
     availabilityTags: Array.isArray(method.availabilityTags?.values)
       ? method.availabilityTags.values
       : [],
@@ -46,16 +53,28 @@ function entry(item) {
     contentPack: item.contentPack,
     name: localized(item.name),
     primaryLocation: localized(item.primaryLocation),
+    primaryRegion: localized(item.acquisitionMethods[0]?.region),
     primarySource: localized(item.primarySource),
     acquisitionMethods: item.acquisitionMethods.map(acquisition),
     legendary: item.legendary.value === true,
-    missable: null,
+    missable: item.missable.value,
     containsQuestSpoilers: item.acquisitionMethods.some(
       (method) => method.containsQuestSpoilers?.value === true,
     ),
     spoilerSafeCardText: localized(item.cardSummary),
     searchAliases: values(item.locationAliases),
     referenceIds: Array.isArray(item.sourceRefs) ? item.sourceRefs : [],
+    technical: {
+      fpCost: item.fpCost.value,
+      slotsUsed: item.memorySlots.value,
+      staminaCost: item.staminaCost.value,
+      intelligenceRequired: item.requirements.intelligence.value,
+      faithRequired: item.requirements.faith.value,
+      arcaneRequired: item.requirements.arcane.value,
+      purchasePrice: item.priceRunes.value,
+      effect: localized(item.primaryEffect),
+      documentedVersion: item.documentedVersion.value,
+    },
   };
 }
 
