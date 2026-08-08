@@ -378,6 +378,16 @@ permite acrescentar categorias futuras somente após aprovação. A retirada de
 Revisão manual novamente
 pendente.
 
+## Phase 2 — data completion
+
+Completed the consolidated English-data pass for all 213 Sorceries and
+Incantations: summarized locations, acquisition records, typed costs and
+requirements, strict missable decisions, detail/search integration, and dataset
+validation. The Boss and Ashes of War catalogs were audited without changing
+approved totals. Remaining explicit legacy unknowns are documented rather than
+invented. No progress-schema, dependency, Portuguese-content, or Index-content
+change is part of this step.
+
 ## Phase 2 — identidade dourada dos cards escuros
 
 Chefes, Cinzas da Guerra, Feitiços e Encantamentos passam a consumir tokens

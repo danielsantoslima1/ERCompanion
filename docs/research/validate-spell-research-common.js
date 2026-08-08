@@ -158,7 +158,9 @@ function validateSpellResearch({ file, category, total, baseTotal, dlcTotal, leg
     ...entry,
     sourceRefs: undefined,
   }))), 'URL found in a production-shaped entry');
-  assert(raw.length < entries.length * 16000, 'unexpectedly large copied text');
+  assert(entries.every((entry) => entry.acquisitionMethods.every((method) =>
+    (method.method.en?.length ?? 0) <= 320)), 'acquisition summary exceeds paraphrase limit');
+  assert(raw.length < entries.length * 17000, 'unexpectedly large copied text');
 
   return {
     valid: true,

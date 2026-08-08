@@ -837,6 +837,15 @@ Sucesso, erro, foco e seleção continuam distinguíveis por mais de um sinal, e
 o tema claro preserva sua aparência anterior. Combinações críticas possuem
 validação automatizada de contraste.
 
+## Phase 2 data completion
+
+The 84 Sorceries and 129 Incantations use audited English card locations in the
+`Main location - Full region name` format. Acquisition and typed technical data
+belong to details, never cards. Unknown optional numbers remain distinct from
+verified zero or false. The audit preserves 208 boss encounters, 116 Ashes of
+War, the 537-item total, existing Portuguese content, and the empty Index. Full
+methodology is recorded in `docs/PHASE_2_DATA_COMPLETION.md`.
+
 ## Grupo responsivo compartilhado de filtros
 
 Todo grupo com dois ou mais filtros de pesquisa ou listagem deve usar
