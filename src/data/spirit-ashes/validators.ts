@@ -16,6 +16,13 @@ export function validateSpiritAshCatalog(entries = spiritAshes): string[] {
       errors.push(`Unresolved location placeholder: ${entry.id}`);
     }
     if (!entry.region.trim()) errors.push(`Missing region: ${entry.id}`);
+    if (!entry.primaryAcquisition.trim()) errors.push(`Missing acquisition: ${entry.id}`);
+    if (entry.acquisitionMethods.length === 0) errors.push(`Missing acquisition evidence: ${entry.id}`);
+    for (const method of entry.acquisitionMethods) {
+      if (!method.source.trim() || !method.location.includes(' - ')) {
+        errors.push(`Invalid acquisition evidence: ${entry.id}`);
+      }
+    }
     if (entry.summonCost.amount !== null && entry.summonCost.amount < 0) errors.push(`Invalid summon cost: ${entry.id}`);
     if (entry.numberSummoned !== null && (!Number.isInteger(entry.numberSummoned) || entry.numberSummoned < 1)) errors.push(`Invalid summon count: ${entry.id}`);
     if (!['grave-glovewort', 'ghost-glovewort', 'none'].includes(entry.upgradeType)) errors.push(`Invalid upgrade type: ${entry.id}`);

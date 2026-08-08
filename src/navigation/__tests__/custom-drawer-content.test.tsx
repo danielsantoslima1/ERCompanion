@@ -474,4 +474,28 @@ describe('CustomDrawerContent', () => {
       screen.getByRole('button', { name: 'DLC' }).props.accessibilityState,
     ).toMatchObject({ selected: true });
   });
+
+  it('keeps all main accordions mutually exclusive', async () => {
+    await render(<CustomDrawerContent {...createProps()} />);
+    await fireEvent.press(screen.getByRole('button', { name: 'Spirit Ashes' }));
+    expect(screen.getByText('All Spirit Ashes')).toBeOnTheScreen();
+    await fireEvent.press(
+      screen.getByRole('button', {
+        name: mockAppState.translations.navigation.expandBosses,
+      }),
+    );
+    expect(screen.queryByText('All Spirit Ashes')).toBeNull();
+    expect(screen.getByText(mockAppState.translations.navigation.allBosses)).toBeOnTheScreen();
+    await fireEvent.press(screen.getByRole('button', { name: 'Spirit Ashes' }));
+    expect(screen.queryByText(mockAppState.translations.navigation.allBosses)).toBeNull();
+    expect(screen.getByText('All Spirit Ashes')).toBeOnTheScreen();
+  });
+
+  it('does not force Spirit Ashes open just because its route is active', async () => {
+    mockPathname = '/spirit-ashes';
+    await render(<CustomDrawerContent {...createProps()} />);
+    expect(screen.queryByText('All Spirit Ashes')).toBeNull();
+    expect(screen.getByRole('button', { name: 'Spirit Ashes' }).props.accessibilityState)
+      .toMatchObject({ expanded: false, selected: false });
+  });
 });

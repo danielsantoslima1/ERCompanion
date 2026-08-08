@@ -63,7 +63,7 @@ export function AshOfWarProgressButton({
         styles.button,
         {
           backgroundColor: isCollected
-            ? theme.colors.surfaceElevated
+            ? theme.colors.successActionBackground
             : theme.colors.primary,
           borderColor: isCollected
             ? theme.colors.success
@@ -79,7 +79,7 @@ export function AshOfWarProgressButton({
           <ActivityIndicator
             color={
               isCollected
-                ? theme.colors.success
+                ? theme.colors.successActionText
                 : theme.colors.primaryContrast
             }
             size="small"
@@ -89,7 +89,7 @@ export function AshOfWarProgressButton({
               styles.text,
               {
                 color: isCollected
-                  ? theme.colors.success
+                  ? theme.colors.successActionText
                   : theme.colors.primaryContrast,
               },
             ]}>
@@ -102,7 +102,7 @@ export function AshOfWarProgressButton({
             styles.text,
             {
               color: isCollected
-                ? theme.colors.success
+                ? theme.colors.successActionText
                 : theme.colors.primaryContrast,
             },
           ]}>

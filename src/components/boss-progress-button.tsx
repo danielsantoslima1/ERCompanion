@@ -74,7 +74,7 @@ export function BossProgressButton({
         styles.button,
         {
           backgroundColor: isDefeated
-            ? theme.colors.surfaceElevated
+            ? theme.colors.successActionBackground
             : theme.colors.primary,
           borderColor: isDefeated
             ? theme.colors.success
@@ -90,7 +90,7 @@ export function BossProgressButton({
           <ActivityIndicator
             color={
               isDefeated
-                ? theme.colors.success
+                ? theme.colors.successActionText
                 : theme.colors.primaryContrast
             }
             size="small"
@@ -100,7 +100,7 @@ export function BossProgressButton({
               styles.buttonText,
               {
                 color: isDefeated
-                  ? theme.colors.success
+                  ? theme.colors.successActionText
                   : theme.colors.primaryContrast,
               },
             ]}>
@@ -113,7 +113,7 @@ export function BossProgressButton({
             styles.buttonText,
             {
               color: isDefeated
-                ? theme.colors.success
+                ? theme.colors.successActionText
                 : theme.colors.primaryContrast,
             },
           ]}>

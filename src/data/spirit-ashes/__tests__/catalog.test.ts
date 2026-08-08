@@ -21,8 +21,13 @@ describe('Spirit Ash catalog', () => {
     expect(entries.every((entry) => entry.primaryLocation.includes(' - '))).toBe(true);
     expect(entries.some((entry) => entry.primaryLocation.toLowerCase().includes(' location - '))).toBe(false);
     expect(entries.find((entry) => entry.name === 'Fingercreeper Ashes')?.primaryLocation).toBe(
-      'Finger Ruins of Miyr - Scadu Altus',
+      'Finger Ruins of Dheo - Scadu Altus',
     );
+    expect(entries.find((entry) => entry.name === 'Azula Beastman Ashes')).toMatchObject({
+      primaryLocation: 'Dragon Temple - Crumbling Farum Azula',
+    });
+    expect(entries.find((entry) => entry.name === 'Azula Beastman Ashes')?.primaryLocation)
+      .not.toContain('Groveside Cave');
     expect(validateSpiritAshCatalog([{ ...entries[0], primaryLocation: 'Wandering Noble location - Limgrave' }])).toContain(
       `Placeholder location: ${entries[0].id}`,
     );

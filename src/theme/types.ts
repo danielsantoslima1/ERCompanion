@@ -22,6 +22,8 @@ export interface ThemeColors {
   dangerBackground: string;
   success: string;
   successBackground: string;
+  successActionBackground: string;
+  successActionText: string;
   disabled: string;
   disabledText: string;
   overlay: string;

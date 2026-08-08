@@ -24,10 +24,24 @@ and Black Knife Tiche. Missable remains explicitly unknown where a lockout
 cannot be confirmed without inventing a claim.
 
 The first implementation used temporary `<name> location` values. A manual
-review found that these were not factual acquisition locations. All 84 records
-now use researched locations from Eldenpedia/wiki.gg listings and individual
-item pages where needed; the Spirit Ash validator rejects name-derived,
-`Unknown location`, `TBD`, and `TODO` placeholders.
+review found that these were not factual acquisition locations, and a second
+audit also identified name-homonym errors (for example, the Beastman boss in
+Groveside Cave is not the source of Azula Beastman Ashes). The second audit
+verified all 84 acquisition locations against the Game8 Spirit Ash index,
+Eldenpedia/wiki.gg, and individual item pages for exceptions. The production
+summary now records the acquisition site itself: Azula Beastman Ashes is in
+Dragon Temple, Crumbling Farum Azula; Fingercreeper Ashes is in Finger Ruins
+of Dheo, Scadu Altus. The validator rejects name-derived, `Unknown location`,
+`TBD`, and `TODO` placeholders.
+
+Research traceability: the Game8 index is the batch source for the 64 Base Game
+records (https://game8.co/games/Elden-Ring/archives/356059); individual pages
+were used for Azula Beastman (https://game8.co/games/Elden-Ring/archives/375564)
+and Fingercreeper (https://game8.co/games/Elden-Ring/archives/459008), with
+Eldenpedia's Ashes reference (https://eldenring.wiki.gg/wiki/Ashes) used for
+cross-checking. Each production record is keyed by the corresponding researched
+name/location entry in `src/data/spirit-ashes/catalog.ts`; no unknown location
+remains.
 
 ## Product integration
 
