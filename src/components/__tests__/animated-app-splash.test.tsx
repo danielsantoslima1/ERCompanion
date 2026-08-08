@@ -83,8 +83,8 @@ describe('AnimatedAppSplash', () => {
     });
     expect(onReady).not.toHaveBeenCalled();
 
-    fireEvent(overlay, 'layout', { nativeEvent: { layout: {} } });
-    fireEvent(overlay, 'layout', { nativeEvent: { layout: {} } });
+    await fireEvent(overlay, 'layout', { nativeEvent: { layout: {} } });
+    await fireEvent(overlay, 'layout', { nativeEvent: { layout: {} } });
     expect(onReady).toHaveBeenCalledTimes(1);
   });
 

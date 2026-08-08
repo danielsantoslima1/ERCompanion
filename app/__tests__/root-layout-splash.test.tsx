@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 import type { ReactNode } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
 
@@ -11,6 +11,7 @@ let mockAppState: Pick<
   AppContextValue,
   'initializationError' | 'isHydrated' | 'theme' | 'translations'
 >;
+let mockCompleteMinimumDuration: (() => void) | undefined;
 
 jest.mock('expo-splash-screen', () => ({
   hideAsync: jest.fn().mockResolvedValue(undefined),
@@ -19,6 +20,18 @@ jest.mock('expo-splash-screen', () => ({
 jest.mock('../../src/contexts', () => ({
   AppProvider: ({ children }: { children: ReactNode }) => children,
 }));
+jest.mock('../../src/branding', () => {
+  const actual = jest.requireActual('../../src/branding');
+  return {
+    ...actual,
+    scheduleSplashExitAfterMinimum: jest.fn(
+      (_startedAt: number, onElapsed: () => void) => {
+        mockCompleteMinimumDuration = onElapsed;
+        return jest.fn();
+      },
+    ),
+  };
+});
 jest.mock('../../src/hooks/use-app-fonts', () => ({
   useAppFonts: jest.fn(() => ({
     error: null,
@@ -46,12 +59,13 @@ jest.mock('../../src/components/animated-app-splash', () => ({
     onReady: () => void;
     startExit: boolean;
   }) => {
-    const React = jest.requireActual<typeof import('react')>('react');
     const { Pressable, Text } =
       jest.requireActual<typeof import('react-native')>('react-native');
-    React.useEffect(() => onReady(), [onReady]);
     return (
-      <Pressable onPress={onComplete} testID="mock-splash-overlay">
+      <Pressable
+        onLayout={onReady}
+        onPress={onComplete}
+        testID="mock-splash-overlay">
         <Text>{String(startExit)}</Text>
       </Pressable>
     );
@@ -60,6 +74,7 @@ jest.mock('../../src/components/animated-app-splash', () => ({
 
 beforeEach(() => {
   jest.clearAllMocks();
+  mockCompleteMinimumDuration = undefined;
   mockAppState = {
     initializationError: null,
     isHydrated: true,
@@ -80,10 +95,17 @@ describe('RootNavigation splash coordination', () => {
     );
 
     expect(screen.getByTestId('mock-splash-overlay')).toBeOnTheScreen();
-    await waitFor(() => expect(SplashScreen.hideAsync).toHaveBeenCalledTimes(1));
-    await waitFor(() => expect(screen.getByText('true')).toBeOnTheScreen());
+    await fireEvent(screen.getByTestId('mock-splash-overlay'), 'layout', {
+      nativeEvent: { layout: {} },
+    });
+    await waitFor(() => expect(mockCompleteMinimumDuration).toBeDefined());
+    await act(async () => {
+      mockCompleteMinimumDuration?.();
+    });
+    expect(SplashScreen.hideAsync).toHaveBeenCalledTimes(1);
+    expect(screen.getByText('true')).toBeOnTheScreen();
 
-    fireEvent.press(screen.getByTestId('mock-splash-overlay'));
+    await fireEvent.press(screen.getByTestId('mock-splash-overlay'));
     await waitFor(
       () => expect(screen.queryByTestId('mock-splash-overlay')).toBeNull(),
     );
@@ -128,7 +150,7 @@ describe('RootNavigation splash coordination', () => {
       />,
     );
 
-    fireEvent(screen.getByTestId('root-navigation'), 'layout', {
+    await fireEvent(screen.getByTestId('root-navigation'), 'layout', {
       nativeEvent: { layout: {} },
     });
     await waitFor(() => expect(SplashScreen.hideAsync).toHaveBeenCalledTimes(1));
@@ -147,10 +169,10 @@ describe('RootNavigation splash coordination', () => {
       />,
     );
 
-    fireEvent(screen.getByTestId('root-navigation'), 'layout', {
+    await fireEvent(screen.getByTestId('root-navigation'), 'layout', {
       nativeEvent: { layout: {} },
     });
-    fireEvent.press(screen.getByRole('button'));
+    await fireEvent.press(screen.getByRole('button'));
 
     expect(retryFonts).toHaveBeenCalledTimes(1);
   });

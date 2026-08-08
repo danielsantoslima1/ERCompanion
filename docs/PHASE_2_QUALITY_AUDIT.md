@@ -44,6 +44,12 @@ content, translations, and dependencies were not changed.
 
 ## Remaining limitations
 
+- The Jest `act()` warnings were traced to the root splash double calling
+  `onReady` from an effect during Testing Library's render scope and to
+  unawaited asynchronous layout/press events in both splash suites. The double
+  now models production layout explicitly; every event is awaited, and the
+  minimum-time callback is controlled and drained inside `act`. The targeted
+  and complete suites finish without warnings; no console filtering was added.
 - Validation of the native splash in an installed Android build is explicitly
   deferred and was not performed in this audit.
 - No broad architectural refactor was justified. Historical research TODO-like
