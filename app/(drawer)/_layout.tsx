@@ -2,6 +2,8 @@ import { DrawerToggleButton } from '@react-navigation/drawer';
 import { Drawer } from 'expo-router/drawer';
 
 import { useApp } from '@/src/hooks/use-app';
+import { IndexHeaderBackButton } from '@/src/components/index-header-back-button';
+import { INDEX_LABELS } from '@/src/index/index-sections';
 import { CustomDrawerContent } from '@/src/navigation';
 import { typography } from '@/src/theme/typography';
 
@@ -123,6 +125,34 @@ export default function DrawerLayout() {
       <Drawer.Screen
         name="incantations/shadow-of-the-erdtree"
         options={{ drawerItemStyle: { display: 'none' }, title: translations.spells.incantationExpansionTitle }}
+      />
+      <Drawer.Screen
+        name="index/remembrance-bosses/index"
+        options={{
+          drawerItemStyle: { display: 'none' },
+          headerLeft: () => <IndexHeaderBackButton fallbackRoute="/" />,
+          title: INDEX_LABELS.remembranceBosses,
+        }}
+      />
+      <Drawer.Screen
+        name="index/remembrance-bosses/base-game"
+        options={{
+          drawerItemStyle: { display: 'none' },
+          headerLeft: () => (
+            <IndexHeaderBackButton fallbackRoute="/remembrance-bosses" />
+          ),
+          title: `${INDEX_LABELS.remembranceBosses} — ${INDEX_LABELS.baseGame}`,
+        }}
+      />
+      <Drawer.Screen
+        name="index/remembrance-bosses/dlc"
+        options={{
+          drawerItemStyle: { display: 'none' },
+          headerLeft: () => (
+            <IndexHeaderBackButton fallbackRoute="/remembrance-bosses" />
+          ),
+          title: `${INDEX_LABELS.remembranceBosses} — ${INDEX_LABELS.dlc}`,
+        }}
       />
     </Drawer>
   );

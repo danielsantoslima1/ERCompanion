@@ -361,3 +361,19 @@ acessíveis individuais, Spectral e tokens semânticos nos temas
 Claro/Escuro/Sistema. Controles nunca devem ser cortados nem exigir rolagem
 horizontal. A lógica de busca, seleção e interseção permanece fora do componente
 visual. A revisão manual no Expo Go foi concluída e aprovada.
+
+## Phase 2 — estrutura inicial do Index
+
+Adicionar `Index` imediatamente antes de `Settings`, mantendo a exclusividade
+dos grupos do Drawer. O grupo é somente um accordion, sem subopção homônima e
+sem rota própria; `app/(drawer)/index.tsx` continua sendo a Home em `/`. A
+estrutura inicial contém somente `Remembrance Bosses`, `Base Game` e `DLC`,
+com rotas iniciadas diretamente em `/remembrance-bosses`, intermediária funcional e
+páginas finais em estado vazio. O card de Chefes da Home continua abrindo
+`/all-bosses`. Os textos novos permanecem em inglês e nenhuma entrada real,
+imagem, busca, filtro, lore ou dado técnico é antecipado. A configuração tipada
+permite acrescentar categorias futuras somente após aprovação. A retirada de
+`Index` é somente o nome visual do grupo do Drawer. A retirada de
+`app/(drawer)/index/index.tsx` preserva a Home atual e evita padrões duplicados.
+Revisão manual novamente
+pendente.

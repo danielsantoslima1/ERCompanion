@@ -814,6 +814,20 @@ largura 260. O overlay separa emblema e `AppText`, respeita áreas seguras, apli
 A revisão manual no Expo Go foi concluída e aprovada; a splash nativa ainda
 deverá ser validada futuramente em build Android instalado.
 
+## Estrutura inicial do Index
+
+`Index` é o último grupo funcional do Drawer antes de `Settings` e funciona
+somente como accordion, sem subopção homônima e sem rota própria. Nesta
+etapa, contém somente `Remembrance Bosses`, com destinos `Base Game` e `DLC`.
+As rotas `/remembrance-bosses`, `/remembrance-bosses/base-game` e
+`/remembrance-bosses/dlc` são funcionais; as duas últimas apresentam
+estado vazio explícito, sem dados reais. Todo texto novo do Index permanece em
+inglês em ambos os idiomas do aplicativo. `Lore` e demais categorias não são
+antecipadas. `Index` é somente o nome visual do grupo do Drawer.
+`app/(drawer)/index.tsx` permanece a Home em `/`, evitando conflito com a árvore
+de rotas, e seu card de Chefes abre `/all-bosses`. A revisão manual
+está novamente pendente.
+
 ## Grupo responsivo compartilhado de filtros
 
 Todo grupo com dois ou mais filtros de pesquisa ou listagem deve usar
