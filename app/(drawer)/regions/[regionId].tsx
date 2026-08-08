@@ -314,6 +314,7 @@ export default function RegionScreen() {
             },
           ]}
           data={visibleBosses}
+          keyboardDismissMode="on-drag"
           keyboardShouldPersistTaps="handled"
           keyExtractor={keyExtractor}
           ListEmptyComponent={emptyList}

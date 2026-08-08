@@ -254,6 +254,8 @@ export function SpellListScreen({ category, mode }: Props) {
         {mode === 'all' ? (
           <SectionList
             contentContainerStyle={contentStyle}
+            keyboardDismissMode="on-drag"
+            keyboardShouldPersistTaps="handled"
             sections={sections}
             keyExtractor={(item) => item.id}
             ListHeaderComponent={header}
@@ -265,15 +267,19 @@ export function SpellListScreen({ category, mode }: Props) {
               </Text>
             )}
             stickySectionHeadersEnabled={false}
+            testID="spell-list"
           />
         ) : (
           <FlatList
             contentContainerStyle={contentStyle}
             data={entries}
+            keyboardDismissMode="on-drag"
+            keyboardShouldPersistTaps="handled"
             keyExtractor={(item) => item.id}
             ListHeaderComponent={header}
             ListEmptyComponent={empty}
             renderItem={renderEntry}
+            testID="spell-list"
           />
         )}
       </SafeAreaView>

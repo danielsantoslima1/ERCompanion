@@ -53,7 +53,9 @@ describe('SpellDetailScreen', () => {
     await render(<SpellDetailScreen category="incantation" id="incantation-dragonbolt-of-florissax" />);
     expect(screen.getByText('Contém spoilers de missão')).toBeOnTheScreen();
     expect(screen.queryByText(/Thiollier's Concoction/)).toBeNull();
-    await fireEvent.press(screen.getByRole('button', { name: 'Expandir conteúdo com spoiler' }));
+    const expandButton = screen.getByRole('button', { name: 'Expandir conteúdo com spoiler' });
+    expect(expandButton).toHaveStyle({ minHeight: 44 });
+    await fireEvent.press(expandButton);
     expect(screen.getByText(/Thiollier's Concoction/)).toBeOnTheScreen();
   });
 
@@ -67,5 +69,6 @@ describe('SpellDetailScreen', () => {
   it('shows a safe not-found state', async () => {
     await render(<SpellDetailScreen category="sorcery" id="unknown" />);
     expect(screen.getByText('Magia não encontrada')).toBeOnTheScreen();
+    expect(screen.getByRole('button', { name: 'Voltar' })).toHaveStyle({ minHeight: 44 });
   });
 });

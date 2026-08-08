@@ -58,6 +58,10 @@ describe('SpellListScreen', () => {
     expect(screen.getByText('Jogo base')).toBeOnTheScreen();
     expect(getSorceriesByContentPack('base-game')).toHaveLength(70);
     expect(getSorceriesByContentPack('shadow-of-the-erdtree')).toHaveLength(14);
+    expect(screen.getByTestId('spell-list').props).toMatchObject({
+      keyboardDismissMode: 'on-drag',
+      keyboardShouldPersistTaps: 'handled',
+    });
   });
 
   it('uses the same wrapping group for Incantation origin and spell filters', async () => {

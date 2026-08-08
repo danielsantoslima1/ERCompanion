@@ -36,7 +36,11 @@ export function SpellDetailScreen({ category, id }: { readonly category: SpellCa
       <SafeAreaView style={[styles.centered, { backgroundColor: theme.colors.background, padding: theme.spacing.large }]}>
         <Text variant="display" accessibilityRole="header" style={[styles.title, { color: theme.colors.textPrimary }]}>{translations.spells.notFoundTitle}</Text>
         <Text style={[styles.body, { color: theme.colors.textSecondary }]}>{translations.spells.notFoundMessage}</Text>
-        <Pressable accessibilityRole="button" onPress={() => router.canGoBack() ? router.back() : router.replace((category === 'sorcery' ? '/sorceries' : '/incantations') as Href)}>
+        <Pressable
+          accessibilityLabel={translations.spells.back}
+          accessibilityRole="button"
+          onPress={() => router.canGoBack() ? router.back() : router.replace((category === 'sorcery' ? '/sorceries' : '/incantations') as Href)}
+          style={styles.inlineAction}>
           <Text style={{ color: theme.colors.primary }}>{translations.spells.back}</Text>
         </Pressable>
       </SafeAreaView>
@@ -130,13 +134,15 @@ export function SpellDetailScreen({ category, id }: { readonly category: SpellCa
                   <View key={`${entry.id}-${index}`} style={{ gap: theme.spacing.small }}>
                     <Text style={[styles.spoiler, { color: theme.colors.warning }]}>{translations.spells.containsQuestSpoilers}</Text>
                     <Pressable
+                      accessibilityLabel={expanded ? translations.spells.collapseSpoiler : translations.spells.expandSpoiler}
                       accessibilityRole="button"
                       accessibilityState={{ expanded }}
                       onPress={() => setExpandedSpoilers((current) => {
                         const next = new Set(current);
                         if (next.has(index)) next.delete(index); else next.add(index);
                         return next;
-                      })}>
+                      })}
+                      style={styles.inlineAction}>
                       <Text style={{ color: theme.colors.primary, fontWeight: '700' }}>
                         {expanded ? translations.spells.collapseSpoiler : translations.spells.expandSpoiler}
                       </Text>
@@ -189,4 +195,5 @@ const styles = StyleSheet.create({
   notice: { borderWidth: 1, fontSize: 14 },
   tags: { fontSize: 13, fontWeight: '700' },
   spoiler: { fontSize: 14, fontWeight: '700' },
+  inlineAction: { alignSelf: 'flex-start', justifyContent: 'center', minHeight: 44 },
 });

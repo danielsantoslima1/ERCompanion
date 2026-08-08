@@ -59,7 +59,6 @@ function DrawerItem({
         },
       ]}>
       <Text
-        numberOfLines={2}
         style={[
           styles.itemLabel,
           {

@@ -171,6 +171,7 @@ export default function CombinedAllBossesScreen() {
               paddingBottom: theme.spacing.extraLarge,
             },
           ]}
+          keyboardDismissMode="on-drag"
           keyboardShouldPersistTaps="handled"
           initialNumToRender={208}
           keyExtractor={(item) => item.id}

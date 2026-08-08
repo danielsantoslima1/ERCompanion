@@ -318,6 +318,7 @@ export function AshOfWarListScreen({
           <SectionList
             contentContainerStyle={contentContainerStyle}
             initialNumToRender={40}
+            keyboardDismissMode="on-drag"
             keyboardShouldPersistTaps="handled"
             keyExtractor={(item) => item.id}
             ListEmptyComponent={empty}
@@ -346,6 +347,7 @@ export function AshOfWarListScreen({
             contentContainerStyle={contentContainerStyle}
             data={entries}
             initialNumToRender={30}
+            keyboardDismissMode="on-drag"
             keyboardShouldPersistTaps="handled"
             keyExtractor={(item) => item.id}
             ListEmptyComponent={empty}

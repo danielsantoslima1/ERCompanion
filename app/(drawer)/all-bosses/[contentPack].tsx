@@ -183,6 +183,7 @@ export default function AllBossesScreen() {
             },
           ]}
           data={visibleBosses}
+          keyboardDismissMode="on-drag"
           keyboardShouldPersistTaps="handled"
           keyExtractor={(item) => item.id}
           renderItem={renderBoss}

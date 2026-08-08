@@ -265,6 +265,9 @@ describe('CustomDrawerContent', () => {
         name: mockAppState.translations.navigation.expandBosses,
       }).props.accessibilityState,
     ).toMatchObject({ expanded: false, selected: false });
+    expect(
+      screen.getByText(mockAppState.translations.navigation.home).props.numberOfLines,
+    ).toBeUndefined();
   });
 
   it('opens only one main group and closes boss package groups with it', async () => {
