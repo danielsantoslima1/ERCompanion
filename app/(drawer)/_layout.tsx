@@ -2,7 +2,10 @@ import { DrawerToggleButton } from '@react-navigation/drawer';
 import { Drawer } from 'expo-router/drawer';
 
 import { useApp } from '@/src/hooks/use-app';
+import { IndexHeaderBackButton } from '@/src/components/index-header-back-button';
+import { INDEX_LABELS } from '@/src/index/index-sections';
 import { CustomDrawerContent } from '@/src/navigation';
+import { typography } from '@/src/theme/typography';
 
 export default function DrawerLayout() {
   const { theme, translations } = useApp();
@@ -14,19 +17,25 @@ export default function DrawerLayout() {
       screenOptions={{
         drawerActiveBackgroundColor: theme.colors.drawerActiveBackground,
         drawerActiveTintColor: theme.colors.drawerActiveText,
-        drawerInactiveTintColor: theme.colors.textSecondary,
+        drawerInactiveTintColor: theme.colors.navigationTextSecondary,
+        drawerLabelStyle: {
+          fontFamily: typography.bodySemibold,
+        },
         drawerItemStyle: {
           borderRadius: theme.borderRadius.medium,
         },
         drawerStyle: {
           backgroundColor: theme.colors.drawerBackground,
-          borderRightColor: theme.colors.border,
+          borderRightColor: theme.colors.borderStrong,
           borderRightWidth: 1,
         },
         headerStyle: {
-          backgroundColor: theme.colors.surface,
+          backgroundColor: theme.colors.navigationBackground,
         },
-        headerTintColor: theme.colors.textPrimary,
+        headerTitleStyle: {
+          fontFamily: typography.display,
+        },
+        headerTintColor: theme.colors.navigationText,
         sceneStyle: {
           backgroundColor: theme.colors.background,
         },
@@ -50,7 +59,7 @@ export default function DrawerLayout() {
         options={{
           drawerItemStyle: { display: 'none' },
           headerLeft: () => (
-            <DrawerToggleButton tintColor={theme.colors.textPrimary} />
+            <DrawerToggleButton tintColor={theme.colors.navigationText} />
           ),
           title: translations.navigation.bosses,
         }}
@@ -67,7 +76,7 @@ export default function DrawerLayout() {
         options={{
           drawerItemStyle: { display: 'none' },
           headerLeft: () => (
-            <DrawerToggleButton tintColor={theme.colors.textPrimary} />
+            <DrawerToggleButton tintColor={theme.colors.navigationText} />
           ),
           title: translations.navigation.bosses,
         }}
@@ -116,6 +125,34 @@ export default function DrawerLayout() {
       <Drawer.Screen
         name="incantations/shadow-of-the-erdtree"
         options={{ drawerItemStyle: { display: 'none' }, title: translations.spells.incantationExpansionTitle }}
+      />
+      <Drawer.Screen
+        name="index/remembrance-bosses/index"
+        options={{
+          drawerItemStyle: { display: 'none' },
+          headerLeft: () => <IndexHeaderBackButton fallbackRoute="/" />,
+          title: INDEX_LABELS.remembranceBosses,
+        }}
+      />
+      <Drawer.Screen
+        name="index/remembrance-bosses/base-game"
+        options={{
+          drawerItemStyle: { display: 'none' },
+          headerLeft: () => (
+            <IndexHeaderBackButton fallbackRoute="/remembrance-bosses" />
+          ),
+          title: `${INDEX_LABELS.remembranceBosses} — ${INDEX_LABELS.baseGame}`,
+        }}
+      />
+      <Drawer.Screen
+        name="index/remembrance-bosses/dlc"
+        options={{
+          drawerItemStyle: { display: 'none' },
+          headerLeft: () => (
+            <IndexHeaderBackButton fallbackRoute="/remembrance-bosses" />
+          ),
+          title: `${INDEX_LABELS.remembranceBosses} — ${INDEX_LABELS.dlc}`,
+        }}
       />
     </Drawer>
   );

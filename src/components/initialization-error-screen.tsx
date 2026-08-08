@@ -1,5 +1,6 @@
 import { useCallback, useRef, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { AppText as Text } from '@/src/components/app-text';
 
 import { useApp } from '../hooks/use-app';
 
@@ -38,14 +39,14 @@ export function InitializationErrorScreen() {
         style={[
           styles.content,
           {
-            backgroundColor: theme.colors.surface,
+            backgroundColor: theme.colors.dangerBackground,
             borderColor: theme.colors.danger,
             borderRadius: theme.borderRadius.large,
             gap: theme.spacing.medium,
             padding: theme.spacing.large,
           },
         ]}>
-        <Text
+        <Text variant="display"
           accessibilityRole="header"
           style={[styles.title, { color: theme.colors.textPrimary }]}>
           {translations.common.error}

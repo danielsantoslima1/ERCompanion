@@ -5,14 +5,15 @@ import {
   Pressable,
   SectionList,
   StyleSheet,
-  Text,
-  TextInput,
   View,
   type SectionListRenderItem,
 } from 'react-native';
+import { AppText as Text } from '@/src/components/app-text';
+import { AppTextInput as TextInput } from '@/src/components/app-text-input';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { BossCard } from '@/src/components/boss-card';
+import { FilterButtonGroup } from '@/src/components/filter-button-group';
 import {
   OriginFilterButtons,
   type OriginFilter,
@@ -170,12 +171,13 @@ export default function CombinedAllBossesScreen() {
               paddingBottom: theme.spacing.extraLarge,
             },
           ]}
+          keyboardDismissMode="on-drag"
           keyboardShouldPersistTaps="handled"
           initialNumToRender={208}
           keyExtractor={(item) => item.id}
           renderItem={renderBoss}
           renderSectionHeader={({ section }) => (
-            <Text
+            <Text variant="display"
               accessibilityRole="header"
               style={[
                 styles.sectionTitle,
@@ -207,7 +209,7 @@ export default function CombinedAllBossesScreen() {
           }
           ListHeaderComponent={
             <View style={{ gap: theme.spacing.large }}>
-              <Text
+              <Text variant="display"
                 accessibilityRole="header"
                 style={[styles.title, { color: theme.colors.textPrimary }]}>
                 {translations.allBosses.combinedTitle}
@@ -224,25 +226,19 @@ export default function CombinedAllBossesScreen() {
                 percentage={progress.percentage}
                 total={progress.total}
               />
-              <OriginFilterButtons
-                activeOrigin={originFilter}
-                baseLabel={translations.common.baseFilter}
-                dlcLabel={translations.common.dlcFilter}
-                getAccessibilityLabel={translations.common.filterByOrigin}
-                onChange={setOriginFilter}
-              />
               <TextInput
                 accessibilityLabel={translations.region.search}
                 autoCapitalize="none"
                 autoCorrect={false}
+                focusBorderColor={theme.colors.focusRing}
                 onChangeText={setQuery}
                 placeholder={translations.region.searchPlaceholder}
-                placeholderTextColor={theme.colors.disabled}
+                placeholderTextColor={theme.colors.placeholder}
                 style={[
                   styles.input,
                   {
-                    backgroundColor: theme.colors.surface,
-                    borderColor: theme.colors.border,
+                    backgroundColor: theme.colors.inputBackground,
+                    borderColor: theme.colors.inputBorder,
                     borderRadius: theme.borderRadius.medium,
                     color: theme.colors.textPrimary,
                     paddingHorizontal: theme.spacing.medium,
@@ -250,9 +246,15 @@ export default function CombinedAllBossesScreen() {
                 ]}
                 value={query}
               />
-              <View
-                accessibilityRole="radiogroup"
-                style={[styles.filters, { gap: theme.spacing.small }]}>
+              <FilterButtonGroup testID="boss-filter-group">
+                <OriginFilterButtons
+                  activeOrigin={originFilter}
+                  baseLabel={translations.common.baseFilter}
+                  dlcLabel={translations.common.dlcFilter}
+                  embedded
+                  getAccessibilityLabel={translations.common.filterByOrigin}
+                  onChange={setOriginFilter}
+                />
                 {filters.map((option) => {
                   const active = option.id === filter;
                   return (
@@ -265,7 +267,7 @@ export default function CombinedAllBossesScreen() {
                         styles.filter,
                         {
                           backgroundColor: active
-                            ? theme.colors.drawerActiveBackground
+                            ? theme.colors.selectedBackground
                             : theme.colors.surface,
                           borderColor: active
                             ? theme.colors.primary
@@ -279,7 +281,7 @@ export default function CombinedAllBossesScreen() {
                       <Text
                         style={{
                           color: active
-                            ? theme.colors.drawerActiveText
+                            ? theme.colors.text
                             : theme.colors.textPrimary,
                           fontWeight: '700',
                         }}>
@@ -288,7 +290,7 @@ export default function CombinedAllBossesScreen() {
                     </Pressable>
                   );
                 })}
-              </View>
+              </FilterButtonGroup>
               <Text
                 accessibilityLiveRegion="polite"
                 style={{ color: theme.colors.textSecondary }}>
@@ -309,7 +311,11 @@ const styles = StyleSheet.create({
   progressTitle: { fontSize: 20, fontWeight: '700' },
   sectionTitle: { fontSize: 20, fontWeight: '700' },
   input: { borderWidth: 1, fontSize: 16, minHeight: 48 },
-  filters: { flexDirection: 'row', flexWrap: 'wrap' },
-  filter: { borderWidth: 1, justifyContent: 'center', minHeight: 44 },
+  filter: {
+    borderWidth: 1,
+    flexShrink: 0,
+    justifyContent: 'center',
+    minHeight: 44,
+  },
   empty: { borderWidth: 1, fontSize: 16 },
 });

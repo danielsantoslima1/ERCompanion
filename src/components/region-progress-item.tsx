@@ -1,4 +1,5 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { AppText as Text } from '@/src/components/app-text';
 
 import { useApp } from '../hooks/use-app';
 
@@ -68,7 +69,7 @@ export function RegionProgressItem({
         <Text
           accessible={false}
           numberOfLines={1}
-          style={[styles.percentage, { color: theme.colors.primary }]}>
+          style={[styles.percentage, { color: theme.colors.accentStrong }]}>
           {visiblePercentage}%
         </Text>
       </View>
@@ -85,7 +86,7 @@ export function RegionProgressItem({
           style={[
             styles.progress,
             {
-              backgroundColor: theme.colors.primary,
+              backgroundColor: theme.colors.progressFill,
               borderRadius: theme.borderRadius.round,
               width: progressWidth,
             },

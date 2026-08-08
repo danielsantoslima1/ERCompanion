@@ -14,11 +14,11 @@ export function createNavigationTheme(appTheme: AppTheme): NavigationTheme {
     dark: appTheme.mode === 'dark',
     colors: {
       ...baseTheme.colors,
-      primary: appTheme.colors.primary,
+      primary: appTheme.colors.accent,
       background: appTheme.colors.background,
-      card: appTheme.colors.surface,
-      text: appTheme.colors.textPrimary,
-      border: appTheme.colors.border,
+      card: appTheme.colors.navigationBackground,
+      text: appTheme.colors.navigationText,
+      border: appTheme.colors.borderStrong,
       notification: appTheme.colors.danger,
     },
   };

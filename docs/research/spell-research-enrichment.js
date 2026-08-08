@@ -10,6 +10,8 @@ const GAME8_INCANTATIONS = 'game8-current-incantation-locations';
 const GAMER_GUIDES_DLC_SORCERIES = 'gamer-guides-dlc-sorceries';
 const GAMER_GUIDES_DLC_INCANTATIONS = 'gamer-guides-dlc-incantations';
 const GAMESPOT_DLC_SPELLS = 'gamespot-dlc-spell-locations';
+const completion = require('./spell-data-completion.json');
+const COMPLETION_BY_ID = new Map(completion.entries.map((entry) => [entry.id, entry]));
 
 const LEGENDARY_IDS = new Set([
   'sorcery-comet-azur',
@@ -21,7 +23,7 @@ const LEGENDARY_IDS = new Set([
   'incantation-greyolls-roar',
 ]);
 
-const MISSABLE_RESEARCH = new Map([
+const LEGACY_MISSABLE_RESEARCH = new Map([
   ['sorcery-gelmirs-fury', 'Reward tied to Bernahl’s Volcano Manor request before the quest hub becomes unavailable.'],
   ['sorcery-magma-shot', 'Reward tied to the first Volcano Manor assassination request before that quest hub becomes unavailable.'],
   ['sorcery-shard-spiral', 'Available only from the branch that assists Sellen at the end of her quest.'],
@@ -30,6 +32,18 @@ const MISSABLE_RESEARCH = new Map([
   ['incantation-dragonbolt-of-florissax', 'Requires a specific interaction and outcome in the Dragon Communion Priestess quest.'],
   ['incantation-bayles-flame-lightning', 'Consumes the unique Heart of Bayle and excludes the other Heart of Bayle incantation in the same journey.'],
   ['incantation-bayles-tyranny', 'Consumes the unique Heart of Bayle and excludes the other Heart of Bayle incantation in the same journey.'],
+]);
+void LEGACY_MISSABLE_RESEARCH;
+
+const MISSABLE_RESEARCH = new Map([
+  ['sorcery-gelmirs-fury', { value: false, explanation: 'Bernahl can still drop the sorcery during his later invasion, so it remains recoverable after Volcano Manor closes.' }],
+  ['sorcery-magma-shot', { value: false, explanation: 'The reward remains in Volcano Manor after the first contract is completed, including after Rykard is defeated.' }],
+  ['sorcery-shard-spiral', { value: true, explanation: 'Siding against Sellen permanently removes her post-quest shop for the current journey.' }],
+  ['incantation-watchful-spirit', { value: true, explanation: 'Irreversible NPC or world progression can permanently remove the Hornsent Grandam quest reward.' }],
+  ['incantation-furious-blade-of-ansbach', { value: true, explanation: 'Siding with Leda against Ansbach permanently prevents his post-boss body reward.' }],
+  ['incantation-dragonbolt-of-florissax', { value: true, explanation: 'The required concoction and priestess outcome must be secured before irreversible quest and boss progression.' }],
+  ['incantation-bayles-flame-lightning', { value: false, explanation: 'An exclusive Heart of Bayle exchange is not missable under the approved strict rule.' }],
+  ['incantation-bayles-tyranny', { value: false, explanation: 'An exclusive Heart of Bayle exchange is not missable under the approved strict rule.' }],
 ]);
 
 function localizedPending() {
@@ -239,8 +253,9 @@ function enrichAcquisition(entry, method, index) {
 }
 
 function enrichEntry(entry) {
+  const completed = COMPLETION_BY_ID.get(entry.id);
   const requirementSources = entry.requirements.sourceRefs ?? [];
-  const missableExplanation = MISSABLE_RESEARCH.get(entry.id);
+  const missableResearch = MISSABLE_RESEARCH.get(entry.id);
   const isLegendary = LEGENDARY_IDS.has(entry.id);
 
   const cleanPrimarySource = cleanResearchText(entry.primarySource.en);
@@ -258,8 +273,23 @@ function enrichEntry(entry) {
       }];
   const enrichedMethods = rawMethods.map((method, index) =>
     enrichAcquisition(entry, method, index));
+  if (completed && enrichedMethods[0]) {
+    const refs = [...new Set([...enrichedMethods[0].sourceRefs, completion.source])];
+    enrichedMethods[0] = {
+      ...enrichedMethods[0],
+      method: localizedFromEnglish(completed.acquisitionSummary ?? completed.obtained, 'confirmed', refs),
+      location: localizedFromEnglish(completed.mainLocation, 'confirmed', refs),
+      region: localizedFromEnglish(completed.region, 'confirmed', refs),
+      shortCardLocation: localizedFromEnglish(`${completed.mainLocation} - ${completed.region}`, 'confirmed', refs),
+      source: localizedFromEnglish(completed.obtained ?? completed.acquisitionSummary, 'confirmed', refs),
+      sourceRefs: refs,
+      status: 'confirmed',
+    };
+  }
   const primaryMethod = enrichedMethods[0];
-  const derivedPrimaryLocation = entry.primaryLocation.en
+  const derivedPrimaryLocation = completed
+    ? `${completed.mainLocation} - ${completed.region}`
+    : entry.primaryLocation.en
     ?? primaryMethod?.location.en
     ?? (likelyNamedLocation(cleanPrimarySource) ? cleanPrimarySource : null);
 
@@ -268,8 +298,8 @@ function enrichEntry(entry) {
     primaryLocation: derivedPrimaryLocation
       ? localizedFromEnglish(derivedPrimaryLocation, 'probable', sourceRefs)
       : localizedPending(),
-    primarySource: cleanPrimarySource
-      ? localizedFromEnglish(cleanPrimarySource, entry.primarySource.enStatus, sourceRefs)
+    primarySource: completed?.obtained || cleanPrimarySource
+      ? localizedFromEnglish(completed?.obtained ?? cleanPrimarySource, completed ? 'confirmed' : entry.primarySource.enStatus, completed ? [...new Set([...sourceRefs, completion.source])] : sourceRefs)
       : localizedPending(),
     primaryAcquisition: primaryMethod
       ? {
@@ -278,33 +308,30 @@ function enrichEntry(entry) {
           sourceRefs: [...primaryMethod.sourceRefs],
         }
       : null,
-    cardSummary: primaryMethod?.spoilerSafeCardText ?? localizedPending(),
+    cardSummary: completed
+      ? localizedFromEnglish(derivedPrimaryLocation, 'confirmed', [completion.source])
+      : primaryMethod?.spoilerSafeCardText ?? localizedPending(),
     acquisitionMethods: enrichedMethods,
     locationAliases: collectionPending(),
     relatedNpcs: collectionFromLocalized(entry.relatedNpc),
     relatedLocations: collectionFromLocalized(entry.relatedLocation),
     intermediateItems: collectionPending(),
-    priceRunes: numericPending('runes'),
+    priceRunes: completed?.purchasePrice == null
+      ? numericPending('runes')
+      : { value: completed.purchasePrice, unit: 'runes', status: 'confirmed', sourceRefs: [completion.source], notes: [] },
     enemyDrop: localizedPending(),
     baseDropRatePercent: numericPending('percent'),
-    missable: missableExplanation
-      ? {
-          value: true,
+    missable: {
+          value: missableResearch?.value ?? false,
           explanation: {
-            en: missableExplanation,
+            en: missableResearch?.explanation ?? 'No irreversible loss condition was identified under the approved strict missable rule.',
             ptBR: null,
             enStatus: 'probable',
             ptBRStatus: 'pending',
             sourceRefs: [MISSABLE_SOURCE, MISSABLE_CROSSCHECK],
           },
-          status: 'probable',
+          status: missableResearch ? 'confirmed' : 'probable',
           sourceRefs: [MISSABLE_SOURCE, MISSABLE_CROSSCHECK],
-        }
-      : {
-          value: null,
-          explanation: localizedPending(),
-          status: 'pending',
-          sourceRefs: [],
         },
     legendary: {
       value: isLegendary,
@@ -312,10 +339,13 @@ function enrichEntry(entry) {
       sourceRefs: [LEGENDARY_SOURCE, LEGENDARY_LIST_SOURCE],
     },
     requirements: {
-      intelligence: convertRequirement(entry.requirements.intelligence, requirementSources),
-      faith: convertRequirement(entry.requirements.faith, requirementSources),
-      arcane: convertRequirement(entry.requirements.arcane, requirementSources),
+      intelligence: convertRequirement(completed?.intelligenceRequired ?? entry.requirements.intelligence, requirementSources),
+      faith: convertRequirement(completed?.faithRequired ?? entry.requirements.faith, requirementSources),
+      arcane: convertRequirement(completed?.arcaneRequired ?? entry.requirements.arcane, requirementSources),
     },
+    fpCost: completed?.fpCost == null ? entry.fpCost : { value: completed.fpCost, status: 'confirmed', sourceRefs: [completion.source], notes: [] },
+    memorySlots: completed?.slotsUsed == null ? entry.memorySlots : { value: completed.slotsUsed, status: 'confirmed', sourceRefs: [completion.source], notes: [] },
+    staminaCost: completed?.staminaCost == null ? entry.staminaCost : { value: completed.staminaCost, status: 'confirmed', sourceRefs: [completion.source], notes: [] },
     statusConditions: collectionPending(),
     healingAndBuffs: collectionPending(),
     applicationRestrictions: localizedPending(),
@@ -334,7 +364,9 @@ function enrichEntry(entry) {
     sourceRefs: [...new Set([
       ...sourceRefsForEntry(entry, entry.sourceRefs),
       OFFICIAL_VERSION_SOURCE,
-      ...(missableExplanation ? [MISSABLE_SOURCE, MISSABLE_CROSSCHECK] : []),
+      MISSABLE_SOURCE,
+      MISSABLE_CROSSCHECK,
+      completion.source,
       ...(isLegendary ? [LEGENDARY_SOURCE, LEGENDARY_LIST_SOURCE] : []),
     ])],
   };
@@ -357,6 +389,7 @@ function enrichResearch(research) {
     GAMER_GUIDES_DLC_SORCERIES,
     GAMER_GUIDES_DLC_INCANTATIONS,
     GAMESPOT_DLC_SPELLS,
+    completion.source,
   ];
 
   research.researchVersion = 2;

@@ -1,5 +1,6 @@
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { AppText as Text } from '@/src/components/app-text';
 
 import { useApp } from '../hooks/use-app';
 import { AshOfWarProgressButton } from './ash-of-war-progress-button';
@@ -29,10 +30,12 @@ export function AshOfWarCard({
       style={[
         styles.container,
         {
-          backgroundColor: theme.colors.surface,
+          backgroundColor: isCollected
+            ? theme.colors.successBackground
+            : theme.colors.cardAccent,
           borderColor: isCollected
             ? theme.colors.success
-            : theme.colors.border,
+            : theme.colors.cardAccentBorder,
           borderRadius: theme.borderRadius.medium,
           gap: theme.spacing.medium,
           padding: theme.spacing.medium,
@@ -47,7 +50,7 @@ export function AshOfWarCard({
         accessible
         style={{ gap: theme.spacing.extraSmall }}>
         <View style={[styles.heading, { gap: theme.spacing.small }]}>
-          <Text style={[styles.name, { color: theme.colors.textPrimary }]}>
+          <Text style={[styles.name, { color: theme.colors.cardAccentText }]}>
             {name}
           </Text>
           <View
@@ -70,7 +73,7 @@ export function AshOfWarCard({
               </Text>
             ) : (
               <MaterialCommunityIcons
-                color={theme.colors.textSecondary}
+                color={theme.colors.cardAccentIcon}
                 name="ghost-outline"
                 size={24}
               />

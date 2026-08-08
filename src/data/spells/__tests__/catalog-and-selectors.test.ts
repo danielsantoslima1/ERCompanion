@@ -44,8 +44,11 @@ describe('spell production catalogs', () => {
     ]);
   });
 
-  it('has no confirmed missable entry', () => {
-    expect([...sorceries, ...incantations].some((entry) => entry.missable === true)).toBe(false);
+  it('resolves the strict missable candidates without treating exclusive exchanges as missable', () => {
+    expect([...sorceries, ...incantations].filter((entry) => entry.missable).map((entry) => entry.name.en)).toEqual([
+      'Shard Spiral', 'Dragonbolt of Florissax', 'Furious Blade of Ansbach', 'Watchful Spirit',
+    ]);
+    expect(getIncantationById('incantation-bayles-tyranny')?.missable).toBe(false);
   });
 
   it('passes both production validators', () => {
@@ -55,7 +58,7 @@ describe('spell production catalogs', () => {
 
   it('contains none of the prohibited production fields', () => {
     const serialized = JSON.stringify([sorceries, incantations]);
-    expect(serialized).not.toMatch(/"schools?"|"famil(?:y|ies)"|"catalysts?"|"fpCost"|"damage"/);
+    expect(serialized).not.toMatch(/"schools?"|"famil(?:y|ies)"|"catalysts?"|"damage"/);
   });
 });
 
@@ -91,18 +94,37 @@ describe('spell localized selectors, search, and filters', () => {
     expect(incantations.some((entry) => matchesSpellQuery(entry, source!))).toBe(true);
   });
 
+  it('keeps all card locations summarized and exposes typed technical data', () => {
+    const entries = [...sorceries, ...incantations];
+    expect(entries.every((entry) => /^.+ - .+$/.test(entry.primaryLocation.en!))).toBe(true);
+    expect(entries.every((entry) => entry.technical.fpCost !== null && entry.technical.slotsUsed !== null)).toBe(true);
+    expect(sorceries.find((entry) => entry.id === 'sorcery-cannon-of-haima')).toMatchObject({
+      primaryLocation: { en: 'Converted Fringe Tower - Liurnia of the Lakes' },
+      technical: { fpCost: 38, slotsUsed: 1, intelligenceRequired: 25 },
+    });
+  });
+
   it('finds protected content and reports an exclusive spoiler match', () => {
-    const entry = getIncantationById('incantation-dragonbolt-of-florissax');
+    const original = getIncantationById('incantation-agheels-flame');
+    const entry = {
+      ...original!,
+      containsQuestSpoilers: true,
+      acquisitionMethods: [{
+        ...original!.acquisitionMethods[0],
+        containsQuestSpoilers: true,
+        protectedSearchTerms: ['Hidden quest decision'],
+      }],
+    };
     expect(entry).toBeDefined();
-    expect(matchesSpellQuery(entry!, 'Jagged Peak')).toBe(true);
-    expect(queryMatchesOnlyProtectedContent(entry!, 'Jagged Peak')).toBe(true);
+    expect(matchesSpellQuery(entry, 'Hidden quest decision')).toBe(true);
+    expect(queryMatchesOnlyProtectedContent(entry, 'Hidden quest decision')).toBe(true);
   });
 
   it('combines Legendary and Missable filters with AND semantics', () => {
     const legendary = incantations.find((entry) => entry.legendary)!;
     expect(matchesSpellFilters(legendary, new Set(['legendary']))).toBe(true);
     expect(matchesSpellFilters(legendary, new Set(['legendary', 'missable']))).toBe(false);
-    expect(incantations.filter((entry) => matchesSpellFilters(entry, new Set(['missable'])))).toEqual([]);
+    expect(incantations.filter((entry) => matchesSpellFilters(entry, new Set(['missable'])))).toHaveLength(3);
   });
 
   it('detects one English fallback notice requirement per entry', () => {

@@ -6,12 +6,12 @@ import {
   Pressable,
   SectionList,
   StyleSheet,
-  Text,
-  TextInput,
   View,
   type ListRenderItem,
   type SectionListRenderItem,
 } from 'react-native';
+import { AppText as Text } from '@/src/components/app-text';
+import { AppTextInput as TextInput } from '@/src/components/app-text-input';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import {
@@ -20,10 +20,9 @@ import {
   getAllIncantations,
   getAllSorceries,
   matchesSpellFilters,
-  matchesSpellQuery,
   queryMatchesOnlyProtectedContent,
   resolveSpellValue,
-  sortSpells,
+  searchAndSortSpells,
   type CompletionProgress,
   type Spell,
   type SpellCategory,
@@ -31,6 +30,7 @@ import {
   type SpellFilter,
 } from '../data';
 import { useApp } from '../hooks/use-app';
+import { FilterButtonGroup } from './filter-button-group';
 import {
   OriginFilterButtons,
   type OriginFilter,
@@ -98,9 +98,11 @@ export function SpellListScreen({ category, mode }: Props) {
   }, [category, categoryProgress, collected, mode, originFilter]);
 
   const resolveEntries = useCallback((entries: readonly Spell[]) =>
-    sortSpells(entries, language).flatMap((entry) => {
-      if (!matchesSpellQuery(entry, query) || !matchesSpellFilters(entry, filters)) return [];
-      return [{
+    searchAndSortSpells(
+      entries.filter((entry) => matchesSpellFilters(entry, filters)),
+      query,
+      language,
+    ).map((entry) => ({
         entry,
         id: entry.id,
         isCollected: collectedSet.has(entry.id),
@@ -108,8 +110,7 @@ export function SpellListScreen({ category, mode }: Props) {
           ?? translations.spells.locationPending,
         name: resolveSpellValue(entry.name, language).value ?? entry.name.en,
         spoilerMatch: queryMatchesOnlyProtectedContent(entry, query),
-      }];
-    }), [collectedSet, filters, language, query, translations.spells.locationPending]);
+      })), [collectedSet, filters, language, query, translations.spells.locationPending]);
 
   const sections = useMemo<SpellSection[]>(() => {
     if (mode !== 'all') return [];
@@ -167,7 +168,7 @@ export function SpellListScreen({ category, mode }: Props) {
   });
   const header = (
     <View style={{ gap: theme.spacing.large }}>
-      <Text accessibilityRole="header" style={[styles.title, { color: theme.colors.textPrimary }]}>
+      <Text variant="display" accessibilityRole="header" style={[styles.title, { color: theme.colors.textPrimary }]}>
         {title}
       </Text>
       <Text style={[styles.progressTitle, { color: theme.colors.textPrimary }]}>
@@ -184,14 +185,15 @@ export function SpellListScreen({ category, mode }: Props) {
         accessibilityLabel={translations.spells.search}
         autoCapitalize="none"
         autoCorrect={false}
+        focusBorderColor={theme.colors.focusRing}
         onChangeText={setQuery}
         placeholder={translations.spells.searchPlaceholder}
-        placeholderTextColor={theme.colors.disabled}
+        placeholderTextColor={theme.colors.placeholder}
         style={[
           styles.input,
           {
-            backgroundColor: theme.colors.surface,
-            borderColor: theme.colors.border,
+            backgroundColor: theme.colors.inputBackground,
+            borderColor: theme.colors.inputBorder,
             borderRadius: theme.borderRadius.medium,
             color: theme.colors.textPrimary,
             paddingHorizontal: theme.spacing.medium,
@@ -199,16 +201,17 @@ export function SpellListScreen({ category, mode }: Props) {
         ]}
         value={query}
       />
-      {mode === 'all' ? (
-        <OriginFilterButtons
-          activeOrigin={originFilter}
-          baseLabel={translations.common.baseFilter}
-          dlcLabel={translations.common.dlcFilter}
-          getAccessibilityLabel={translations.common.filterByOrigin}
-          onChange={setOriginFilter}
-        />
-      ) : null}
-      <View style={[styles.filters, { gap: theme.spacing.small }]}>
+      <FilterButtonGroup testID={`${category}-filter-group`}>
+        {mode === 'all' ? (
+          <OriginFilterButtons
+            activeOrigin={originFilter}
+            baseLabel={translations.common.baseFilter}
+            dlcLabel={translations.common.dlcFilter}
+            embedded
+            getAccessibilityLabel={translations.common.filterByOrigin}
+            onChange={setOriginFilter}
+          />
+        ) : null}
         {([
           ['legendary', translations.spells.legendary],
           ['missable', translations.spells.missable],
@@ -223,20 +226,20 @@ export function SpellListScreen({ category, mode }: Props) {
               style={[
                 styles.filter,
                 {
-                  backgroundColor: active ? theme.colors.drawerActiveBackground : theme.colors.surface,
+                  backgroundColor: active ? theme.colors.selectedBackground : theme.colors.surface,
                   borderColor: active ? theme.colors.primary : theme.colors.border,
                   borderRadius: theme.borderRadius.round,
                   paddingHorizontal: theme.spacing.medium,
                   paddingVertical: theme.spacing.small,
                 },
               ]}>
-              <Text style={{ color: active ? theme.colors.drawerActiveText : theme.colors.textPrimary, fontWeight: '700' }}>
+              <Text style={{ color: active ? theme.colors.text : theme.colors.textPrimary, fontWeight: '700' }}>
                 {label}
               </Text>
             </Pressable>
           );
         })}
-      </View>
+      </FilterButtonGroup>
       <Text accessibilityLiveRegion="polite" style={{ color: theme.colors.textSecondary }}>
         {translations.spells.resultCount(visibleCount)}
       </Text>
@@ -251,26 +254,32 @@ export function SpellListScreen({ category, mode }: Props) {
         {mode === 'all' ? (
           <SectionList
             contentContainerStyle={contentStyle}
+            keyboardDismissMode="on-drag"
+            keyboardShouldPersistTaps="handled"
             sections={sections}
             keyExtractor={(item) => item.id}
             ListHeaderComponent={header}
             ListEmptyComponent={empty}
             renderItem={renderSectionEntry}
             renderSectionHeader={({ section }) => (
-              <Text accessibilityRole="header" style={[styles.section, { backgroundColor: theme.colors.background, color: theme.colors.textPrimary }]}>
+              <Text variant="display" accessibilityRole="header" style={[styles.section, { backgroundColor: theme.colors.background, color: theme.colors.textPrimary }]}>
                 {section.title}
               </Text>
             )}
             stickySectionHeadersEnabled={false}
+            testID="spell-list"
           />
         ) : (
           <FlatList
             contentContainerStyle={contentStyle}
             data={entries}
+            keyboardDismissMode="on-drag"
+            keyboardShouldPersistTaps="handled"
             keyExtractor={(item) => item.id}
             ListHeaderComponent={header}
             ListEmptyComponent={empty}
             renderItem={renderEntry}
+            testID="spell-list"
           />
         )}
       </SafeAreaView>
@@ -285,7 +294,11 @@ const styles = StyleSheet.create({
   progressTitle: { fontSize: 20, fontWeight: '700' },
   section: { fontSize: 20, fontWeight: '700', paddingVertical: 8 },
   input: { borderWidth: 1, fontSize: 16, minHeight: 48 },
-  filters: { flexDirection: 'row', flexWrap: 'wrap' },
-  filter: { borderWidth: 1, justifyContent: 'center', minHeight: 44 },
+  filter: {
+    borderWidth: 1,
+    flexShrink: 0,
+    justifyContent: 'center',
+    minHeight: 44,
+  },
   empty: { fontSize: 16, padding: 16 },
 });

@@ -5,14 +5,15 @@ import {
   FlatList,
   Pressable,
   StyleSheet,
-  Text,
-  TextInput,
   View,
   type ListRenderItem,
 } from 'react-native';
+import { AppText as Text } from '@/src/components/app-text';
+import { AppTextInput as TextInput } from '@/src/components/app-text-input';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { BossCard } from '@/src/components/boss-card';
+import { FilterButtonGroup } from '@/src/components/filter-button-group';
 import { RegionProgressItem } from '@/src/components/region-progress-item';
 import {
   bosses,
@@ -133,7 +134,7 @@ export default function AllBossesScreen() {
               padding: theme.spacing.large,
             },
           ]}>
-          <Text accessibilityRole="header" style={[styles.title, { color: theme.colors.textPrimary }]}>
+          <Text variant="display" accessibilityRole="header" style={[styles.title, { color: theme.colors.textPrimary }]}>
             {translations.allBosses.invalidTitle}
           </Text>
           <Text style={{ color: theme.colors.textSecondary }}>
@@ -182,6 +183,7 @@ export default function AllBossesScreen() {
             },
           ]}
           data={visibleBosses}
+          keyboardDismissMode="on-drag"
           keyboardShouldPersistTaps="handled"
           keyExtractor={(item) => item.id}
           renderItem={renderBoss}
@@ -201,7 +203,7 @@ export default function AllBossesScreen() {
           }
           ListHeaderComponent={
             <View style={{ gap: theme.spacing.large }}>
-              <Text accessibilityRole="header" style={[styles.title, { color: theme.colors.textPrimary }]}>
+              <Text variant="display" accessibilityRole="header" style={[styles.title, { color: theme.colors.textPrimary }]}>
                 {title}
               </Text>
               <Text style={[styles.sectionTitle, { color: theme.colors.textPrimary }]}>
@@ -218,14 +220,15 @@ export default function AllBossesScreen() {
                 accessibilityLabel={translations.region.search}
                 autoCapitalize="none"
                 autoCorrect={false}
+                focusBorderColor={theme.colors.focusRing}
                 onChangeText={setQuery}
                 placeholder={translations.region.searchPlaceholder}
-                placeholderTextColor={theme.colors.disabled}
+                placeholderTextColor={theme.colors.placeholder}
                 style={[
                   styles.input,
                   {
-                    backgroundColor: theme.colors.surface,
-                    borderColor: theme.colors.border,
+                    backgroundColor: theme.colors.inputBackground,
+                    borderColor: theme.colors.inputBorder,
                     borderRadius: theme.borderRadius.medium,
                     color: theme.colors.textPrimary,
                     paddingHorizontal: theme.spacing.medium,
@@ -233,7 +236,7 @@ export default function AllBossesScreen() {
                 ]}
                 value={query}
               />
-              <View accessibilityRole="radiogroup" style={[styles.filters, { gap: theme.spacing.small }]}>
+              <FilterButtonGroup testID="content-pack-boss-filter-group">
                 {filters.map((option) => {
                   const active = option.id === filter;
                   return (
@@ -246,7 +249,7 @@ export default function AllBossesScreen() {
                         styles.filter,
                         {
                           backgroundColor: active
-                            ? theme.colors.drawerActiveBackground
+                            ? theme.colors.selectedBackground
                             : theme.colors.surface,
                           borderColor: active ? theme.colors.primary : theme.colors.border,
                           borderRadius: theme.borderRadius.round,
@@ -255,13 +258,13 @@ export default function AllBossesScreen() {
                           paddingVertical: theme.spacing.small,
                         },
                       ]}>
-                      <Text style={{ color: active ? theme.colors.drawerActiveText : theme.colors.textPrimary, fontWeight: '700' }}>
+                      <Text style={{ color: active ? theme.colors.text : theme.colors.textPrimary, fontWeight: '700' }}>
                         {option.label}
                       </Text>
                     </Pressable>
                   );
                 })}
-              </View>
+              </FilterButtonGroup>
               <Text accessibilityLiveRegion="polite" style={{ color: theme.colors.textSecondary }}>
                 {translations.region.resultCount(visibleBosses.length)}
               </Text>
@@ -280,8 +283,12 @@ const styles = StyleSheet.create({
   title: { fontSize: 30, fontWeight: '700' },
   sectionTitle: { fontSize: 20, fontWeight: '700' },
   input: { borderWidth: 1, fontSize: 16, minHeight: 48 },
-  filters: { flexDirection: 'row', flexWrap: 'wrap' },
-  filter: { borderWidth: 1, justifyContent: 'center', minHeight: 44 },
+  filter: {
+    borderWidth: 1,
+    flexShrink: 0,
+    justifyContent: 'center',
+    minHeight: 44,
+  },
   empty: { borderWidth: 1, fontSize: 16 },
   backButton: { alignItems: 'center', minHeight: 48 },
 });

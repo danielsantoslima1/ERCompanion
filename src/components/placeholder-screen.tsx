@@ -1,4 +1,5 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { AppText as Text } from '@/src/components/app-text';
 
 import { useApp } from '../hooks/use-app';
 
@@ -33,7 +34,7 @@ export function PlaceholderScreen({
             padding: theme.spacing.large,
           },
         ]}>
-        <Text
+        <Text variant="display"
           accessibilityRole="header"
           style={[styles.title, { color: theme.colors.textPrimary }]}>
           {title}

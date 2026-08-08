@@ -29,6 +29,8 @@ const sourceFamilies = new Map([
   ['gamespot-dlc-spell-locations', 'gamespot'],
 ]);
 const prohibited = /"(?:schools?|famil(?:y|ies)|staffs?|seals?|catalysts?|compatibleCatalysts|recommendedCatalysts|boostingCatalysts)"\s*:/i;
+const shortLocation = /^.+ - .+$/;
+const forbiddenDirection = /\b(?:north|south|east|west|northeast|northwest|southeast|southwest|floor|room|chest|Site of Grace)\b/i;
 const absolutePath = /(?:[A-Za-z]:\\|\/Users\/|\/home\/)/;
 const html = /<[a-z][^>]*>/i;
 const proprietary = /\.(?:bhd|bdt|fmg|bnd|dcx)\b|regulation\.bin/i;
@@ -86,6 +88,23 @@ for (const entry of entries) {
   if (!entry.primaryLocation.en && entry.primaryLocation.enStatus !== 'pending') {
     fail(entry.id, 'primaryLocation', 'local ausente sem status pending',
       'local deve existir ou permanecer pending');
+  }
+  if (!entry.primaryLocation.en || !shortLocation.test(entry.primaryLocation.en)) {
+    fail(entry.id, 'primaryLocation', 'formato resumido ausente', 'Main location - Full region name');
+  }
+  if (forbiddenDirection.test(entry.primaryLocation.en)) {
+    fail(entry.id, 'primaryLocation', 'direção ou instrução no card', 'localização resumida sem instruções');
+  }
+  if (!entry.acquisitionMethods[0].region.en) {
+    fail(entry.id, 'primaryRegion', 'região ausente', 'região obrigatória quando há localização');
+  }
+  for (const numericField of ['fpCost', 'memorySlots']) {
+    if (!Number.isFinite(entry[numericField].value) || entry[numericField].value < 0) {
+      fail(entry.id, numericField, 'valor inválido', 'número finito não negativo');
+    }
+  }
+  if (![true, false, null].includes(entry.missable.value)) {
+    fail(entry.id, 'missable', 'valor fora do tri-state', 'true, false ou null');
   }
   if (!Array.isArray(entry.acquisitionMethods) || entry.acquisitionMethods.length === 0) {
     fail(entry.id, 'acquisitionMethods', 'nenhuma alternativa', 'ao menos uma alternativa em array');

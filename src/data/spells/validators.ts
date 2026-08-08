@@ -6,7 +6,8 @@ export const EXPECTED_SPELL_COUNTS = {
     'shadow-of-the-erdtree': 14,
     total: 84,
     legendary: 4,
-    mvpLocations: 27,
+    mvpLocations: 84,
+    missable: 1,
     spoilers: 3,
   },
   incantation: {
@@ -14,7 +15,8 @@ export const EXPECTED_SPELL_COUNTS = {
     'shadow-of-the-erdtree': 28,
     total: 129,
     legendary: 3,
-    mvpLocations: 33,
+    mvpLocations: 129,
+    missable: 3,
     spoilers: 3,
   },
   combined: 213,
@@ -24,9 +26,7 @@ export const EXPECTED_SPELL_COUNTS = {
 const forbiddenKeys = new Set([
   'school', 'schools', 'family', 'families', 'magicTypes', 'staff', 'staffs',
   'seal', 'seals', 'catalyst', 'catalysts', 'compatibleCatalysts',
-  'recommendedCatalysts', 'boostingCatalysts', 'fpCost', 'memorySlots',
-  'intelligence', 'faith', 'arcane', 'stamina', 'duration', 'damage',
-  'price', 'dropRate', 'pvp',
+  'recommendedCatalysts', 'boostingCatalysts',
 ]);
 
 export function validateSpellCatalog(
@@ -50,7 +50,6 @@ export function validateSpellCatalog(
     const name = entry.name.en.trim().toLocaleLowerCase('en');
     if (names.has(name)) errors.push(`${entry.id}: duplicate English name.`);
     names.add(name);
-    if (entry.missable === true) errors.push(`${entry.id}: missable is not confirmed.`);
     if (entry.acquisitionMethods.length === 0) errors.push(`${entry.id}: no acquisition method.`);
     const serialized = JSON.stringify(entry);
     for (const key of forbiddenKeys) {
@@ -63,6 +62,8 @@ export function validateSpellCatalog(
   if (legendary !== expected.legendary) errors.push(`Expected ${expected.legendary} legendary ${category} entries.`);
   const mvpLocations = entries.filter((entry) => entry.primaryLocation.en !== null).length;
   if (mvpLocations !== expected.mvpLocations) errors.push(`Expected ${expected.mvpLocations} usable ${category} locations.`);
+  const missable = entries.filter((entry) => entry.missable === true).length;
+  if (missable !== expected.missable) errors.push(`Expected ${expected.missable} missable ${category} entries.`);
   const spoilers = entries.filter((entry) => entry.containsQuestSpoilers).length;
   if (spoilers !== expected.spoilers) errors.push(`Expected ${expected.spoilers} protected ${category} acquisitions.`);
   return errors;

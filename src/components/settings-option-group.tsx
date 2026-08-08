@@ -1,4 +1,5 @@
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
+import { AppText as Text } from '@/src/components/app-text';
 
 import { useApp } from '../hooks/use-app';
 
@@ -31,7 +32,7 @@ export function SettingsOptionGroup<T extends string>({
   return (
     <View style={{ gap: theme.spacing.medium }}>
       <View style={{ gap: theme.spacing.extraSmall }}>
-        <Text
+        <Text variant="display"
           accessibilityRole="header"
           style={[styles.sectionTitle, { color: theme.colors.textPrimary }]}>
           {title}
@@ -64,10 +65,10 @@ export function SettingsOptionGroup<T extends string>({
                 styles.option,
                 {
                   backgroundColor: isSelected
-                    ? theme.colors.drawerActiveBackground
+                    ? theme.colors.selectedBackground
                     : theme.colors.surface,
                   borderColor: isSelected
-                    ? theme.colors.primary
+                    ? theme.colors.selectedBorder
                     : theme.colors.border,
                   borderRadius: theme.borderRadius.medium,
                   gap: theme.spacing.small,
@@ -80,23 +81,21 @@ export function SettingsOptionGroup<T extends string>({
                   style={[
                     styles.optionLabel,
                     {
-                      color: isSelected
-                        ? theme.colors.drawerActiveText
-                        : theme.colors.textPrimary,
+                      color: theme.colors.text,
                     },
                   ]}>
                   {option.label}
                 </Text>
                 {isOptionSaving ? (
                   <ActivityIndicator
-                    color={theme.colors.primary}
+                    color={theme.colors.accent}
                     size="small"
                   />
                 ) : isSelected ? (
                   <Text
                     style={[
                       styles.selectedLabel,
-                      { color: theme.colors.drawerActiveText },
+                      { color: theme.colors.text },
                     ]}>
                     ✓ {translations.settings.selected}
                   </Text>
@@ -107,7 +106,7 @@ export function SettingsOptionGroup<T extends string>({
                   styles.optionDescription,
                   {
                     color: isSelected
-                      ? theme.colors.drawerActiveText
+                      ? theme.colors.text
                       : theme.colors.textSecondary,
                   },
                 ]}>

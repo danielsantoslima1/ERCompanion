@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 
 import type { AppContextValue } from '../../contexts/app-context';
 import { getTranslationDictionary } from '../../i18n';
-import { lightTheme } from '../../theme';
+import { darkTheme, lightTheme } from '../../theme';
 import { SpellCard } from '../spell-card';
 
 jest.mock('@expo/vector-icons/Ionicons', () => {
@@ -35,6 +35,35 @@ describe('SpellCard', () => {
     );
     expect(onViewDetails).toHaveBeenCalledTimes(1);
   });
+
+  it.each([
+    ['sorcery', 'Sorcery'],
+    ['incantation', 'Incantation'],
+  ] as const)(
+    'uses the same semantic dark-card identity for %s',
+    async (category, name) => {
+      mockApp = { ...mockApp, theme: darkTheme };
+      await render(
+        <SpellCard
+          category={category}
+          id={category}
+          isCollected={false}
+          location="Location"
+          name={name}
+          onViewDetails={jest.fn()}
+          spoilerMatch={false}
+        />,
+      );
+      expect(screen.getByText(name)).toHaveStyle({
+        color: darkTheme.colors.cardAccentText,
+      });
+      expect(
+        screen.getByTestId(`${category}-status-not-collected`, {
+          includeHiddenElements: true,
+        }),
+      ).toBeOnTheScreen();
+    },
+  );
 
   it.each([
     ['sorcery', 'Sorcery'],

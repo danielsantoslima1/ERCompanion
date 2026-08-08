@@ -6,7 +6,7 @@ import { CustomDrawerContent } from '../custom-drawer-content';
 import type { AppContextValue } from '../../contexts/app-context';
 import { catalogRegions, type CatalogRegion } from '../../data/catalog';
 import { getLocalizedText, getTranslationDictionary } from '../../i18n';
-import { lightTheme } from '../../theme';
+import { lightTheme, typography } from '../../theme';
 
 const closeDrawer = jest.fn<void, []>();
 const navigateDrawer = jest.fn();
@@ -110,6 +110,9 @@ describe('CustomDrawerContent', () => {
   it('removes All regions and shows All bosses before the package groups', async () => {
     const translations = mockAppState.translations;
     await render(<CustomDrawerContent {...createProps()} />);
+    expect(screen.getByText(translations.app.name)).toHaveStyle({
+      fontFamily: typography.displayBold,
+    });
     expect(screen.queryByText('All regions')).toBeNull();
     expect(screen.queryByText('Todas as regiões')).toBeNull();
 
@@ -254,6 +257,7 @@ describe('CustomDrawerContent', () => {
       mockAppState.translations.navigation.expandAshesOfWar,
       mockAppState.translations.navigation.expandSorceries,
       mockAppState.translations.navigation.expandIncantations,
+      'Expand Index',
       mockAppState.translations.navigation.settings,
     ]);
     expect(
@@ -261,6 +265,9 @@ describe('CustomDrawerContent', () => {
         name: mockAppState.translations.navigation.expandBosses,
       }).props.accessibilityState,
     ).toMatchObject({ expanded: false, selected: false });
+    expect(
+      screen.getByText(mockAppState.translations.navigation.home).props.numberOfLines,
+    ).toBeUndefined();
   });
 
   it('opens only one main group and closes boss package groups with it', async () => {
@@ -302,6 +309,7 @@ describe('CustomDrawerContent', () => {
       mockAppState.translations.common.expansion,
       mockAppState.translations.navigation.expandSorceries,
       mockAppState.translations.navigation.expandIncantations,
+      'Expand Index',
       mockAppState.translations.navigation.settings,
     ]);
     expect(screen.queryByText('Limgrave')).toBeNull();
@@ -402,6 +410,66 @@ describe('CustomDrawerContent', () => {
     expect(
       screen.getByRole('button', { name: mockAppState.translations.navigation.home })
         .props.accessibilityState,
+    ).toMatchObject({ selected: true });
+  });
+
+  it('places Index immediately before Settings and keeps its labels in English', async () => {
+    await render(<CustomDrawerContent {...createProps()} />);
+    const labels = screen
+      .getAllByRole('button')
+      .map((button) => button.props.accessibilityLabel as string);
+    expect(labels.indexOf('Expand Index')).toBe(
+      labels.indexOf(mockAppState.translations.navigation.settings) - 1,
+    );
+    expect(screen.queryByText('Lore')).toBeNull();
+  });
+
+  it('expands the Index hierarchy accessibly and keeps other main groups closed', async () => {
+    await render(<CustomDrawerContent {...createProps()} />);
+    await fireEvent.press(screen.getByRole('button', { name: 'Expand Index' }));
+    expect(
+      screen.getByRole('button', { name: 'Collapse Index' }).props
+        .accessibilityState,
+    ).toMatchObject({ expanded: true, selected: false });
+    expect(screen.getByText('Remembrance Bosses')).toBeOnTheScreen();
+    expect(screen.getAllByText('Index')).toHaveLength(1);
+
+    await fireEvent.press(
+      screen.getByRole('button', { name: 'Expand Remembrance Bosses' }),
+    );
+    expect(screen.getByText('Base Game')).toBeOnTheScreen();
+    expect(screen.getByText('DLC')).toBeOnTheScreen();
+
+    await fireEvent.press(
+      screen.getByRole('button', {
+        name: mockAppState.translations.navigation.expandBosses,
+      }),
+    );
+    expect(screen.queryByText('Remembrance Bosses')).toBeNull();
+  });
+
+  it('navigates to the empty Index leaves and closes the Drawer', async () => {
+    await render(<CustomDrawerContent {...createProps()} />);
+    await fireEvent.press(screen.getByRole('button', { name: 'Expand Index' }));
+    await fireEvent.press(
+      screen.getByRole('button', { name: 'Expand Remembrance Bosses' }),
+    );
+    await fireEvent.press(screen.getByRole('button', { name: 'Base Game' }));
+    expect(navigateDrawer).toHaveBeenCalledWith(
+      'index/remembrance-bosses/base-game',
+    );
+    expect(closeDrawer).toHaveBeenCalledTimes(1);
+  });
+
+  it('opens and selects the active Index route branch', async () => {
+    mockPathname = '/remembrance-bosses/dlc';
+    await render(<CustomDrawerContent {...createProps()} />);
+    expect(
+      screen.getByRole('button', { name: 'Collapse Index' }).props
+        .accessibilityState,
+    ).toMatchObject({ expanded: true, selected: true });
+    expect(
+      screen.getByRole('button', { name: 'DLC' }).props.accessibilityState,
     ).toMatchObject({ selected: true });
   });
 });

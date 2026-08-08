@@ -1,7 +1,8 @@
 import { router } from 'expo-router';
 import type { Href } from 'expo-router';
 import { useState, type ReactNode } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { AppText as Text } from '@/src/components/app-text';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import {
@@ -33,9 +34,13 @@ export function SpellDetailScreen({ category, id }: { readonly category: SpellCa
   if (!entry) {
     return (
       <SafeAreaView style={[styles.centered, { backgroundColor: theme.colors.background, padding: theme.spacing.large }]}>
-        <Text accessibilityRole="header" style={[styles.title, { color: theme.colors.textPrimary }]}>{translations.spells.notFoundTitle}</Text>
+        <Text variant="display" accessibilityRole="header" style={[styles.title, { color: theme.colors.textPrimary }]}>{translations.spells.notFoundTitle}</Text>
         <Text style={[styles.body, { color: theme.colors.textSecondary }]}>{translations.spells.notFoundMessage}</Text>
-        <Pressable accessibilityRole="button" onPress={() => router.canGoBack() ? router.back() : router.replace((category === 'sorcery' ? '/sorceries' : '/incantations') as Href)}>
+        <Pressable
+          accessibilityLabel={translations.spells.back}
+          accessibilityRole="button"
+          onPress={() => router.canGoBack() ? router.back() : router.replace((category === 'sorcery' ? '/sorceries' : '/incantations') as Href)}
+          style={styles.inlineAction}>
           <Text style={{ color: theme.colors.primary }}>{translations.spells.back}</Text>
         </Pressable>
       </SafeAreaView>
@@ -57,9 +62,14 @@ export function SpellDetailScreen({ category, id }: { readonly category: SpellCa
   return (
     <SafeAreaView style={[styles.screen, { backgroundColor: theme.colors.background }]}>
       <ScrollView contentContainerStyle={[styles.content, { gap: theme.spacing.medium, padding: theme.spacing.large }]}>
-        <Text accessibilityRole="header" style={[styles.title, { color: theme.colors.textPrimary }]}>{name}</Text>
+        <Text variant="display" accessibilityRole="header" style={[styles.title, { color: theme.colors.textPrimary }]}>{name}</Text>
         {spellUsesEnglishFallback(entry, language) ? (
-          <Text style={[styles.notice, { color: theme.colors.textSecondary, borderColor: theme.colors.border, padding: theme.spacing.small }]}>
+          <Text style={[styles.notice, {
+            backgroundColor: theme.colors.warningBackground,
+            color: theme.colors.warning,
+            borderColor: theme.colors.warning,
+            padding: theme.spacing.small,
+          }]}>
             {translations.spells.fallbackNotice}
           </Text>
         ) : null}
@@ -101,6 +111,17 @@ export function SpellDetailScreen({ category, id }: { readonly category: SpellCa
                     {resolve(method.method) && resolve(method.method) !== resolve(method.source) ? (
                       <Text style={[styles.body, { color: theme.colors.textSecondary }]}>{resolve(method.method)}</Text>
                     ) : null}
+                    {resolve(method.nearestSiteOfGrace) ? (
+                      <Text style={[styles.body, { color: theme.colors.textSecondary }]}>Nearest Site of Grace: {resolve(method.nearestSiteOfGrace)}</Text>
+                    ) : null}
+                    {resolve(method.requirements) ? (
+                      <Text style={[styles.body, { color: theme.colors.textSecondary }]}>Requirements: {resolve(method.requirements)}</Text>
+                    ) : null}
+                    {method.steps.map((step, stepIndex) => resolve(step) ? (
+                      <Text key={`${entry.id}-${index}-step-${stepIndex}`} style={[styles.body, { color: theme.colors.textSecondary }]}>
+                        {stepIndex + 1}. {resolve(step)}
+                      </Text>
+                    ) : null)}
                     {method.availabilityTags.length ? (
                       <Text style={[styles.tags, { color: theme.colors.accent }]}>
                         {method.availabilityTags.map(tagLabel).join(' · ')}
@@ -111,15 +132,17 @@ export function SpellDetailScreen({ category, id }: { readonly category: SpellCa
                 if (!method.containsQuestSpoilers) return <View key={`${entry.id}-${index}`}>{content}</View>;
                 return (
                   <View key={`${entry.id}-${index}`} style={{ gap: theme.spacing.small }}>
-                    <Text style={[styles.spoiler, { color: theme.colors.accent }]}>{translations.spells.containsQuestSpoilers}</Text>
+                    <Text style={[styles.spoiler, { color: theme.colors.warning }]}>{translations.spells.containsQuestSpoilers}</Text>
                     <Pressable
+                      accessibilityLabel={expanded ? translations.spells.collapseSpoiler : translations.spells.expandSpoiler}
                       accessibilityRole="button"
                       accessibilityState={{ expanded }}
                       onPress={() => setExpandedSpoilers((current) => {
                         const next = new Set(current);
                         if (next.has(index)) next.delete(index); else next.add(index);
                         return next;
-                      })}>
+                      })}
+                      style={styles.inlineAction}>
                       <Text style={{ color: theme.colors.primary, fontWeight: '700' }}>
                         {expanded ? translations.spells.collapseSpoiler : translations.spells.expandSpoiler}
                       </Text>
@@ -131,6 +154,25 @@ export function SpellDetailScreen({ category, id }: { readonly category: SpellCa
             </View>
           </Section>
         ) : null}
+        <Section title="Requirements">
+          {entry.technical.intelligenceRequired ? <Text style={[styles.body, { color: theme.colors.textPrimary }]}>Intelligence: {entry.technical.intelligenceRequired}</Text> : null}
+          {entry.technical.faithRequired ? <Text style={[styles.body, { color: theme.colors.textPrimary }]}>Faith: {entry.technical.faithRequired}</Text> : null}
+          {entry.technical.arcaneRequired ? <Text style={[styles.body, { color: theme.colors.textPrimary }]}>Arcane: {entry.technical.arcaneRequired}</Text> : null}
+        </Section>
+        <Section title="Cost and slots">
+          {entry.technical.fpCost !== null ? <Text style={[styles.body, { color: theme.colors.textPrimary }]}>FP cost: {entry.technical.fpCost}</Text> : null}
+          {entry.technical.staminaCost !== null ? <Text style={[styles.body, { color: theme.colors.textPrimary }]}>Stamina cost: {entry.technical.staminaCost}</Text> : null}
+          {entry.technical.slotsUsed !== null ? <Text style={[styles.body, { color: theme.colors.textPrimary }]}>Slots used: {entry.technical.slotsUsed}</Text> : null}
+          {entry.technical.purchasePrice !== null ? <Text style={[styles.body, { color: theme.colors.textPrimary }]}>Purchase price: {entry.technical.purchasePrice} runes</Text> : null}
+        </Section>
+        {resolve(entry.technical.effect) ? (
+          <Section title="Effects">
+            <Text style={[styles.body, { color: theme.colors.textPrimary }]}>{resolve(entry.technical.effect)}</Text>
+          </Section>
+        ) : null}
+        <Section title="Technical data">
+          <Text style={[styles.body, { color: theme.colors.textSecondary }]}>Regulation version: {entry.technical.documentedVersion}</Text>
+        </Section>
         <Section title={translations.spells.collectionStatus}>
           <Text style={[styles.body, { color: isCollected ? theme.colors.success : theme.colors.textSecondary }]}>
             {isCollected ? translations.spells.collected : translations.spells.notCollected}
@@ -153,4 +195,5 @@ const styles = StyleSheet.create({
   notice: { borderWidth: 1, fontSize: 14 },
   tags: { fontSize: 13, fontWeight: '700' },
   spoiler: { fontSize: 14, fontWeight: '700' },
+  inlineAction: { alignSelf: 'flex-start', justifyContent: 'center', minHeight: 44 },
 });

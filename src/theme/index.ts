@@ -1,6 +1,9 @@
 export { palette } from './palette';
+export { getContrastRatio } from './contrast';
 export { resolveTheme } from './resolve-theme';
 export { darkTheme, lightTheme } from './themes';
+export { appFontAssets, typography } from './typography';
+export type { TypographyVariant } from './typography';
 export type {
   AppTheme,
   ResolvedTheme,

@@ -29,8 +29,8 @@ assert(new Set(checklistIds).size === 213, 'approval checklist contains duplicat
 assert(allIds.every((id) => checklistIds.includes(id)), 'approval checklist omitted a catalog ID');
 assert(all.filter((entry) => entry.legendary.value).length === 7,
   'combined catalog must contain exactly seven achievement legendaries');
-assert(all.filter((entry) => entry.missable.value === true).length === 8,
-  'combined review must retain exactly eight probable missable candidates');
+assert(all.filter((entry) => entry.missable.value === true).length === 4,
+  'combined review must contain exactly four strictly missable entries');
 assert(!/(?:[A-Za-z]:\\|\/Users\/|\/home\/)/.test(checklist + detailedReview),
   'document contains an absolute local path');
 assert(!/<[a-z][^>]*>/i.test(checklist + detailedReview), 'document contains HTML');

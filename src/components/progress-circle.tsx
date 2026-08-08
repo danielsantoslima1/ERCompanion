@@ -1,9 +1,9 @@
 import {
   StyleSheet,
-  Text,
   View,
   useWindowDimensions,
 } from 'react-native';
+import { AppText as Text } from '@/src/components/app-text';
 import Svg, { Circle } from 'react-native-svg';
 
 import { useApp } from '../hooks/use-app';
@@ -13,6 +13,7 @@ interface ProgressCircleProps {
   total: number;
   percentage: number;
   accessibilityLabel: string;
+  variant?: 'green' | 'accent';
 }
 
 function clampPercentage(percentage: number): number {
@@ -28,9 +29,18 @@ export function ProgressCircle({
   total,
   percentage,
   accessibilityLabel,
+  variant = 'green',
 }: ProgressCircleProps) {
   const { width } = useWindowDimensions();
   const { theme } = useApp();
+  const trackColor =
+    variant === 'accent'
+      ? theme.colors.circularProgressAccentTrack
+      : theme.colors.circularProgressTrack;
+  const fillColor =
+    variant === 'accent'
+      ? theme.colors.circularProgressAccentFill
+      : theme.colors.circularProgressFill;
   const size = Math.min(240, Math.max(180, width - 112));
   const strokeWidth = 14;
   const center = size / 2;
@@ -61,23 +71,27 @@ export function ProgressCircle({
           cy={center}
           fill="none"
           r={radius}
-          stroke={theme.colors.progressTrack}
+          stroke={trackColor}
           strokeWidth={strokeWidth}
+          testID="progress-circle-track"
         />
-        <Circle
-          cx={center}
-          cy={center}
-          fill="none"
-          originX={center}
-          originY={center}
-          r={radius}
-          rotation={-90}
-          stroke={theme.colors.primary}
-          strokeDasharray={`${circumference} ${circumference}`}
-          strokeDashoffset={strokeDashoffset}
-          strokeLinecap="round"
-          strokeWidth={strokeWidth}
-        />
+        {visiblePercentage > 0 ? (
+          <Circle
+            cx={center}
+            cy={center}
+            fill="none"
+            originX={center}
+            originY={center}
+            r={radius}
+            rotation={-90}
+            stroke={fillColor}
+            strokeDasharray={`${circumference} ${circumference}`}
+            strokeDashoffset={strokeDashoffset}
+            strokeLinecap="round"
+            strokeWidth={strokeWidth}
+            testID="progress-circle-fill"
+          />
+        ) : null}
       </Svg>
       <View pointerEvents="none" style={styles.labelContainer}>
         <Text

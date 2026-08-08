@@ -1,4 +1,5 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { AppText as Text } from '@/src/components/app-text';
 
 import { useApp } from '../hooks/use-app';
 import { BossProgressButton } from './boss-progress-button';
@@ -31,10 +32,12 @@ export function BossCard({
       style={[
         styles.container,
         {
-          backgroundColor: theme.colors.surface,
+          backgroundColor: isDefeated
+            ? theme.colors.successBackground
+            : theme.colors.cardAccent,
           borderColor: isDefeated
             ? theme.colors.success
-            : theme.colors.border,
+            : theme.colors.cardAccentBorder,
           borderRadius: theme.borderRadius.medium,
           gap: theme.spacing.medium,
           padding: theme.spacing.medium,
@@ -50,7 +53,7 @@ export function BossCard({
         accessible
         style={{ gap: theme.spacing.extraSmall }}>
         <View style={[styles.heading, { gap: theme.spacing.small }]}>
-          <Text style={[styles.name, { color: theme.colors.textPrimary }]}>
+          <Text style={[styles.name, { color: theme.colors.cardAccentText }]}>
             {name}
           </Text>
           <Text
@@ -62,7 +65,7 @@ export function BossCard({
               {
                 color: isDefeated
                   ? theme.colors.success
-                  : theme.colors.textSecondary,
+                  : theme.colors.cardAccentIcon,
               },
             ]}
             testID={

@@ -8,7 +8,7 @@ import {
   getSorceriesByContentPack,
 } from '../../data';
 import { getTranslationDictionary } from '../../i18n';
-import { lightTheme } from '../../theme';
+import { lightTheme, typography } from '../../theme';
 import { SpellListScreen } from '../spell-list-screen';
 
 jest.mock('@expo/vector-icons/Ionicons', () => {
@@ -52,11 +52,32 @@ beforeEach(() => {
 describe('SpellListScreen', () => {
   it('shows 84 sorceries with one category progress and ordered sections', async () => {
     await render(<SpellListScreen category="sorcery" mode="all" />);
+    expect(screen.getByTestId('sorcery-filter-group').type).toBe('View');
     expect(screen.getByText('84 resultados encontrados')).toBeOnTheScreen();
     expect(screen.getByText('0/84')).toBeOnTheScreen();
     expect(screen.getByText('Jogo base')).toBeOnTheScreen();
     expect(getSorceriesByContentPack('base-game')).toHaveLength(70);
     expect(getSorceriesByContentPack('shadow-of-the-erdtree')).toHaveLength(14);
+    expect(screen.getByTestId('spell-list').props).toMatchObject({
+      keyboardDismissMode: 'on-drag',
+      keyboardShouldPersistTaps: 'handled',
+    });
+  });
+
+  it('uses the same wrapping group for Incantation origin and spell filters', async () => {
+    await render(<SpellListScreen category="incantation" mode="all" />);
+    const group = screen.getByTestId('incantation-filter-group');
+    expect(group.type).toBe('View');
+    expect(group.props.horizontal).toBeUndefined();
+    expect(
+      screen.getByRole('button', { name: 'Filtrar por origem: Base' }),
+    ).toBeOnTheScreen();
+    expect(
+      screen.getByText(mockApp.translations.spells.legendary),
+    ).toBeOnTheScreen();
+    expect(
+      screen.getByText(mockApp.translations.spells.missable),
+    ).toBeOnTheScreen();
   });
 
   it.each([
@@ -117,26 +138,27 @@ describe('SpellListScreen', () => {
     expect(screen.getByText('Nenhuma entrada encontrada.')).toBeOnTheScreen();
   });
 
-  it('normalizes accents and exposes pending locations without inventing one', async () => {
+  it('normalizes accents and displays the audited summarized location', async () => {
     await render(<SpellListScreen category="sorcery" mode="all" />);
+    expect(screen.getByLabelText('Buscar magias')).toHaveStyle({
+      fontFamily: typography.body,
+    });
     await fireEvent.changeText(
       screen.getByLabelText('Buscar magias'),
       "adula's moonblade",
     );
     expect(screen.getByText("Adula's Moonblade")).toBeOnTheScreen();
-    expect(screen.getByText('Localização pendente')).toBeOnTheScreen();
+    expect(screen.getByText('Glintstone Dragon Adula - Moonlight Altar')).toBeOnTheScreen();
   });
 
-  it('finds protected content but displays only the neutral spoiler match', async () => {
+  it('searches an audited quest location without exposing acquisition steps', async () => {
     await render(<SpellListScreen category="incantation" mode="all" />);
     await fireEvent.changeText(
       screen.getByLabelText('Buscar magias'),
-      'Jagged Peak',
+      'Dragon Communion Altar',
     );
-    expect(
-      screen.getByText('Correspondência em conteúdo com spoiler'),
-    ).toBeOnTheScreen();
-    expect(screen.queryByText('Jagged Peak')).toBeNull();
+    expect(screen.getByText("Agheel's Flame")).toBeOnTheScreen();
+    expect(screen.queryByText('Complete the documented acquisition')).toBeNull();
   });
 
   it('intersects origin, Legendary, and search and preserves origin on details', async () => {

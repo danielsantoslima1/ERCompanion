@@ -1,5 +1,6 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { AppText as Text } from '@/src/components/app-text';
 
 import type { SpellCategory } from '../data';
 import { useApp } from '../hooks/use-app';
@@ -25,8 +26,12 @@ export function SpellCard(props: SpellCardProps) {
     <View style={[
       styles.card,
       {
-        backgroundColor: theme.colors.surface,
-        borderColor: props.isCollected ? theme.colors.success : theme.colors.border,
+        backgroundColor: props.isCollected
+          ? theme.colors.successBackground
+          : theme.colors.cardAccent,
+        borderColor: props.isCollected
+          ? theme.colors.success
+          : theme.colors.cardAccentBorder,
         borderRadius: theme.borderRadius.medium,
         gap: theme.spacing.medium,
         padding: theme.spacing.medium,
@@ -40,7 +45,7 @@ export function SpellCard(props: SpellCardProps) {
         )}
         accessible>
         <View style={[styles.heading, { gap: theme.spacing.small }]}>
-          <Text style={[styles.name, { color: theme.colors.textPrimary }]}>
+          <Text style={[styles.name, { color: theme.colors.cardAccentText }]}>
             {props.name}
           </Text>
           <View
@@ -53,7 +58,7 @@ export function SpellCard(props: SpellCardProps) {
               <Text style={[styles.check, { color: theme.colors.success }]}>✓</Text>
             ) : (
               <Ionicons
-                color={theme.colors.textSecondary}
+                color={theme.colors.cardAccentIcon}
                 name={props.category === 'sorcery' ? 'sparkles-outline' : 'sunny-outline'}
                 size={24}
               />

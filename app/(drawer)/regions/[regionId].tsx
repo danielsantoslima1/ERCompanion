@@ -9,14 +9,15 @@ import {
   FlatList,
   Pressable,
   StyleSheet,
-  Text,
-  TextInput,
   View,
   type ListRenderItem,
 } from 'react-native';
+import { AppText as Text } from '@/src/components/app-text';
+import { AppTextInput as TextInput } from '@/src/components/app-text-input';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { BossCard } from '@/src/components/boss-card';
+import { FilterButtonGroup } from '@/src/components/filter-button-group';
 import { RegionProgressItem } from '@/src/components/region-progress-item';
 import {
   bosses,
@@ -136,7 +137,7 @@ export default function RegionScreen() {
               padding: theme.spacing.large,
             },
           ]}>
-          <Text
+          <Text variant="display"
             accessibilityRole="header"
             style={[styles.title, { color: theme.colors.textPrimary }]}>
             {translations.region.notFoundTitle}
@@ -185,7 +186,7 @@ export default function RegionScreen() {
   const listHeader = (
     <View style={{ gap: theme.spacing.large }}>
       <View style={{ gap: theme.spacing.small }}>
-        <Text
+        <Text variant="display"
           accessibilityRole="header"
           style={[styles.title, { color: theme.colors.textPrimary }]}>
           {translations.region.progress}
@@ -207,15 +208,16 @@ export default function RegionScreen() {
           accessibilityLabelledBy="boss-search-label"
           autoCapitalize="none"
           autoCorrect={false}
+          focusBorderColor={theme.colors.focusRing}
           onChangeText={setQuery}
           placeholder={translations.region.searchPlaceholder}
-          placeholderTextColor={theme.colors.disabled}
+          placeholderTextColor={theme.colors.placeholder}
           returnKeyType="search"
           style={[
             styles.input,
             {
-              backgroundColor: theme.colors.surface,
-              borderColor: theme.colors.border,
+              backgroundColor: theme.colors.inputBackground,
+              borderColor: theme.colors.inputBorder,
               borderRadius: theme.borderRadius.medium,
               color: theme.colors.textPrimary,
               paddingHorizontal: theme.spacing.medium,
@@ -225,9 +227,7 @@ export default function RegionScreen() {
         />
       </View>
 
-      <View
-        accessibilityRole="radiogroup"
-        style={[styles.filters, { gap: theme.spacing.small }]}>
+      <FilterButtonGroup testID="region-boss-filter-group">
         {filters.map((option) => {
           const isActive = option.id === filter;
 
@@ -241,7 +241,7 @@ export default function RegionScreen() {
                 styles.filter,
                 {
                   backgroundColor: isActive
-                    ? theme.colors.drawerActiveBackground
+                    ? theme.colors.selectedBackground
                     : theme.colors.surface,
                   borderColor: isActive
                     ? theme.colors.primary
@@ -257,7 +257,7 @@ export default function RegionScreen() {
                   styles.filterText,
                   {
                     color: isActive
-                      ? theme.colors.drawerActiveText
+                      ? theme.colors.text
                       : theme.colors.textPrimary,
                   },
                 ]}>
@@ -266,7 +266,7 @@ export default function RegionScreen() {
             </Pressable>
           );
         })}
-      </View>
+      </FilterButtonGroup>
 
       <Text
         accessibilityLiveRegion="polite"
@@ -314,6 +314,7 @@ export default function RegionScreen() {
             },
           ]}
           data={visibleBosses}
+          keyboardDismissMode="on-drag"
           keyboardShouldPersistTaps="handled"
           keyExtractor={keyExtractor}
           ListEmptyComponent={emptyList}
@@ -349,12 +350,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     minHeight: 48,
   },
-  filters: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-  },
   filter: {
     borderWidth: 1,
+    flexShrink: 0,
     minHeight: 44,
     justifyContent: 'center',
   },

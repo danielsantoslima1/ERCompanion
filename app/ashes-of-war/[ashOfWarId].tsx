@@ -6,7 +6,8 @@ import {
 } from 'expo-router';
 import type { Href } from 'expo-router';
 import { useEffect, useMemo, useRef, type ReactNode } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { AppText as Text } from '@/src/components/app-text';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { AshOfWarProgressButton } from '@/src/components/ash-of-war-progress-button';
@@ -140,7 +141,7 @@ export default function AshOfWarDetailScreen() {
             padding: theme.spacing.large,
           },
         ]}>
-        <Text
+        <Text variant="display"
           accessibilityRole="header"
           style={[styles.title, { color: theme.colors.textPrimary }]}>
           {translations.ashesOfWar.notFoundTitle}
@@ -205,7 +206,7 @@ export default function AshOfWarDetailScreen() {
           styles.content,
           { gap: theme.spacing.medium, padding: theme.spacing.large },
         ]}>
-        <Text
+        <Text variant="display"
           accessibilityRole="header"
           style={[styles.title, { color: theme.colors.textPrimary }]}>
           {name}

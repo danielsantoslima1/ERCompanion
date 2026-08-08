@@ -15,11 +15,16 @@ export interface SpellLocalizedValue {
 }
 
 export interface SpellAcquisitionMethod {
+  readonly type: 'altar-exchange' | 'boss-reward' | 'enemy-drop' | 'found-in-world' | 'other' | 'prayerbook-delivery' | 'purchase' | 'quest-reward' | 'remembrance-exchange' | 'scarab';
   readonly method: SpellLocalizedValue;
   readonly location: SpellLocalizedValue;
+  readonly region: SpellLocalizedValue;
+  readonly nearestSiteOfGrace: SpellLocalizedValue;
   readonly source: SpellLocalizedValue;
   readonly npc: SpellLocalizedValue;
   readonly requiredItem: SpellLocalizedValue;
+  readonly requirements: SpellLocalizedValue;
+  readonly steps: readonly SpellLocalizedValue[];
   readonly availabilityTags: readonly SpellAvailabilityTag[];
   readonly containsQuestSpoilers: boolean;
   readonly spoilerSafeText: SpellLocalizedValue;
@@ -27,11 +32,24 @@ export interface SpellAcquisitionMethod {
   readonly referenceIds: readonly string[];
 }
 
+export interface SpellTechnicalData {
+  readonly fpCost: number | null;
+  readonly slotsUsed: number | null;
+  readonly staminaCost: number | null;
+  readonly intelligenceRequired: number | null;
+  readonly faithRequired: number | null;
+  readonly arcaneRequired: number | null;
+  readonly purchasePrice: number | null;
+  readonly effect: SpellLocalizedValue;
+  readonly documentedVersion: string;
+}
+
 interface SpellBase {
   readonly id: string;
   readonly contentPack: SpellContentPack;
   readonly name: SpellLocalizedValue & { readonly en: string };
   readonly primaryLocation: SpellLocalizedValue;
+  readonly primaryRegion: SpellLocalizedValue;
   readonly primarySource: SpellLocalizedValue;
   readonly acquisitionMethods: readonly SpellAcquisitionMethod[];
   readonly legendary: boolean;
@@ -40,6 +58,7 @@ interface SpellBase {
   readonly spoilerSafeCardText: SpellLocalizedValue;
   readonly searchAliases: readonly string[];
   readonly referenceIds: readonly string[];
+  readonly technical: SpellTechnicalData;
 }
 
 export interface Sorcery extends SpellBase {

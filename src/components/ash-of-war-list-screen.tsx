@@ -6,25 +6,26 @@ import {
   Pressable,
   SectionList,
   StyleSheet,
-  Text,
-  TextInput,
   View,
   type ListRenderItem,
   type SectionListRenderItem,
 } from 'react-native';
+import { AppText as Text } from '@/src/components/app-text';
+import { AppTextInput as TextInput } from '@/src/components/app-text-input';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import {
   calculateAshOfWarProgressByContentPack,
-  getAshOfWarSearchableText,
   getSortedAshesOfWarByContentPack,
   resolveLocalizedValue,
+  searchAndSortAshesOfWar,
   type AshOfWar,
   type AshOfWarContentPack,
   type CompletionProgress,
 } from '../data';
 import { useApp } from '../hooks/use-app';
 import { AshOfWarCard } from './ash-of-war-card';
+import { FilterButtonGroup } from './filter-button-group';
 import {
   OriginFilterButtons,
   type OriginFilter,
@@ -95,31 +96,28 @@ export function AshOfWarListScreen({
 
   const resolveEntries = useCallback(
     (entries: readonly AshOfWar[]): ResolvedAshOfWar[] => {
-      const normalizedQuery = query.trim().toLocaleLowerCase(language);
-      return entries.flatMap((entry) => {
+      const filteredEntries = entries.filter((entry) => {
         const isCollected = collectedIds.has(entry.id);
-        const matchesFilter =
+        return (
           filter === 'all' ||
           (filter === 'collected' && isCollected) ||
-          (filter === 'not-collected' && !isCollected);
-        const matchesQuery =
-          normalizedQuery.length === 0 ||
-          getAshOfWarSearchableText(entry, language).some((value) =>
-            value.toLocaleLowerCase(language).includes(normalizedQuery),
-          );
-        return matchesFilter && matchesQuery
-          ? [{
-              entry,
-              id: entry.id,
-              isCollected,
-              location: resolveLocalizedValue(
-                entry.primaryLocation,
-                language,
-              ).value,
-              name: resolveLocalizedValue(entry.name, language).value,
-            }]
-          : [];
+          (filter === 'not-collected' && !isCollected)
+        );
       });
+      return searchAndSortAshesOfWar(
+        filteredEntries,
+        query,
+        language,
+      ).map((entry) => ({
+        entry,
+        id: entry.id,
+        isCollected: collectedIds.has(entry.id),
+        location: resolveLocalizedValue(
+          entry.primaryLocation,
+          language,
+        ).value,
+        name: resolveLocalizedValue(entry.name, language).value,
+      }));
     },
     [collectedIds, filter, language, query],
   );
@@ -195,7 +193,7 @@ export function AshOfWarListScreen({
 
   const header = (
     <View style={{ gap: theme.spacing.large }}>
-      <Text
+      <Text variant="display"
         accessibilityRole="header"
         style={[styles.title, { color: theme.colors.textPrimary }]}>
         {title}
@@ -213,14 +211,15 @@ export function AshOfWarListScreen({
         accessibilityLabel={translations.ashesOfWar.search}
         autoCapitalize="none"
         autoCorrect={false}
+        focusBorderColor={theme.colors.focusRing}
         onChangeText={setQuery}
         placeholder={translations.ashesOfWar.searchPlaceholder}
-        placeholderTextColor={theme.colors.disabled}
+        placeholderTextColor={theme.colors.placeholder}
         style={[
           styles.input,
           {
-            backgroundColor: theme.colors.surface,
-            borderColor: theme.colors.border,
+            backgroundColor: theme.colors.inputBackground,
+            borderColor: theme.colors.inputBorder,
             borderRadius: theme.borderRadius.medium,
             color: theme.colors.textPrimary,
             paddingHorizontal: theme.spacing.medium,
@@ -228,18 +227,17 @@ export function AshOfWarListScreen({
         ]}
         value={query}
       />
-      {mode === 'all' ? (
-        <OriginFilterButtons
-          activeOrigin={originFilter}
-          baseLabel={translations.common.baseFilter}
-          dlcLabel={translations.common.dlcFilter}
-          getAccessibilityLabel={translations.common.filterByOrigin}
-          onChange={setOriginFilter}
-        />
-      ) : null}
-      <View
-        accessibilityRole="radiogroup"
-        style={[styles.filters, { gap: theme.spacing.small }]}>
+      <FilterButtonGroup testID="ash-of-war-filter-group">
+        {mode === 'all' ? (
+          <OriginFilterButtons
+            activeOrigin={originFilter}
+            baseLabel={translations.common.baseFilter}
+            dlcLabel={translations.common.dlcFilter}
+            embedded
+            getAccessibilityLabel={translations.common.filterByOrigin}
+            onChange={setOriginFilter}
+          />
+        ) : null}
         {([
           ['all', translations.ashesOfWar.all],
           ['collected', translations.ashesOfWar.collected],
@@ -256,7 +254,7 @@ export function AshOfWarListScreen({
                 styles.filter,
                 {
                   backgroundColor: active
-                    ? theme.colors.drawerActiveBackground
+                    ? theme.colors.selectedBackground
                     : theme.colors.surface,
                   borderColor: active
                     ? theme.colors.primary
@@ -270,7 +268,7 @@ export function AshOfWarListScreen({
               <Text
                 style={{
                   color: active
-                    ? theme.colors.drawerActiveText
+                    ? theme.colors.text
                     : theme.colors.textPrimary,
                   fontWeight: '700',
                 }}>
@@ -279,7 +277,7 @@ export function AshOfWarListScreen({
             </Pressable>
           );
         })}
-      </View>
+      </FilterButtonGroup>
       <Text
         accessibilityLiveRegion="polite"
         style={{ color: theme.colors.textSecondary }}>
@@ -320,13 +318,14 @@ export function AshOfWarListScreen({
           <SectionList
             contentContainerStyle={contentContainerStyle}
             initialNumToRender={40}
+            keyboardDismissMode="on-drag"
             keyboardShouldPersistTaps="handled"
             keyExtractor={(item) => item.id}
             ListEmptyComponent={empty}
             ListHeaderComponent={header}
             renderItem={renderSectionAsh}
             renderSectionHeader={({ section }) => (
-              <Text
+              <Text variant="display"
                 accessibilityRole="header"
                 style={[
                   styles.sectionTitle,
@@ -348,6 +347,7 @@ export function AshOfWarListScreen({
             contentContainerStyle={contentContainerStyle}
             data={entries}
             initialNumToRender={30}
+            keyboardDismissMode="on-drag"
             keyboardShouldPersistTaps="handled"
             keyExtractor={(item) => item.id}
             ListEmptyComponent={empty}
@@ -367,7 +367,11 @@ const styles = StyleSheet.create({
   progressTitle: { fontSize: 20, fontWeight: '700' },
   sectionTitle: { fontSize: 20, fontWeight: '700' },
   input: { borderWidth: 1, fontSize: 16, minHeight: 48 },
-  filters: { flexDirection: 'row', flexWrap: 'wrap' },
-  filter: { borderWidth: 1, justifyContent: 'center', minHeight: 44 },
+  filter: {
+    borderWidth: 1,
+    flexShrink: 0,
+    justifyContent: 'center',
+    minHeight: 44,
+  },
   empty: { borderWidth: 1, fontSize: 16 },
 });

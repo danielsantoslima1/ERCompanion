@@ -10,7 +10,8 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { AppText as Text } from '@/src/components/app-text';
 
 import {
   bosses,
@@ -21,6 +22,7 @@ import {
 } from '../data';
 import { useApp } from '../hooks/use-app';
 import { getLocalizedText } from '../i18n';
+import { INDEX_LABELS } from '../index/index-sections';
 
 interface DrawerItemProps {
   label: string;
@@ -49,7 +51,7 @@ function DrawerItem({
           backgroundColor: isSelected
             ? theme.colors.drawerActiveBackground
             : 'transparent',
-          borderColor: isSelected ? theme.colors.primary : 'transparent',
+          borderColor: isSelected ? theme.colors.selectedBorder : 'transparent',
           borderRadius: theme.borderRadius.medium,
           marginLeft: isNested ? theme.spacing.large : 0,
           opacity: pressed ? 0.7 : 1,
@@ -57,13 +59,12 @@ function DrawerItem({
         },
       ]}>
       <Text
-        numberOfLines={2}
         style={[
           styles.itemLabel,
           {
             color: isSelected
               ? theme.colors.drawerActiveText
-              : theme.colors.textPrimary,
+              : theme.colors.navigationText,
           },
         ]}>
         {label}
@@ -103,10 +104,14 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
     pathname === '/sorceries' || pathname.startsWith('/sorceries/');
   const isIncantationRoute =
     pathname === '/incantations' || pathname.startsWith('/incantations/');
+  const isIndexRoute = pathname.startsWith('/remembrance-bosses');
   const [isBossesExpanded, setIsBossesExpanded] = useState(isBossRoute);
   const [isAshesExpanded, setIsAshesExpanded] = useState(isAshRoute);
   const [isSorceriesExpanded, setIsSorceriesExpanded] = useState(isSorceryRoute);
   const [isIncantationsExpanded, setIsIncantationsExpanded] = useState(isIncantationRoute);
+  const [isIndexExpanded, setIsIndexExpanded] = useState(isIndexRoute);
+  const [isRemembranceBossesExpanded, setIsRemembranceBossesExpanded] =
+    useState(pathname.startsWith('/remembrance-bosses'));
   const routeRegion = regions.find(
     (region) => pathname === `/regions/${region.id}`,
   );
@@ -153,6 +158,8 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
       setIsAshesExpanded(false);
       setIsSorceriesExpanded(false);
       setIsIncantationsExpanded(false);
+      setIsIndexExpanded(false);
+      setIsRemembranceBossesExpanded(false);
       setIsBaseGameExpanded(activeContentPack === 'base-game');
       setIsExpansionExpanded(activeContentPack === 'shadow-of-the-erdtree');
     } else if (isAshRoute) {
@@ -160,6 +167,8 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
       setIsBossesExpanded(false);
       setIsSorceriesExpanded(false);
       setIsIncantationsExpanded(false);
+      setIsIndexExpanded(false);
+      setIsRemembranceBossesExpanded(false);
       setIsBaseGameExpanded(false);
       setIsExpansionExpanded(false);
     } else if (isSorceryRoute) {
@@ -167,6 +176,8 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
       setIsBossesExpanded(false);
       setIsAshesExpanded(false);
       setIsIncantationsExpanded(false);
+      setIsIndexExpanded(false);
+      setIsRemembranceBossesExpanded(false);
       setIsBaseGameExpanded(false);
       setIsExpansionExpanded(false);
     } else if (isIncantationRoute) {
@@ -174,6 +185,19 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
       setIsBossesExpanded(false);
       setIsAshesExpanded(false);
       setIsSorceriesExpanded(false);
+      setIsIndexExpanded(false);
+      setIsRemembranceBossesExpanded(false);
+      setIsBaseGameExpanded(false);
+      setIsExpansionExpanded(false);
+    } else if (isIndexRoute) {
+      setIsIndexExpanded(true);
+      setIsRemembranceBossesExpanded(
+        pathname.startsWith('/remembrance-bosses'),
+      );
+      setIsBossesExpanded(false);
+      setIsAshesExpanded(false);
+      setIsSorceriesExpanded(false);
+      setIsIncantationsExpanded(false);
       setIsBaseGameExpanded(false);
       setIsExpansionExpanded(false);
     } else if (pathname === '/' || pathname === '/settings') {
@@ -181,10 +205,12 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
       setIsAshesExpanded(false);
       setIsSorceriesExpanded(false);
       setIsIncantationsExpanded(false);
+      setIsIndexExpanded(false);
+      setIsRemembranceBossesExpanded(false);
       setIsBaseGameExpanded(false);
       setIsExpansionExpanded(false);
     }
-  }, [activeContentPack, isAshRoute, isBossRoute, isIncantationRoute, isSorceryRoute, pathname]);
+  }, [activeContentPack, isAshRoute, isBossRoute, isIncantationRoute, isIndexRoute, isSorceryRoute, pathname]);
 
   const closeDrawer = useCallback(() => {
     props.navigation.closeDrawer();
@@ -199,6 +225,8 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
       setIsAshesExpanded(false);
       setIsSorceriesExpanded(false);
       setIsIncantationsExpanded(false);
+      setIsIndexExpanded(false);
+      setIsRemembranceBossesExpanded(false);
       setIsBaseGameExpanded(false);
       setIsExpansionExpanded(false);
       if (pathname !== destination) {
@@ -217,6 +245,8 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
       setIsAshesExpanded(false);
       setIsSorceriesExpanded(false);
       setIsIncantationsExpanded(false);
+      setIsIndexExpanded(false);
+      setIsRemembranceBossesExpanded(false);
       setIsBaseGameExpanded(targetRegion?.contentPack === 'base-game');
       setIsExpansionExpanded(
         targetRegion?.contentPack === 'shadow-of-the-erdtree',
@@ -237,6 +267,8 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
       setIsAshesExpanded(false);
       setIsSorceriesExpanded(false);
       setIsIncantationsExpanded(false);
+      setIsIndexExpanded(false);
+      setIsRemembranceBossesExpanded(false);
       setIsBaseGameExpanded(contentPack === 'base-game');
       setIsExpansionExpanded(contentPack === 'shadow-of-the-erdtree');
       if (pathname !== destination) {
@@ -250,6 +282,10 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
   const navigateToCombinedBosses = useCallback(() => {
     setIsBossesExpanded(true);
     setIsAshesExpanded(false);
+    setIsSorceriesExpanded(false);
+    setIsIncantationsExpanded(false);
+    setIsIndexExpanded(false);
+    setIsRemembranceBossesExpanded(false);
     setIsBaseGameExpanded(false);
     setIsExpansionExpanded(false);
     if (pathname !== '/all-bosses') {
@@ -273,6 +309,8 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
       setIsBossesExpanded(false);
       setIsSorceriesExpanded(false);
       setIsIncantationsExpanded(false);
+      setIsIndexExpanded(false);
+      setIsRemembranceBossesExpanded(false);
       setIsBaseGameExpanded(false);
       setIsExpansionExpanded(false);
       if (pathname !== destination) {
@@ -287,6 +325,8 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
     setIsAshesExpanded(false);
     setIsSorceriesExpanded(false);
     setIsIncantationsExpanded(false);
+    setIsIndexExpanded(false);
+    setIsRemembranceBossesExpanded(false);
     setIsBossesExpanded((currentValue) => {
       if (currentValue) {
         setIsBaseGameExpanded(false);
@@ -302,6 +342,8 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
     setIsExpansionExpanded(false);
     setIsSorceriesExpanded(false);
     setIsIncantationsExpanded(false);
+    setIsIndexExpanded(false);
+    setIsRemembranceBossesExpanded(false);
     setIsAshesExpanded((currentValue) => !currentValue);
   }, []);
 
@@ -317,6 +359,8 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
       setIsAshesExpanded(false);
       setIsSorceriesExpanded(category === 'sorceries');
       setIsIncantationsExpanded(category === 'incantations');
+      setIsIndexExpanded(false);
+      setIsRemembranceBossesExpanded(false);
       setIsBaseGameExpanded(false);
       setIsExpansionExpanded(false);
       if (pathname !== destination) {
@@ -331,6 +375,8 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
     setIsBossesExpanded(false);
     setIsAshesExpanded(false);
     setIsIncantationsExpanded(false);
+    setIsIndexExpanded(false);
+    setIsRemembranceBossesExpanded(false);
     setIsBaseGameExpanded(false);
     setIsExpansionExpanded(false);
     setIsSorceriesExpanded((current) => !current);
@@ -340,10 +386,60 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
     setIsBossesExpanded(false);
     setIsAshesExpanded(false);
     setIsSorceriesExpanded(false);
+    setIsIndexExpanded(false);
+    setIsRemembranceBossesExpanded(false);
     setIsBaseGameExpanded(false);
     setIsExpansionExpanded(false);
     setIsIncantationsExpanded((current) => !current);
   }, []);
+
+  const toggleIndex = useCallback(() => {
+    setIsBossesExpanded(false);
+    setIsAshesExpanded(false);
+    setIsSorceriesExpanded(false);
+    setIsIncantationsExpanded(false);
+    setIsBaseGameExpanded(false);
+    setIsExpansionExpanded(false);
+    setIsIndexExpanded((current) => {
+      if (current) {
+        setIsRemembranceBossesExpanded(false);
+      }
+      return !current;
+    });
+  }, []);
+
+  const toggleRemembranceBosses = useCallback(() => {
+    setIsRemembranceBossesExpanded((current) => !current);
+  }, []);
+
+  const navigateToIndex = useCallback(
+    (
+      routeName:
+        | 'index/remembrance-bosses/index'
+        | 'index/remembrance-bosses/base-game'
+        | 'index/remembrance-bosses/dlc',
+      destination:
+        | '/remembrance-bosses'
+        | '/remembrance-bosses/base-game'
+        | '/remembrance-bosses/dlc',
+    ) => {
+      setIsBossesExpanded(false);
+      setIsAshesExpanded(false);
+      setIsSorceriesExpanded(false);
+      setIsIncantationsExpanded(false);
+      setIsBaseGameExpanded(false);
+      setIsExpansionExpanded(false);
+      setIsIndexExpanded(true);
+      setIsRemembranceBossesExpanded(
+        destination.startsWith('/remembrance-bosses'),
+      );
+      if (pathname !== destination) {
+        props.navigation.navigate(routeName);
+      }
+      closeDrawer();
+    },
+    [closeDrawer, pathname, props.navigation],
+  );
 
   const toggleContentPack = useCallback((contentPack: ContentPack) => {
     if (contentPack === 'base-game') {
@@ -364,19 +460,20 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
         style={[
           styles.header,
           {
-            borderBottomColor: theme.colors.border,
+            borderBottomColor: theme.colors.borderStrong,
             gap: theme.spacing.small,
             padding: theme.spacing.large,
           },
         ]}>
         <Text
-          style={[styles.appName, { color: theme.colors.primary }]}>
+          variant="displayBold"
+          style={[styles.appName, { color: theme.colors.accent }]}>
           {translations.app.name}
         </Text>
         <Text
           style={[
             styles.appDescription,
-            { color: theme.colors.textSecondary },
+            { color: theme.colors.navigationTextSecondary },
           ]}>
           {translations.navigation.drawerDescription}
         </Text>
@@ -415,7 +512,7 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
                 ? theme.colors.drawerActiveBackground
                 : 'transparent',
               borderColor: isBossRoute
-                ? theme.colors.primary
+                ? theme.colors.selectedBorder
                 : 'transparent',
               borderRadius: theme.borderRadius.medium,
               opacity: pressed ? 0.7 : 1,
@@ -428,7 +525,7 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
               {
                 color: isBossRoute
                   ? theme.colors.drawerActiveText
-                  : theme.colors.textPrimary,
+                  : theme.colors.navigationText,
               },
             ]}>
             {translations.navigation.bosses}
@@ -450,7 +547,7 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
               {
                 color: isBossRoute
                   ? theme.colors.drawerActiveText
-                  : theme.colors.textSecondary,
+                  : theme.colors.navigationTextSecondary,
               },
             ]}>
             {isBossesExpanded ? '−' : '+'}
@@ -470,7 +567,7 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
               <Text
                 style={[
                   styles.emptyMessage,
-                  { color: theme.colors.textSecondary },
+                  { color: theme.colors.navigationTextSecondary },
                 ]}>
                 {translations.navigation.noRegions}
               </Text>
@@ -554,7 +651,7 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
                 ? theme.colors.drawerActiveBackground
                 : 'transparent',
               borderColor: isAshRoute
-                ? theme.colors.primary
+                ? theme.colors.selectedBorder
                 : 'transparent',
               borderRadius: theme.borderRadius.medium,
               opacity: pressed ? 0.7 : 1,
@@ -567,7 +664,7 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
               {
                 color: isAshRoute
                   ? theme.colors.drawerActiveText
-                  : theme.colors.textPrimary,
+                  : theme.colors.navigationText,
               },
             ]}>
             {translations.navigation.ashesOfWar}
@@ -591,7 +688,7 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
               {
                 color: isAshRoute
                   ? theme.colors.drawerActiveText
-                  : theme.colors.textSecondary,
+                  : theme.colors.navigationTextSecondary,
               },
             ]}>
             {isAshesExpanded ? '−' : '+'}
@@ -695,6 +792,50 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
           />
         </DirectRouteGroup>
 
+        <DirectRouteGroup
+          active={isIndexRoute}
+          expanded={isIndexExpanded}
+          expandLabel={
+            isIndexExpanded ? 'Collapse Index' : 'Expand Index'
+          }
+          label={INDEX_LABELS.index}
+          onToggle={toggleIndex}>
+          <DrawerGroup
+            accessibilityLabel={
+              isRemembranceBossesExpanded
+                ? 'Collapse Remembrance Bosses'
+                : 'Expand Remembrance Bosses'
+            }
+            expanded={isRemembranceBossesExpanded}
+            label={INDEX_LABELS.remembranceBosses}
+            onToggle={toggleRemembranceBosses}>
+            <DrawerItem
+              isNested
+              isSelected={
+                pathname === '/remembrance-bosses/base-game'
+              }
+              label={INDEX_LABELS.baseGame}
+              onPress={() =>
+                navigateToIndex(
+                  'index/remembrance-bosses/base-game',
+                  '/remembrance-bosses/base-game',
+                )
+              }
+            />
+            <DrawerItem
+              isNested
+              isSelected={pathname === '/remembrance-bosses/dlc'}
+              label={INDEX_LABELS.dlc}
+              onPress={() =>
+                navigateToIndex(
+                  'index/remembrance-bosses/dlc',
+                  '/remembrance-bosses/dlc',
+                )
+              }
+            />
+          </DrawerGroup>
+        </DirectRouteGroup>
+
         <DrawerItem
           isSelected={pathname === '/settings'}
           label={translations.navigation.settings}
@@ -732,18 +873,18 @@ function DirectRouteGroup({
           styles.item,
           {
             backgroundColor: active ? theme.colors.drawerActiveBackground : 'transparent',
-            borderColor: active ? theme.colors.primary : 'transparent',
+            borderColor: active ? theme.colors.selectedBorder : 'transparent',
             borderRadius: theme.borderRadius.medium,
             paddingHorizontal: theme.spacing.medium,
           },
         ]}>
-        <Text style={[styles.itemLabel, { color: active ? theme.colors.drawerActiveText : theme.colors.textPrimary }]}>
+        <Text style={[styles.itemLabel, { color: active ? theme.colors.drawerActiveText : theme.colors.navigationText }]}>
           {label}
         </Text>
         <Text
           accessibilityElementsHidden
           importantForAccessibility="no-hide-descendants"
-          style={[styles.expandIndicator, { color: active ? theme.colors.drawerActiveText : theme.colors.textSecondary }]}>
+          style={[styles.expandIndicator, { color: active ? theme.colors.drawerActiveText : theme.colors.navigationTextSecondary }]}>
           {expanded ? '−' : '+'}
         </Text>
       </Pressable>
@@ -774,10 +915,10 @@ function DrawerGroup({
         accessibilityState={{ expanded }}
         onPress={onToggle}
         style={[styles.group, { marginLeft: theme.spacing.large }]}>
-        <Text style={[styles.itemLabel, { color: theme.colors.textPrimary }]}>
+        <Text style={[styles.itemLabel, { color: theme.colors.navigationText }]}>
           {label}
         </Text>
-        <Text style={{ color: theme.colors.textSecondary }}>
+        <Text style={{ color: theme.colors.navigationTextSecondary }}>
           {expanded ? '−' : '+'}
         </Text>
       </Pressable>

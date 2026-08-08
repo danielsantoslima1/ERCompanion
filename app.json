@@ -31,12 +31,13 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
+          "image": "./assets/branding/elden-ring-companion-splash.png",
+          "imageWidth": 260,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff",
+          "backgroundColor": "#07130F",
           "dark": {
-            "backgroundColor": "#000000"
+            "image": "./assets/branding/elden-ring-companion-splash.png",
+            "backgroundColor": "#07130F"
           }
         }
       ]

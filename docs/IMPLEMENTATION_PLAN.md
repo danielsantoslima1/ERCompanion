@@ -1,5 +1,20 @@
 # Plano de Implementação
 
+## Phase 2 — etapa tipográfica
+
+A primeira etapa funcional da Phase 2 aplica Cinzel Decorative à identidade e
+aos títulos e Spectral ao restante da interface. Os sete arquivos estáticos
+efetivamente usados são carregados offline por `expo-font`; a splash nativa
+existente permanece até fontes e estado essencial estarem prontos. A falha de
+carregamento possui fallback controlado e nova tentativa.
+
+Os nomes das famílias e variantes ficam centralizados, e `AppText` e
+`AppTextInput` evitam nomes literais espalhados. Esta etapa não altera paleta,
+splash visual, animação, Index, dados ou comportamento. A revisão manual foi
+concluída e aprovada no Expo Go. Uma etapa futura poderá restringir a fonte
+temática caso novas avaliações de legibilidade indiquem essa necessidade.
+Mantinia e Agmena permanecem proibidas sem licença comercial apropriada.
+
 ## Estado atual — MVP de Feitiços e Encantamentos
 
 O MVP de 84 Feitiços e 129 Encantamentos foi implementado e aprovado na revisão manual no Expo Go. A entrega inclui catálogos tipados, validadores, schema v3, migração, progresso separado, total geral 537, Home, Drawer, listas, busca, filtros Lendárias/Perdíveis, cards, detalhes, spoilers, fallback e testes. Não há dependências novas.
@@ -301,3 +316,83 @@ explícita.
 
 Próxima etapa:
 `Manter o fallback em inglês para as Cinzas da Guerra e retomar a validação oficial pt-BR somente mediante nova autorização explícita do usuário.`
+
+## Phase 2 — identidade cromática
+
+Implementados tokens semânticos com paridade entre temas Claro e Escuro,
+navegação e Drawer estruturais em verde profundo, dourado controlado, estados
+de sucesso/aviso/erro, inputs, seleção, foco e progresso. O tema Sistema
+continua seguindo a preferência do sistema sem mudança de persistência. Testes
+de contraste e contrato do tema protegem a implementação. Revisão manual no
+Expo Go pendente; splash visual, Index e demais etapas da Phase 2 não fazem
+parte deste incremento.
+
+## Phase 2 — splash e identidade gráfica
+
+Implementados o emblema vetorial original, PNGs transparentes, configuração
+nativa pelo `expo-splash-screen` e overlay animado coordenado com fontes e
+hidratação. A splash permanece visível por no mínimo 3.000 ms desde o bootstrap;
+somente o restante é aguardado quando a inicialização termina cedo e nenhuma
+espera extra é adicionada quando ela demora mais. Depois, a saída usa opacidade e
+escala discreta por 500 ms e respeita redução de movimento com fade de 100 ms.
+O temporizador centralizado é cancelado ao desmontar. Erros de fonte continuam
+oferecendo nova tentativa, que reinicia o ciclo previsivelmente. A splash nativa
+deverá ser validada posteriormente em build Android instalado.
+
+A revisão manual encontrou corte bilateral do título, emblema excessivo e grupo
+deslocado para cima. O ativo nativo foi recomposto de forma compacta e passou a
+usar `imageWidth` 260 com `contain`. O overlay agora separa emblema e `AppText`
+em grupo centralizado dentro da área segura, com limites responsivos de largura,
+altura, título e escala máxima de 1,015. A revisão manual no Expo Go foi
+concluída e aprovada. A validação nativa permanece planejada para um build
+Android instalado.
+
+## Phase 2 — grupo responsivo compartilhado de filtros
+
+As listas de Chefes, Cinzas da Guerra, Feitiços e Encantamentos passam a compor
+seus filtros no componente compartilhado `FilterButtonGroup`. O grupo usa `View`
+com quebra automática, cresce verticalmente, não comprime chips e não interfere
+na rolagem vertical da lista. `OriginFilterButtons` mantém sua lógica e fornece
+botões diretamente para composição com filtros de estado, Lendárias e Perdíveis.
+
+Para categorias futuras, qualquer conjunto de dois ou mais filtros deverá
+reutilizar a mesma estrutura, com quantas linhas forem necessárias, estados
+acessíveis individuais, Spectral e tokens semânticos nos temas
+Claro/Escuro/Sistema. Controles nunca devem ser cortados nem exigir rolagem
+horizontal. A lógica de busca, seleção e interseção permanece fora do componente
+visual. A revisão manual no Expo Go foi concluída e aprovada.
+
+## Phase 2 — estrutura inicial do Index
+
+Adicionar `Index` imediatamente antes de `Settings`, mantendo a exclusividade
+dos grupos do Drawer. O grupo é somente um accordion, sem subopção homônima e
+sem rota própria; `app/(drawer)/index.tsx` continua sendo a Home em `/`. A
+estrutura inicial contém somente `Remembrance Bosses`, `Base Game` e `DLC`,
+com rotas iniciadas diretamente em `/remembrance-bosses`, intermediária funcional e
+páginas finais em estado vazio. O card de Chefes da Home continua abrindo
+`/all-bosses`. Os textos novos permanecem em inglês e nenhuma entrada real,
+imagem, busca, filtro, lore ou dado técnico é antecipado. A configuração tipada
+permite acrescentar categorias futuras somente após aprovação. A retirada de
+`Index` é somente o nome visual do grupo do Drawer. A retirada de
+`app/(drawer)/index/index.tsx` preserva a Home atual e evita padrões duplicados.
+Revisão manual novamente
+pendente.
+
+## Phase 2 — data completion
+
+Completed the consolidated English-data pass for all 213 Sorceries and
+Incantations: summarized locations, acquisition records, typed costs and
+requirements, strict missable decisions, detail/search integration, and dataset
+validation. The Boss and Ashes of War catalogs were audited without changing
+approved totals. Remaining explicit legacy unknowns are documented rather than
+invented. No progress-schema, dependency, Portuguese-content, or Index-content
+change is part of this step.
+
+## Phase 2 — identidade dourada dos cards escuros
+
+Chefes, Cinzas da Guerra, Feitiços e Encantamentos passam a consumir tokens
+semânticos compartilhados para superfície verde e detalhes em ouro envelhecido
+no tema escuro. Estados concluídos continuam verdes; o tema claro reutiliza os
+valores anteriores. Testes verificam paridade, contraste e consumo dos tokens.
+Cards futuros devem seguir a mesma regra sem depender apenas de cor. Revisão
+manual pendente.

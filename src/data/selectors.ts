@@ -6,6 +6,10 @@ import type {
 } from './catalog';
 import type { Language } from '../types';
 import { getLocalizedText } from '../i18n';
+import {
+  searchAndSortByRelevance,
+  type SearchRelevanceFields,
+} from '../utils/search-relevance';
 
 export interface ProgressSummary {
   defeated: number;
@@ -138,33 +142,101 @@ export function getValidDefeatedBossIds(
 
 export type BossFilter = 'all' | 'defeated' | 'not-defeated';
 
+function getLocalizedAlternates(
+  value: { readonly 'pt-BR': string; readonly en: string },
+  language: Language,
+): string[] {
+  const displayed = getLocalizedText(value, language);
+  return [value['pt-BR'], value.en].filter(
+    (candidate) => candidate !== displayed,
+  );
+}
+
+function getBossSearchFields(
+  boss: BossEncounterWithProgress,
+  language: Language,
+  region?: CatalogRegion,
+): SearchRelevanceFields {
+  return {
+    displayedName: getLocalizedText(boss.name, language),
+    alternateNames: [
+      ...getLocalizedAlternates(boss.name, language),
+      ...(boss.originalName
+        ? [
+            getLocalizedText(boss.originalName, language),
+            ...getLocalizedAlternates(boss.originalName, language),
+          ]
+        : []),
+      ...(boss.barNames ?? []).flatMap((name) => [
+        getLocalizedText(name, language),
+        ...getLocalizedAlternates(name, language),
+      ]),
+    ],
+    locations: [
+      getLocalizedText(boss.location, language),
+      ...getLocalizedAlternates(boss.location, language),
+      ...(region
+        ? [
+            getLocalizedText(region.name, language),
+            ...getLocalizedAlternates(region.name, language),
+          ]
+        : []),
+    ],
+    npcs: (boss.mainParticipants ?? []).flatMap((participant) => [
+      getLocalizedText(participant, language),
+      ...getLocalizedAlternates(participant, language),
+    ]),
+    metadata: [
+      ...(boss.availability
+        ? [
+            getLocalizedText(boss.availability, language),
+            ...getLocalizedAlternates(boss.availability, language),
+          ]
+        : []),
+      ...(boss.phases ?? []).flatMap((phase) => [
+        getLocalizedText(phase.name, language),
+        ...getLocalizedAlternates(phase.name, language),
+      ]),
+    ],
+  };
+}
+
+function matchesBossFilter(
+  boss: BossEncounterWithProgress,
+  filter: BossFilter,
+): boolean {
+  return (
+    filter === 'all' ||
+    (filter === 'defeated' && boss.isDefeated) ||
+    (filter === 'not-defeated' && !boss.isDefeated)
+  );
+}
+
+function compareBossNames(
+  first: BossEncounter,
+  second: BossEncounter,
+  language: Language,
+): number {
+  return compareLocalizedText(
+    getLocalizedText(first.name, language),
+    getLocalizedText(second.name, language),
+    language,
+  );
+}
+
 export function searchAndFilterBosses(
   bossList: readonly BossEncounterWithProgress[],
   query: string,
   filter: BossFilter,
   language: Language,
 ): BossEncounterWithProgress[] {
-  const normalizedQuery = query.trim().toLocaleLowerCase(language);
-  return sortBossesAlphabetically(bossList.filter((boss) => {
-    const matchesFilter =
-      filter === 'all' ||
-      (filter === 'defeated' && boss.isDefeated) ||
-      (filter === 'not-defeated' && !boss.isDefeated);
-    if (!matchesFilter || normalizedQuery === '') return matchesFilter;
-    const searchable = [
-      boss.name,
-      boss.location,
-      boss.availability,
-      ...(boss.barNames ?? []),
-      ...(boss.mainParticipants ?? []),
-      ...(boss.phases?.map((phase) => phase.name) ?? []),
-    ].filter((value) => value !== undefined);
-    return searchable.some((value) =>
-      getLocalizedText(value, language)
-        .toLocaleLowerCase(language)
-        .includes(normalizedQuery),
-    );
-  }), language);
+  return searchAndSortByRelevance(
+    bossList.filter((boss) => matchesBossFilter(boss, filter)),
+    query,
+    (boss) => getBossSearchFields(boss, language),
+    (first, second) => compareBossNames(first, second, language),
+    (boss) => boss.id,
+  );
 }
 
 export function searchAndFilterBossesByContentPack(
@@ -174,30 +246,15 @@ export function searchAndFilterBossesByContentPack(
   filter: BossFilter,
   language: Language,
 ): BossEncounterWithProgress[] {
-  const normalizedQuery = query.trim().toLocaleLowerCase(language);
   const regionById = new Map(regionList.map((region) => [region.id, region]));
 
-  return sortBossesAlphabetically(
-    bossList.filter((boss) => {
-      const matchesFilter =
-        filter === 'all' ||
-        (filter === 'defeated' && boss.isDefeated) ||
-        (filter === 'not-defeated' && !boss.isDefeated);
-      if (!matchesFilter || normalizedQuery === '') return matchesFilter;
-      const region = regionById.get(boss.regionId);
-      const searchable = [
-        boss.name,
-        boss.location,
-        boss.availability,
-        region?.name,
-      ].filter((value) => value !== undefined);
-      return searchable.some((value) =>
-        getLocalizedText(value, language)
-          .toLocaleLowerCase(language)
-          .includes(normalizedQuery),
-      );
-    }),
-    language,
+  return searchAndSortByRelevance(
+    bossList.filter((boss) => matchesBossFilter(boss, filter)),
+    query,
+    (boss) =>
+      getBossSearchFields(boss, language, regionById.get(boss.regionId)),
+    (first, second) => compareBossNames(first, second, language),
+    (boss) => boss.id,
   );
 }
 

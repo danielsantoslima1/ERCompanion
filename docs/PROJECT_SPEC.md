@@ -1,5 +1,21 @@
 # Elden Ring Companion
 
+## Phase 2 — tipografia
+
+A identidade visual usa Cinzel Decorative em títulos principais, grandes
+seções, categorias e no nome “Elden Ring Companion”. Toda a interface restante
+usa Spectral, incluindo cards, botões, filtros, busca, Drawer, progresso,
+detalhes e configurações. As fontes são recursos locais oficiais do Google
+Fonts sob SIL Open Font License 1.1 e são carregadas antes da interface.
+
+Os títulos nativos suportados pelo React Navigation recebem a tipografia
+centralizada. Textos integralmente controlados pelo sistema operacional podem
+ignorar a família customizada conforme a plataforma. A aplicação tipográfica
+foi aprovada na revisão manual no Expo Go. Se testes futuros de legibilidade
+exigirem, a fonte temática poderá ser restringida a menos elementos de
+identidade. Mantinia e Agmena não podem ser usadas sem licença comercial
+apropriada.
+
 ## Extensão implementada — Feitiços e Encantamentos
 
 O aplicativo passa a contemplar 84 Feitiços e 129 Encantamentos como categorias independentes. O total geral é derivado dos catálogos e soma 537 registros: 208 Chefes, 116 Cinzas da Guerra, 84 Feitiços e 129 Encantamentos.
@@ -772,3 +788,73 @@ explícita.
 
 Próxima etapa:
 `Manter o fallback em inglês para as Cinzas da Guerra e retomar a validação oficial pt-BR somente mediante nova autorização explícita do usuário.`
+
+## Identidade cromática da Phase 2
+
+Os temas Claro, Escuro e Sistema usam tokens semânticos centralizados. Verde
+profundo domina headers, Drawer, ações, seleção, progresso e foco; dourado é
+reservado a identidade e pequenos destaques. Combinações críticas possuem
+validação automatizada de contraste. A especificação completa está em
+`docs/PHASE_2_COLOR_PALETTE.md`; a revisão manual no Expo Go está pendente.
+
+## Splash e identidade gráfica da Phase 2
+
+O aplicativo possui emblema original com árvore dourada transformada em espada,
+moldura oval e joia verde. A splash nativa usa fundo `#07130F`, composição
+centralizada em modo `contain` e permanece visível por no mínimo 3.000 ms desde
+o bootstrap JavaScript. Quando a inicialização termina antes desse limite, apenas
+o tempo restante é aguardado; inicializações mais lentas saem imediatamente.
+Depois ocorre a transição React Native de 500 ms. A identidade é fixa durante a
+inicialização e não depende do tema. Redução de movimento preserva os 3.000 ms e
+usa saída de 100 ms; erros de fonte e nova tentativa são preservados. O ícone
+do aplicativo permanece inalterado. Após revisão visual, o plugin passou a usar
+largura 260. O overlay separa emblema e `AppText`, respeita áreas seguras, aplica
+24 dp de padding lateral e calcula responsivamente emblema de aproximadamente
+176–220 dp e título de 22–28 dp, considerando a escala máxima de 1,015.
+A revisão manual no Expo Go foi concluída e aprovada; a splash nativa ainda
+deverá ser validada futuramente em build Android instalado.
+
+## Estrutura inicial do Index
+
+`Index` é o último grupo funcional do Drawer antes de `Settings` e funciona
+somente como accordion, sem subopção homônima e sem rota própria. Nesta
+etapa, contém somente `Remembrance Bosses`, com destinos `Base Game` e `DLC`.
+As rotas `/remembrance-bosses`, `/remembrance-bosses/base-game` e
+`/remembrance-bosses/dlc` são funcionais; as duas últimas apresentam
+estado vazio explícito, sem dados reais. Todo texto novo do Index permanece em
+inglês em ambos os idiomas do aplicativo. `Lore` e demais categorias não são
+antecipadas. `Index` é somente o nome visual do grupo do Drawer.
+`app/(drawer)/index.tsx` permanece a Home em `/`, evitando conflito com a árvore
+de rotas, e seu card de Chefes abre `/all-bosses`. A revisão manual
+está novamente pendente.
+
+## Regra cromática de cards
+
+Cards atuais e futuros usam verde profundo como estrutura no tema escuro e
+ouro envelhecido em detalhes semânticos, sem grandes superfícies douradas.
+Chefes, Cinzas da Guerra, Feitiços e Encantamentos compartilham tokens tipados.
+Sucesso, erro, foco e seleção continuam distinguíveis por mais de um sinal, e
+o tema claro preserva sua aparência anterior. Combinações críticas possuem
+validação automatizada de contraste.
+
+## Phase 2 data completion
+
+The 84 Sorceries and 129 Incantations use audited English card locations in the
+`Main location - Full region name` format. Acquisition and typed technical data
+belong to details, never cards. Unknown optional numbers remain distinct from
+verified zero or false. The audit preserves 208 boss encounters, 116 Ashes of
+War, the 537-item total, existing Portuguese content, and the empty Index. Full
+methodology is recorded in `docs/PHASE_2_DATA_COMPLETION.md`.
+
+## Grupo responsivo compartilhado de filtros
+
+Todo grupo com dois ou mais filtros de pesquisa ou listagem deve usar
+`FilterButtonGroup`. Os controles mantêm largura baseada no conteúdo e são
+distribuídos em quantas linhas forem necessárias. Corte, truncamento, compressão
+excessiva e rolagem horizontal não são permitidos.
+
+A regra vale para filtros de origem, estado e propriedades e deve ser reutilizada
+por categorias futuras. Ela preserva seleção acessível por controle, Spectral,
+tokens semânticos nos temas Claro, Escuro e Sistema, rolagem vertical da lista e
+interseção com busca e demais filtros. Rotas sem determinado filtro não devem
+criá-lo apenas para preencher a linha.

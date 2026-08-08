@@ -18,6 +18,7 @@ export {
   getAshOfWarById,
   getAshOfWarIndexSize,
   getAshOfWarSearchableText,
+  searchAndSortAshesOfWar,
   getSortedAshesOfWar,
   getSortedAshesOfWarByContentPack,
   resolveLocalizedList,

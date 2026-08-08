@@ -1,5 +1,6 @@
 import { router, type Href } from 'expo-router';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { AppText as Text } from '@/src/components/app-text';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ProgressCircle } from '@/src/components/progress-circle';
@@ -54,7 +55,7 @@ export default function HomeScreen() {
         ]}
         contentInsetAdjustmentBehavior="automatic">
         <View style={{ gap: theme.spacing.small }}>
-          <Text
+          <Text variant="display"
             accessibilityRole="header"
             style={[styles.title, { color: theme.colors.textPrimary }]}>
             {translations.home.title}
@@ -75,7 +76,9 @@ export default function HomeScreen() {
               padding: theme.spacing.large,
             },
           ]}>
-          <Text style={[styles.sectionTitle, { color: theme.colors.textPrimary }]}>
+          <Text
+            variant="display"
+            style={[styles.sectionTitle, { color: theme.colors.textPrimary }]}>
             {translations.home.overallProgress}
           </Text>
           <ProgressCircle
@@ -87,6 +90,7 @@ export default function HomeScreen() {
             defeated={combinedProgress.completed}
             percentage={combinedProgress.percentage}
             total={combinedProgress.total}
+            variant="accent"
           />
         </View>
 
@@ -113,7 +117,9 @@ export default function HomeScreen() {
                   padding: theme.spacing.large,
                 },
               ]}>
-              <Text style={[styles.contentTitle, { color: theme.colors.textPrimary }]}>
+              <Text
+                variant="display"
+                style={[styles.contentTitle, { color: theme.colors.textPrimary }]}>
                 {label}
               </Text>
               <RegionProgressItem
