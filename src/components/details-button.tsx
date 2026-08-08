@@ -45,7 +45,9 @@ export function DetailsButton({
           {
             color: disabled
               ? theme.colors.disabledText
-              : theme.colors.primary,
+              : theme.mode === 'dark'
+                ? theme.colors.primaryContrast
+                : theme.colors.primary,
           },
         ]}>
         {label}

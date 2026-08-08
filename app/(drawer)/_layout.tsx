@@ -139,10 +139,6 @@ export default function DrawerLayout() {
         options={{ drawerItemStyle: { display: 'none' }, title: 'Spirit Ashes — Shadow of the Erdtree' }}
       />
       <Drawer.Screen
-        name="spirit-ashes/[spiritAshId]"
-        options={{ drawerItemStyle: { display: 'none' }, title: 'Spirit Ash details' }}
-      />
-      <Drawer.Screen
         name="index/remembrance-bosses/index"
         options={{
           drawerItemStyle: { display: 'none' },

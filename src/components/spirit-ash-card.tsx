@@ -7,9 +7,9 @@ import { useApp } from '../hooks/use-app';
 
 export function SpiritAshCard({ id, name, location, isCollected, legendary, onViewDetails }: { readonly id: string; readonly name: string; readonly location: string; readonly isCollected: boolean; readonly legendary: boolean; readonly onViewDetails: () => void }) {
   const { theme } = useApp();
-  return <View style={[styles.card, { backgroundColor: isCollected ? theme.colors.successBackground : theme.colors.cardAccent, borderColor: isCollected ? theme.colors.success : theme.colors.cardAccentBorder, borderRadius: theme.borderRadius.medium, gap: theme.spacing.medium, padding: theme.spacing.medium }]}>
+  return <View style={[styles.card, { backgroundColor: isCollected ? theme.colors.successBackground : theme.colors.cardAccent, borderColor: isCollected ? theme.colors.success : theme.colors.accent, borderRadius: theme.borderRadius.medium, gap: theme.spacing.medium, padding: theme.spacing.medium }]}>
     <View accessibilityLabel={`${name}, ${location}, ${isCollected ? 'Collected' : 'Not collected'}`} accessible>
-      <View style={styles.heading}><Text style={[styles.name, { color: theme.colors.cardAccentText }]}>{name}</Text><Ionicons accessibilityElementsHidden color={isCollected ? theme.colors.success : theme.colors.cardAccentIcon} name={isCollected ? 'checkmark-circle-outline' : 'sparkles-outline'} size={24} /></View>
+      <View style={styles.heading}><Text style={[styles.name, { color: isCollected ? theme.colors.cardAccentText : theme.colors.accent }]}>{name}</Text><Ionicons accessibilityElementsHidden color={isCollected ? theme.colors.success : theme.colors.accent} name={isCollected ? 'checkmark-circle-outline' : 'sparkles-outline'} size={24} /></View>
       <Text style={[styles.location, { color: theme.colors.textSecondary }]}>{location}</Text>
       {legendary ? <Text style={{ color: theme.colors.accent, fontWeight: '700' }}>Legendary</Text> : null}
     </View>

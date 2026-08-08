@@ -23,6 +23,12 @@ Ogha, Ancient Dragon Knight Kristoff, Lhutel the Headless, Mimic Tear Ashes,
 and Black Knife Tiche. Missable remains explicitly unknown where a lockout
 cannot be confirmed without inventing a claim.
 
+The first implementation used temporary `<name> location` values. A manual
+review found that these were not factual acquisition locations. All 84 records
+now use researched locations from Eldenpedia/wiki.gg listings and individual
+item pages where needed; the Spirit Ash validator rejects name-derived,
+`Unknown location`, `TBD`, and `TODO` placeholders.
+
 ## Product integration
 
 Spirit Ashes use schema version 4 and `collectedSpiritAshIds`. Existing

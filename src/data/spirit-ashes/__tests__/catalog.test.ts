@@ -15,4 +15,16 @@ describe('Spirit Ash catalog', () => {
     expect(mimic?.summonCost).toEqual({ type: 'hp', amount: 660 });
     expect(getAllSpiritAshes().some((entry) => entry.summonCost.amount === null)).toBe(true);
   });
+
+  it('uses factual summarized locations and rejects name placeholders', () => {
+    const entries = getAllSpiritAshes();
+    expect(entries.every((entry) => entry.primaryLocation.includes(' - '))).toBe(true);
+    expect(entries.some((entry) => entry.primaryLocation.toLowerCase().includes(' location - '))).toBe(false);
+    expect(entries.find((entry) => entry.name === 'Fingercreeper Ashes')?.primaryLocation).toBe(
+      'Finger Ruins of Miyr - Scadu Altus',
+    );
+    expect(validateSpiritAshCatalog([{ ...entries[0], primaryLocation: 'Wandering Noble location - Limgrave' }])).toContain(
+      `Placeholder location: ${entries[0].id}`,
+    );
+  });
 });
