@@ -257,6 +257,7 @@ describe('CustomDrawerContent', () => {
       mockAppState.translations.navigation.expandAshesOfWar,
       mockAppState.translations.navigation.expandSorceries,
       mockAppState.translations.navigation.expandIncantations,
+      'Spirit Ashes',
       'Expand Index',
       mockAppState.translations.navigation.settings,
     ]);
@@ -309,6 +310,7 @@ describe('CustomDrawerContent', () => {
       mockAppState.translations.common.expansion,
       mockAppState.translations.navigation.expandSorceries,
       mockAppState.translations.navigation.expandIncantations,
+      'Spirit Ashes',
       'Expand Index',
       mockAppState.translations.navigation.settings,
     ]);

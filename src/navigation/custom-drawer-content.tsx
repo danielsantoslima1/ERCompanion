@@ -104,6 +104,7 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
     pathname === '/sorceries' || pathname.startsWith('/sorceries/');
   const isIncantationRoute =
     pathname === '/incantations' || pathname.startsWith('/incantations/');
+  const isSpiritAshRoute = pathname === '/spirit-ashes' || pathname.startsWith('/spirit-ashes/');
   const isIndexRoute = pathname.startsWith('/remembrance-bosses');
   const [isBossesExpanded, setIsBossesExpanded] = useState(isBossRoute);
   const [isAshesExpanded, setIsAshesExpanded] = useState(isAshRoute);
@@ -189,6 +190,15 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
       setIsRemembranceBossesExpanded(false);
       setIsBaseGameExpanded(false);
       setIsExpansionExpanded(false);
+    } else if (isSpiritAshRoute) {
+      setIsBossesExpanded(false);
+      setIsAshesExpanded(false);
+      setIsSorceriesExpanded(false);
+      setIsIncantationsExpanded(false);
+      setIsIndexExpanded(false);
+      setIsRemembranceBossesExpanded(false);
+      setIsBaseGameExpanded(false);
+      setIsExpansionExpanded(false);
     } else if (isIndexRoute) {
       setIsIndexExpanded(true);
       setIsRemembranceBossesExpanded(
@@ -210,7 +220,7 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
       setIsBaseGameExpanded(false);
       setIsExpansionExpanded(false);
     }
-  }, [activeContentPack, isAshRoute, isBossRoute, isIncantationRoute, isIndexRoute, isSorceryRoute, pathname]);
+  }, [activeContentPack, isAshRoute, isBossRoute, isIncantationRoute, isIndexRoute, isSorceryRoute, isSpiritAshRoute, pathname]);
 
   const closeDrawer = useCallback(() => {
     props.navigation.closeDrawer();
@@ -790,6 +800,25 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
             label={translations.common.expansion}
             onPress={() => navigateToSpellGroup('incantations', 'shadow-of-the-erdtree')}
           />
+        </DirectRouteGroup>
+
+        <DirectRouteGroup
+          active={pathname.startsWith('/spirit-ashes')}
+          expanded={pathname.startsWith('/spirit-ashes')}
+          expandLabel="Spirit Ashes"
+          label="Spirit Ashes"
+          onToggle={() => {
+            setIsBossesExpanded(false);
+            setIsAshesExpanded(false);
+            setIsSorceriesExpanded(false);
+            setIsIncantationsExpanded(false);
+            setIsIndexExpanded(false);
+            closeDrawer();
+            props.navigation.navigate('spirit-ashes/index');
+          }}>
+          <DrawerItem isNested isSelected={pathname === '/spirit-ashes'} label="All Spirit Ashes" onPress={() => { props.navigation.navigate('spirit-ashes/index'); closeDrawer(); }} />
+          <DrawerItem isNested isSelected={pathname === '/spirit-ashes/base-game'} label="Base game" onPress={() => { props.navigation.navigate('spirit-ashes/base-game'); closeDrawer(); }} />
+          <DrawerItem isNested isSelected={pathname === '/spirit-ashes/shadow-of-the-erdtree'} label="Shadow of the Erdtree" onPress={() => { props.navigation.navigate('spirit-ashes/shadow-of-the-erdtree'); closeDrawer(); }} />
         </DirectRouteGroup>
 
         <DirectRouteGroup

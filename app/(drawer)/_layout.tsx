@@ -127,6 +127,22 @@ export default function DrawerLayout() {
         options={{ drawerItemStyle: { display: 'none' }, title: translations.spells.incantationExpansionTitle }}
       />
       <Drawer.Screen
+        name="spirit-ashes/index"
+        options={{ drawerItemStyle: { display: 'none' }, title: 'Spirit Ashes' }}
+      />
+      <Drawer.Screen
+        name="spirit-ashes/base-game"
+        options={{ drawerItemStyle: { display: 'none' }, title: 'Spirit Ashes — Base game' }}
+      />
+      <Drawer.Screen
+        name="spirit-ashes/shadow-of-the-erdtree"
+        options={{ drawerItemStyle: { display: 'none' }, title: 'Spirit Ashes — Shadow of the Erdtree' }}
+      />
+      <Drawer.Screen
+        name="spirit-ashes/[spiritAshId]"
+        options={{ drawerItemStyle: { display: 'none' }, title: 'Spirit Ash details' }}
+      />
+      <Drawer.Screen
         name="index/remembrance-bosses/index"
         options={{
           drawerItemStyle: { display: 'none' },

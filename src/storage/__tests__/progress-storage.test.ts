@@ -36,12 +36,14 @@ const state = (
   collectedAshOfWarIds: readonly string[] = [],
   collectedSorceryIds: readonly string[] = [],
   collectedIncantationIds: readonly string[] = [],
+  collectedSpiritAshIds: readonly string[] = [],
 ) => ({
-  schemaVersion: 3,
+  schemaVersion: 4,
   defeatedBossIds,
   collectedAshOfWarIds,
   collectedSorceryIds,
   collectedIncantationIds,
+  collectedSpiritAshIds,
 });
 
 describe('progress storage v3', () => {
