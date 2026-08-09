@@ -55,3 +55,16 @@ routes. It is searchable, filterable, accessible, responsive, and represented
 by a fifth Home card. The Index remains empty and unchanged. New catalog data
 and category-specific labels are English-only; existing Portuguese content is
 preserved.
+
+## Automated warning cleanup
+
+The Drawer hook warnings came from centralized accordion setter callbacks being
+used without their stable callback dependencies. The affected effects and
+navigation callbacks now declare the exact setters they consume; no lint
+suppression was added.
+
+The `VirtualizedList/act()` warning came from the combined Bosses `SectionList`
+performing its deferred cell update after the test render scope. The test now
+renders and drains that deferred update inside `act`, preserving the real list
+implementation and behavior. No console filtering or production mock was
+introduced.

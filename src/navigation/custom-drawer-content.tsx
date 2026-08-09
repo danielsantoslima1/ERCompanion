@@ -254,7 +254,7 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
       setIsBaseGameExpanded(false);
       setIsExpansionExpanded(false);
     }
-  }, [activeContentPack, isAshRoute, isBossRoute, isIncantationRoute, isIndexRoute, isSorceryRoute, isSpiritAshRoute, pathname]);
+  }, [activeContentPack, isAshRoute, isBossRoute, isIncantationRoute, isIndexRoute, isSorceryRoute, isSpiritAshRoute, pathname, setIsAshesExpanded, setIsBossesExpanded, setIsIncantationsExpanded, setIsIndexExpanded, setIsSorceriesExpanded, setIsSpiritAshesExpanded]);
 
   const closeDrawer = useCallback(() => {
     props.navigation.closeDrawer();
@@ -279,7 +279,7 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
       }
       closeDrawer();
     },
-    [closeDrawer, pathname, props.navigation],
+    [closeDrawer, pathname, props.navigation, setIsAshesExpanded, setIsBossesExpanded, setIsIncantationsExpanded, setIsIndexExpanded, setIsSorceriesExpanded, setIsSpiritAshesExpanded],
   );
 
   const navigateToRegion = useCallback(
@@ -303,7 +303,7 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
       }
       closeDrawer();
     },
-    [closeDrawer, pathname, props.navigation],
+    [closeDrawer, pathname, props.navigation, setIsAshesExpanded, setIsBossesExpanded, setIsIncantationsExpanded, setIsIndexExpanded, setIsSorceriesExpanded, setIsSpiritAshesExpanded],
   );
 
   const navigateToAllBosses = useCallback(
@@ -322,7 +322,7 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
       }
       closeDrawer();
     },
-    [closeDrawer, pathname, props.navigation],
+    [closeDrawer, pathname, props.navigation, setIsAshesExpanded, setIsBossesExpanded, setIsIncantationsExpanded, setIsIndexExpanded, setIsSorceriesExpanded],
   );
 
   const navigateToCombinedBosses = useCallback(() => {
@@ -339,7 +339,7 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
       props.navigation.navigate('all-bosses/index');
     }
     closeDrawer();
-  }, [closeDrawer, pathname, props.navigation]);
+  }, [closeDrawer, pathname, props.navigation, setIsAshesExpanded, setIsBossesExpanded, setIsIncantationsExpanded, setIsIndexExpanded, setIsSorceriesExpanded, setIsSpiritAshesExpanded]);
 
   const navigateToAshes = useCallback(
     (
@@ -365,7 +365,7 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
       }
       closeDrawer();
     },
-    [closeDrawer, pathname, props.navigation],
+    [closeDrawer, pathname, props.navigation, setIsAshesExpanded, setIsBossesExpanded, setIsIncantationsExpanded, setIsIndexExpanded, setIsSorceriesExpanded],
   );
 
   const toggleBosses = useCallback(() => {
@@ -382,7 +382,7 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
       }
       return !currentValue;
     });
-  }, []);
+  }, [setIsAshesExpanded, setIsBossesExpanded, setIsIncantationsExpanded, setIsIndexExpanded, setIsSorceriesExpanded, setIsSpiritAshesExpanded]);
 
   const toggleAshes = useCallback(() => {
     setIsBossesExpanded(false);
@@ -394,7 +394,7 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
     setIsIndexExpanded(false);
     setIsRemembranceBossesExpanded(false);
     setIsAshesExpanded((currentValue) => !currentValue);
-  }, []);
+  }, [setIsAshesExpanded, setIsBossesExpanded, setIsIncantationsExpanded, setIsIndexExpanded, setIsSorceriesExpanded, setIsSpiritAshesExpanded]);
 
   const navigateToSpellGroup = useCallback(
     (
@@ -418,7 +418,7 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
       }
       closeDrawer();
     },
-    [closeDrawer, pathname, props.navigation],
+    [closeDrawer, pathname, props.navigation, setIsAshesExpanded, setIsBossesExpanded, setIsIncantationsExpanded, setIsIndexExpanded, setIsSorceriesExpanded, setIsSpiritAshesExpanded],
   );
 
   const toggleSorceries = useCallback(() => {
@@ -431,7 +431,7 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
     setIsBaseGameExpanded(false);
     setIsExpansionExpanded(false);
     setIsSorceriesExpanded((current) => !current);
-  }, []);
+  }, [setIsAshesExpanded, setIsBossesExpanded, setIsIncantationsExpanded, setIsIndexExpanded, setIsSorceriesExpanded, setIsSpiritAshesExpanded]);
 
   const toggleIncantations = useCallback(() => {
     setIsBossesExpanded(false);
@@ -443,7 +443,7 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
     setIsBaseGameExpanded(false);
     setIsExpansionExpanded(false);
     setIsIncantationsExpanded((current) => !current);
-  }, []);
+  }, [setIsAshesExpanded, setIsBossesExpanded, setIsIncantationsExpanded, setIsIndexExpanded, setIsSorceriesExpanded, setIsSpiritAshesExpanded]);
 
   const toggleIndex = useCallback(() => {
     setIsBossesExpanded(false);
@@ -459,7 +459,7 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
       }
       return !current;
     });
-  }, []);
+  }, [setIsAshesExpanded, setIsBossesExpanded, setIsIncantationsExpanded, setIsIndexExpanded, setIsSorceriesExpanded, setIsSpiritAshesExpanded]);
 
   const toggleRemembranceBosses = useCallback(() => {
     setIsRemembranceBossesExpanded((current) => !current);
@@ -491,7 +491,7 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
       }
       closeDrawer();
     },
-    [closeDrawer, pathname, props.navigation],
+    [closeDrawer, pathname, props.navigation, setIsAshesExpanded, setIsBossesExpanded, setIsIncantationsExpanded, setIsIndexExpanded, setIsSorceriesExpanded],
   );
 
   const toggleContentPack = useCallback((contentPack: ContentPack) => {
