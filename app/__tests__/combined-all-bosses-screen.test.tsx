@@ -1,5 +1,6 @@
-import { fireEvent, render, screen } from '@testing-library/react-native';
+import { act, fireEvent, render as rtlRender, screen } from '@testing-library/react-native';
 import { router } from 'expo-router';
+import type { ReactElement } from 'react';
 import { StyleSheet } from 'react-native';
 
 import CombinedAllBossesScreen from '../(drawer)/all-bosses';
@@ -96,6 +97,15 @@ jest.mock('../../src/hooks/use-app', () => ({
 
 const mockDataControl =
   jest.requireMock<MockDataControl>('../../src/data');
+
+const render = async (component: ReactElement) => {
+  let rendered: ReturnType<typeof rtlRender> | undefined;
+  await act(async () => {
+    rendered = rtlRender(component);
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  });
+  return rendered!;
+};
 
 beforeEach(() => {
   jest.clearAllMocks();

@@ -17,6 +17,7 @@ import {
   calculateBossCatalogProgress,
   calculateCombinedProgress,
   calculateIncantationProgress,
+  calculateSpiritAshProgress,
   calculateSorceryProgress,
   type CompletionProgress,
 } from '../data';
@@ -24,17 +25,20 @@ import {
   addCollectedAshOfWarId,
   addCollectedIncantationId,
   addCollectedSorceryId,
+  addCollectedSpiritAshId,
   addDefeatedBossId,
   clearProgress,
   defaultSettings,
   loadCollectedAshOfWarIds,
   loadCollectedIncantationIds,
   loadCollectedSorceryIds,
+  loadCollectedSpiritAshIds,
   loadDefeatedBossIds,
   loadSettings,
   removeCollectedAshOfWarId,
   removeCollectedIncantationId,
   removeCollectedSorceryId,
+  removeCollectedSpiritAshId,
   removeDefeatedBossId,
   restoreDefaultSettings,
   saveSettings,
@@ -66,6 +70,8 @@ interface ProviderRuntime {
   currentCollectedSorceryIdSet: ReadonlySet<string>;
   currentCollectedIncantationIds: string[];
   currentCollectedIncantationIdSet: ReadonlySet<string>;
+  currentCollectedSpiritAshIds: string[];
+  currentCollectedSpiritAshIdSet: ReadonlySet<string>;
 }
 
 type QueueKey = 'settingsQueue' | 'progressQueue';
@@ -81,11 +87,13 @@ export interface AppContextValue {
   collectedAshOfWarIds: readonly string[];
   collectedSorceryIds: readonly string[];
   collectedIncantationIds: readonly string[];
+  collectedSpiritAshIds: readonly string[];
   defeatedBossCount: number;
   bossProgress: CompletionProgress;
   ashOfWarProgress: CompletionProgress;
   sorceryProgress: CompletionProgress;
   incantationProgress: CompletionProgress;
+  spiritAshProgress: CompletionProgress;
   combinedProgress: CompletionProgress;
   isHydrated: boolean;
   initializationError: Error | null;
@@ -103,6 +111,8 @@ export interface AppContextValue {
   toggleIncantationCollected: (id: string) => Promise<void>;
   isSorceryCollected: (id: string) => Promise<boolean>;
   isIncantationCollected: (id: string) => Promise<boolean>;
+  toggleSpiritAshCollected: (id: string) => Promise<void>;
+  isSpiritAshCollected: (id: string) => Promise<boolean>;
   resetProgress: () => Promise<void>;
   resetSettings: () => Promise<void>;
   retryInitialization: () => Promise<void>;
@@ -146,6 +156,7 @@ export function AppProvider({ children }: AppProviderProps) {
   const [collectedAshOfWarIds, setCollectedAshOfWarIds] = useState<string[]>([]);
   const [collectedSorceryIds, setCollectedSorceryIds] = useState<string[]>([]);
   const [collectedIncantationIds, setCollectedIncantationIds] = useState<string[]>([]);
+  const [collectedSpiritAshIds, setCollectedSpiritAshIds] = useState<string[]>([]);
   const [isHydrated, setIsHydrated] = useState(false);
   const [initializationError, setInitializationError] = useState<Error | null>(
     null,
@@ -164,6 +175,8 @@ export function AppProvider({ children }: AppProviderProps) {
     currentCollectedSorceryIdSet: new Set<string>(),
     currentCollectedIncantationIds: [],
     currentCollectedIncantationIdSet: new Set<string>(),
+    currentCollectedSpiritAshIds: [],
+    currentCollectedSpiritAshIdSet: new Set<string>(),
   }));
 
   const hydrate = useCallback(async (): Promise<void> => {
@@ -184,12 +197,16 @@ export function AppProvider({ children }: AppProviderProps) {
         loadedCollectedAshOfWarIds,
         loadedCollectedSorceryIds,
         loadedCollectedIncantationIds,
+        loadedCollectedSpiritAshIds,
       ] = await Promise.all([
         loadSettings(),
         loadDefeatedBossIds(),
         loadCollectedAshOfWarIds(),
         loadCollectedSorceryIds(),
         loadCollectedIncantationIds(),
+        typeof loadCollectedSpiritAshIds === 'function'
+          ? loadCollectedSpiritAshIds()
+          : Promise.resolve([]),
       ]);
 
       if (
@@ -210,11 +227,14 @@ export function AppProvider({ children }: AppProviderProps) {
       runtime.currentCollectedSorceryIdSet = new Set(loadedCollectedSorceryIds);
       runtime.currentCollectedIncantationIds = loadedCollectedIncantationIds;
       runtime.currentCollectedIncantationIdSet = new Set(loadedCollectedIncantationIds);
+      runtime.currentCollectedSpiritAshIds = loadedCollectedSpiritAshIds;
+      runtime.currentCollectedSpiritAshIdSet = new Set(loadedCollectedSpiritAshIds);
       setSettings(loadedSettings);
       setDefeatedBossIds(loadedDefeatedBossIds);
       setCollectedAshOfWarIds(loadedCollectedAshOfWarIds);
       setCollectedSorceryIds(loadedCollectedSorceryIds);
       setCollectedIncantationIds(loadedCollectedIncantationIds);
+      setCollectedSpiritAshIds(loadedCollectedSpiritAshIds);
     } catch (error: unknown) {
       if (
         runtime.isMounted &&
@@ -529,6 +549,38 @@ export function AppProvider({ children }: AppProviderProps) {
     return runtime.currentCollectedIncantationIdSet.has(id.trim());
   }, [runtime]);
 
+  const toggleSpiritAshCollected = useCallback(
+    (id: string): Promise<void> => {
+      const normalizedId = requireProgressId(id, 'Spirit Ash');
+      return enqueueAction(runtime, 'progressQueue', async () => {
+        const previousIds = runtime.currentCollectedSpiritAshIds;
+        const previousSet = runtime.currentCollectedSpiritAshIdSet;
+        const shouldCollect = !previousSet.has(normalizedId);
+        const nextIds = shouldCollect
+          ? [...previousIds, normalizedId]
+          : previousIds.filter((currentId) => currentId !== normalizedId);
+        runtime.currentCollectedSpiritAshIds = nextIds;
+        runtime.currentCollectedSpiritAshIdSet = new Set(nextIds);
+        if (runtime.isMounted) setCollectedSpiritAshIds(nextIds);
+        try {
+          await (shouldCollect
+            ? addCollectedSpiritAshId(normalizedId)
+            : removeCollectedSpiritAshId(normalizedId));
+        } catch (error: unknown) {
+          runtime.currentCollectedSpiritAshIds = previousIds;
+          runtime.currentCollectedSpiritAshIdSet = previousSet;
+          if (runtime.isMounted) setCollectedSpiritAshIds(previousIds);
+          throw createContextError('Failed to update Spirit Ash progress.', error);
+        }
+      });
+    },
+    [runtime],
+  );
+  const isSpiritAshCollected = useCallback(async (id: string) => {
+    await runtime.progressQueue;
+    return runtime.currentCollectedSpiritAshIdSet.has(id.trim());
+  }, [runtime]);
+
   const resetProgress = useCallback(
     async (): Promise<void> =>
       enqueueAction(runtime, 'progressQueue', async () => {
@@ -536,6 +588,7 @@ export function AppProvider({ children }: AppProviderProps) {
         const previousAshIds = runtime.currentCollectedAshOfWarIds;
         const previousSorceryIds = runtime.currentCollectedSorceryIds;
         const previousIncantationIds = runtime.currentCollectedIncantationIds;
+        const previousSpiritAshIds = runtime.currentCollectedSpiritAshIds;
         runtime.currentDefeatedBossIds = [];
         runtime.currentDefeatedBossIdSet = new Set<string>();
         runtime.currentCollectedAshOfWarIds = [];
@@ -544,11 +597,14 @@ export function AppProvider({ children }: AppProviderProps) {
         runtime.currentCollectedSorceryIdSet = new Set<string>();
         runtime.currentCollectedIncantationIds = [];
         runtime.currentCollectedIncantationIdSet = new Set<string>();
+        runtime.currentCollectedSpiritAshIds = [];
+        runtime.currentCollectedSpiritAshIdSet = new Set<string>();
         if (runtime.isMounted) {
           setDefeatedBossIds([]);
           setCollectedAshOfWarIds([]);
           setCollectedSorceryIds([]);
           setCollectedIncantationIds([]);
+          setCollectedSpiritAshIds([]);
         }
         try {
           await clearProgress();
@@ -561,11 +617,14 @@ export function AppProvider({ children }: AppProviderProps) {
           runtime.currentCollectedSorceryIdSet = new Set(previousSorceryIds);
           runtime.currentCollectedIncantationIds = previousIncantationIds;
           runtime.currentCollectedIncantationIdSet = new Set(previousIncantationIds);
+          runtime.currentCollectedSpiritAshIds = previousSpiritAshIds;
+          runtime.currentCollectedSpiritAshIdSet = new Set(previousSpiritAshIds);
           if (runtime.isMounted) {
             setDefeatedBossIds(previousBossIds);
             setCollectedAshOfWarIds(previousAshIds);
             setCollectedSorceryIds(previousSorceryIds);
             setCollectedIncantationIds(previousIncantationIds);
+            setCollectedSpiritAshIds(previousSpiritAshIds);
           }
           throw createContextError('Failed to reset boss progress.', error);
         }
@@ -626,17 +685,23 @@ export function AppProvider({ children }: AppProviderProps) {
     () => calculateIncantationProgress(collectedIncantationIds),
     [collectedIncantationIds],
   );
+  const spiritAshProgress = useMemo(
+    () => calculateSpiritAshProgress(collectedSpiritAshIds),
+    [collectedSpiritAshIds],
+  );
   const combinedProgress = useMemo(
     () => calculateCombinedProgress(
       defeatedBossIds,
       collectedAshOfWarIds,
       collectedSorceryIds,
       collectedIncantationIds,
+      collectedSpiritAshIds,
     ),
     [
       collectedAshOfWarIds,
       collectedIncantationIds,
       collectedSorceryIds,
+      collectedSpiritAshIds,
       defeatedBossIds,
     ],
   );
@@ -653,11 +718,13 @@ export function AppProvider({ children }: AppProviderProps) {
       collectedAshOfWarIds,
       collectedSorceryIds,
       collectedIncantationIds,
+      collectedSpiritAshIds,
       defeatedBossCount: bossProgress.completed,
       bossProgress,
       ashOfWarProgress,
       sorceryProgress,
       incantationProgress,
+      spiritAshProgress,
       combinedProgress,
       isHydrated,
       initializationError,
@@ -675,6 +742,8 @@ export function AppProvider({ children }: AppProviderProps) {
       toggleIncantationCollected,
       isSorceryCollected,
       isIncantationCollected,
+      toggleSpiritAshCollected,
+      isSpiritAshCollected,
       resetProgress,
       resetSettings,
       retryInitialization,
@@ -683,10 +752,12 @@ export function AppProvider({ children }: AppProviderProps) {
       ashOfWarProgress,
       sorceryProgress,
       incantationProgress,
+      spiritAshProgress,
       bossProgress,
       collectedAshOfWarIds,
       collectedSorceryIds,
       collectedIncantationIds,
+      collectedSpiritAshIds,
       combinedProgress,
       defeatedBossIds,
       initializationError,
@@ -694,6 +765,7 @@ export function AppProvider({ children }: AppProviderProps) {
       isAshOfWarCollected,
       isSorceryCollected,
       isIncantationCollected,
+      isSpiritAshCollected,
       isHydrated,
       language,
       markBossDefeated,
@@ -713,6 +785,7 @@ export function AppProvider({ children }: AppProviderProps) {
       toggleAshOfWarCollected,
       toggleSorceryCollected,
       toggleIncantationCollected,
+      toggleSpiritAshCollected,
       translationDictionary,
     ],
   );

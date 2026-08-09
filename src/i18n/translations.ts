@@ -580,7 +580,7 @@ export const enTranslations: TranslationDictionary = {
         : `${count} bosses currently defeated`,
     resetProgress: 'Reset progress',
     resettingProgress: 'Resetting progress...',
-    resetProgressDescription: 'Removes Boss, Ash of War, Sorcery, and Incantation progress from this device.',
+    resetProgressDescription: 'Removes Boss, Ash of War, Sorcery, Incantation, and Spirit Ash progress from this device.',
   },
   resetConfirmation: {
     title: 'Reset progress?',

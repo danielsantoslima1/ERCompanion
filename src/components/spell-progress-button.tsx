@@ -53,7 +53,7 @@ export function SpellProgressButton({
     toggleSorceryCollected,
     translations,
   ]);
-  const color = isCollected ? theme.colors.success : theme.colors.primaryContrast;
+  const color = isCollected ? theme.colors.successActionText : theme.colors.primaryContrast;
   return (
     <Pressable
       accessibilityLabel={translations.spells.collectAccessibility(action, name)}
@@ -64,7 +64,7 @@ export function SpellProgressButton({
       style={({ pressed }) => [
         styles.button,
         {
-          backgroundColor: isCollected ? theme.colors.surfaceElevated : theme.colors.primary,
+          backgroundColor: isCollected ? theme.colors.successActionBackground : theme.colors.primary,
           borderColor: isCollected ? theme.colors.success : theme.colors.primary,
           borderRadius: theme.borderRadius.medium,
           opacity: pressed || isSaving ? 0.7 : 1,

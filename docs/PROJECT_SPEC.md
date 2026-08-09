@@ -18,9 +18,9 @@ apropriada.
 
 ## Extensão implementada — Feitiços e Encantamentos
 
-O aplicativo passa a contemplar 84 Feitiços e 129 Encantamentos como categorias independentes. O total geral é derivado dos catálogos e soma 537 registros: 208 Chefes, 116 Cinzas da Guerra, 84 Feitiços e 129 Encantamentos.
+O aplicativo passa a contemplar 84 Feitiços, 129 Encantamentos e 84 Spirit Ashes como categorias independentes. O total geral é derivado dos catálogos e soma 621 registros: 208 Chefes, 116 Cinzas da Guerra, 84 Feitiços, 129 Encantamentos e 84 Spirit Ashes.
 
-O progresso persistido usa schema v3, preservando os dados anteriores e adicionando `collectedSorceryIds` e `collectedIncantationIds`. A Home possui quatro cards de categoria e o Drawer mantém quatro grupos principais mutuamente exclusivos. O MVP usa fallback em inglês, possui 153 localizações pendentes, sete magias lendárias e nenhuma magia confirmada como perdível.
+O progresso persistido usa schema v4, preservando os dados anteriores e adicionando `collectedSorceryIds`, `collectedIncantationIds` e `collectedSpiritAshIds`. A Home possui cinco cards de categoria e o Drawer mantém grupos principais mutuamente exclusivos. O MVP usa fallback em inglês, possui 153 localizações pendentes, sete magias lendárias e nenhuma magia confirmada como perdível.
 
 ### Regra de filtros de origem
 
@@ -858,3 +858,8 @@ por categorias futuras. Ela preserva seleção acessível por controle, Spectral
 tokens semânticos nos temas Claro, Escuro e Sistema, rolagem vertical da lista e
 interseção com busca e demais filtros. Rotas sem determinado filtro não devem
 criá-lo apenas para preencher a linha.
+## Spirit Ashes
+
+Spirit Ashes are tracked independently from Ashes of War. The category uses
+stable English IDs, derived catalog progress, Base/DLC filters, detail routes,
+and `collectedSpiritAshIds`; the Index remains intentionally empty.

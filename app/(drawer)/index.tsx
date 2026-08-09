@@ -14,6 +14,7 @@ export default function HomeScreen() {
     combinedProgress,
     incantationProgress,
     sorceryProgress,
+    spiritAshProgress,
     theme,
     translations,
   } = useApp();
@@ -41,6 +42,12 @@ export default function HomeScreen() {
       label: translations.spells.incantations,
       progress: incantationProgress,
       route: '/incantations' as const,
+    },
+    {
+      id: 'spirit-ashes',
+      label: 'Spirit Ashes',
+      progress: spiritAshProgress,
+      route: '/spirit-ashes' as const,
     },
   ] as const;
 

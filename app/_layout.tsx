@@ -1,9 +1,9 @@
 import { ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
+import { router, Stack, type Href } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 
@@ -14,6 +14,7 @@ import {
 import { AnimatedAppSplash } from '@/src/components/animated-app-splash';
 import { FontLoadingErrorScreen } from '@/src/components/font-loading-error-screen';
 import { InitializationErrorScreen } from '@/src/components/initialization-error-screen';
+import { AppText as Text } from '@/src/components/app-text';
 import { AppProvider } from '@/src/contexts';
 import { useApp } from '@/src/hooks/use-app';
 import { useAppFonts } from '@/src/hooks/use-app-fonts';
@@ -155,6 +156,13 @@ export function RootNavigation({
               name="incantations/[incantationId]"
               options={{ title: translations.spells.incantationDetails }}
             />
+            <Stack.Screen
+              name="spirit-ashes/[spiritAshId]"
+              options={{
+                headerLeft: () => <SpiritAshHeaderBackButton />,
+                title: 'Spirit Ash details',
+              }}
+            />
           </Stack>
         )}
         <StatusBar
@@ -170,6 +178,28 @@ export function RootNavigation({
         />
       ) : null}
     </View>
+  );
+}
+
+function SpiritAshHeaderBackButton() {
+  const { theme } = useApp();
+  return (
+    <Pressable
+      accessibilityLabel="Go back"
+      accessibilityRole="button"
+      onPress={() =>
+        router.canGoBack()
+          ? router.back()
+          : router.replace('/spirit-ashes' as Href)
+      }
+      style={{
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: 44,
+        minWidth: 44,
+      }}>
+      <Text style={{ color: theme.colors.navigationText, fontSize: 28 }}>‹</Text>
+    </Pressable>
   );
 }
 

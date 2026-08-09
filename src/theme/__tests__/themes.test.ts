@@ -24,6 +24,8 @@ const requiredTokens = [
   'dangerBackground',
   'success',
   'successBackground',
+  'successActionBackground',
+  'successActionText',
   'disabled',
   'disabledText',
   'overlay',
@@ -84,6 +86,14 @@ describe('semantic color themes', () => {
       expect(
         getContrastRatio(theme.colors.danger, theme.colors.dangerBackground),
       ).toBeGreaterThanOrEqual(4.5);
+    },
+  );
+
+  it.each([lightTheme, darkTheme])(
+    'keeps completed action text readable on the $mode success button',
+    (theme) => {
+      expect(getContrastRatio(theme.colors.successActionText, theme.colors.successActionBackground))
+        .toBeGreaterThanOrEqual(4.5);
     },
   );
 

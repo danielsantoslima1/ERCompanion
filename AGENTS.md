@@ -18,14 +18,16 @@ sobre ele. Instruções explícitas do prompt atual continuam tendo precedência
 - Não instalar dependências sem necessidade demonstrável; dependências nativas
   exigem decisão explícita de produto.
 
-## Regra de um commit por prompt
+## Regra de aprovação e um commit por prompt
 
 - Cada prompt pode produzir no máximo um commit.
-- Concluir implementação, testes e documentação antes do commit.
+- Implementar, testar e validar no working tree sem criar commit inicialmente.
+- O commit só pode ser criado após aprovação explícita do usuário sobre a tarefa concluída.
+- Após essa aprovação, o próximo prompt pode executar automaticamente stage, commit e push.
 - Não criar commits intermediários, cosméticos ou separados por tipo de arquivo.
 - O commit deve representar o estado final completo do prompt.
 - Se nenhuma alteração for necessária, não criar commit vazio.
-- Um prompt novo permite um novo commit.
+- Um prompt novo permite um novo commit, sempre condicionado à aprovação explícita.
 
 ## Autonomia
 
@@ -121,7 +123,7 @@ TypeScript, lint, Expo Doctor, exportação ou geradores sem motivo concreto.
 
 ### F. Commit único
 
-Após validação:
+Após validação e aprovação explícita do usuário:
 
 1. revisar status e diff;
 2. confirmar que somente o escopo está presente;
@@ -130,12 +132,15 @@ Após validação:
 5. executar `git diff --cached --check`;
 6. criar exatamente um commit, salvo quando não houver mudança.
 
+Antes dessa aprovação, deixar as alterações no working tree sem stage, commit
+ou publicação.
+
 Não repetir a bateria completa depois do commit quando o conteúdo validado não
 mudou.
 
 ### G. Push
 
-Ao concluir:
+Somente após a aprovação explícita e o commit único:
 
 1. executar `git fetch --prune`;
 2. verificar se o remoto está à frente ou divergente;
@@ -229,15 +234,19 @@ são preferidos durante o desenvolvimento.
 ## Alterações de UI
 
 - Durante a implementação, usar testes direcionados e checagens rápidas.
-- No fechamento, executar a validação proporcional, commit único e push.
+- No fechamento, executar a validação proporcional e deixar o working tree pronto para revisão;
+  commit único e push somente após aprovação explícita.
 - Revisão visual pode ocorrer depois do push quando a mudança for reversível.
 - Não manter working tree grande aguardando revisão, salvo pedido explícito.
 - Se a revisão encontrar problema, corrigir no prompt seguinte e novo commit.
 
 ## Política Git
 
-Autorizado: add, commit, fetch, push, inspeção de histórico, branch determinada
-pelo projeto e remoção de artefatos criados pela própria tarefa.
+Autorizado automaticamente: status, diff, add/stage, fetch, inspeção de
+histórico, branch determinada pelo projeto e demais Git seguros. Commit e push
+também são autorizados sem nova confirmação depois que o usuário aprovar
+explicitamente a implementação concluída; antes disso, não criar commit nem
+publicar alterações.
 
 Proibido:
 
@@ -261,6 +270,6 @@ Proibido:
   continuam semanticamente verdes.
 - Splash mínima permanente: 3 segundos.
 - Index permanece vazio até fase futura aprovada.
-- Cada prompt produz no máximo um commit.
+- Cada prompt produz no máximo um commit, condicionado à aprovação explícita após a revisão.
 
 Detalhes de produto permanecem nos documentos especializados em `docs/`.

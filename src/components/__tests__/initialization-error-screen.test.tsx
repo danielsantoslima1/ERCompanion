@@ -76,12 +76,14 @@ function createAppValue(
     collectedAshOfWarIds: [],
     collectedSorceryIds: [],
     collectedIncantationIds: [],
+    collectedSpiritAshIds: [],
     defeatedBossCount: 0,
     bossProgress: { completed: 0, total: 208, percentage: 0 },
     ashOfWarProgress: { completed: 0, total: 116, percentage: 0 },
     sorceryProgress: { completed: 0, total: 84, percentage: 0 },
     incantationProgress: { completed: 0, total: 129, percentage: 0 },
-    combinedProgress: { completed: 0, total: 537, percentage: 0 },
+    spiritAshProgress: { completed: 0, total: 84, percentage: 0 },
+    combinedProgress: { completed: 0, total: 621, percentage: 0 },
     isHydrated: true,
     initializationError: new Error('sensitive storage details'),
     setLanguage: jest
@@ -128,6 +130,8 @@ function createAppValue(
     toggleIncantationCollected: async () => undefined,
     isSorceryCollected: jest.fn().mockResolvedValue(false),
     isIncantationCollected: jest.fn().mockResolvedValue(false),
+    toggleSpiritAshCollected: async () => undefined,
+    isSpiritAshCollected: jest.fn().mockResolvedValue(false),
     resetProgress: jest
       .fn<Promise<void>, []>()
       .mockResolvedValue(),

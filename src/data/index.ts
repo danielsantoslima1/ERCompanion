@@ -49,6 +49,23 @@ export {
   validateAshOfWarCatalog,
 } from './ashes-of-war';
 export {
+  spiritAshes,
+  EXPECTED_SPIRIT_ASH_COUNTS,
+  getAllSpiritAshes,
+  getSpiritAshById,
+  getSpiritAshesByContentPack,
+  searchAndSortSpiritAshes,
+  sortSpiritAshes,
+  validateSpiritAshCatalog,
+} from './spirit-ashes';
+export type {
+  SpiritAsh,
+  SpiritAshAcquisition,
+  SpiritAshContentPack,
+  SpiritAshCostType,
+  SpiritAshUpgradeType,
+} from './spirit-ashes';
+export {
   incantations,
   sorceries,
   getAllIncantations,
@@ -90,6 +107,8 @@ export {
   calculateCombinedProgress,
   calculateIncantationProgress,
   calculateIncantationProgressByContentPack,
+  calculateSpiritAshProgress,
+  calculateSpiritAshProgressByContentPack,
   calculateProgressPercentage,
   calculateSorceryProgress,
   calculateSorceryProgressByContentPack,

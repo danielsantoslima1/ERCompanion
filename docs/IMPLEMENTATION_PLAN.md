@@ -17,7 +17,7 @@ Mantinia e Agmena permanecem proibidas sem licença comercial apropriada.
 
 ## Estado atual — MVP de Feitiços e Encantamentos
 
-O MVP de 84 Feitiços e 129 Encantamentos foi implementado e aprovado na revisão manual no Expo Go. A entrega inclui catálogos tipados, validadores, schema v3, migração, progresso separado, total geral 537, Home, Drawer, listas, busca, filtros Lendárias/Perdíveis, cards, detalhes, spoilers, fallback e testes. Não há dependências novas.
+O MVP de 84 Feitiços, 129 Encantamentos e 84 Spirit Ashes foi implementado e aprovado na revisão manual no Expo Go. A entrega inclui catálogos tipados, validadores, schema v4, migração, progresso separado, total geral 621, Home, Drawer, listas, busca, filtros, cards, detalhes, spoilers, fallback e testes. Não há dependências novas.
 
 Os campos técnicos não aprovados permanecem fora da produção. As 153 localizações sem evidência suficiente usam um estado explícito de localização pendente.
 
@@ -396,3 +396,8 @@ no tema escuro. Estados concluídos continuam verdes; o tema claro reutiliza os
 valores anteriores. Testes verificam paridade, contraste e consumo dos tokens.
 Cards futuros devem seguir a mesma regra sem depender apenas de cor. Revisão
 manual pendente.
+## Phase 3 — Spirit Ashes
+
+Spirit Ashes are implemented as a separate Base Game/DLC collectible category
+with search, filters, details, progress persistence, and schema v4 migration.
+See `docs/PHASE_3_SPIRIT_ASHES.md` for the canonical dataset notes.
