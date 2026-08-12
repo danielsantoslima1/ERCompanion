@@ -37,6 +37,7 @@ type MainDrawerGroup =
   | 'sorceries'
   | 'incantations'
   | 'spirit-ashes'
+  | 'talismans'
   | 'index';
 type ExpandedValue = boolean | ((current: boolean) => boolean);
 
@@ -114,6 +115,7 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
   const isIncantationRoute =
     pathname === '/incantations' || pathname.startsWith('/incantations/');
   const isSpiritAshRoute = pathname === '/spirit-ashes' || pathname.startsWith('/spirit-ashes/');
+  const isTalismanRoute = pathname === '/talismans' || pathname.startsWith('/talismans/');
   const isIndexRoute = pathname.startsWith('/remembrance-bosses');
   const initialExpandedGroup: MainDrawerGroup | null = null;
   const [expandedGroup, setExpandedGroup] = useState<MainDrawerGroup | null>(initialExpandedGroup);
@@ -128,12 +130,14 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
   const setIsSorceriesExpanded = useCallback((value: ExpandedValue) => setGroupExpanded('sorceries', value), [setGroupExpanded]);
   const setIsIncantationsExpanded = useCallback((value: ExpandedValue) => setGroupExpanded('incantations', value), [setGroupExpanded]);
   const setIsSpiritAshesExpanded = useCallback((value: ExpandedValue) => setGroupExpanded('spirit-ashes', value), [setGroupExpanded]);
+  const setIsTalismansExpanded = useCallback((value: ExpandedValue) => setGroupExpanded('talismans', value), [setGroupExpanded]);
   const setIsIndexExpanded = useCallback((value: ExpandedValue) => setGroupExpanded('index', value), [setGroupExpanded]);
   const isBossesExpanded = expandedGroup === 'bosses';
   const isAshesExpanded = expandedGroup === 'ashes-of-war';
   const isSorceriesExpanded = expandedGroup === 'sorceries';
   const isIncantationsExpanded = expandedGroup === 'incantations';
   const isSpiritAshesExpanded = expandedGroup === 'spirit-ashes';
+  const isTalismansExpanded = expandedGroup === 'talismans';
   const isIndexExpanded = expandedGroup === 'index';
   const [isRemembranceBossesExpanded, setIsRemembranceBossesExpanded] =
     useState(pathname.startsWith('/remembrance-bosses'));
@@ -862,6 +866,17 @@ export function CustomDrawerContent(props: DrawerContentComponentProps) {
           <DrawerItem isNested isSelected={pathname === '/spirit-ashes'} label="All Spirit Ashes" onPress={() => { props.navigation.navigate('spirit-ashes/index'); closeDrawer(); }} />
           <DrawerItem isNested isSelected={pathname === '/spirit-ashes/base-game'} label="Base game" onPress={() => { props.navigation.navigate('spirit-ashes/base-game'); closeDrawer(); }} />
           <DrawerItem isNested isSelected={pathname === '/spirit-ashes/shadow-of-the-erdtree'} label="Shadow of the Erdtree" onPress={() => { props.navigation.navigate('spirit-ashes/shadow-of-the-erdtree'); closeDrawer(); }} />
+        </DirectRouteGroup>
+
+        <DirectRouteGroup
+          active={isTalismanRoute}
+          expanded={isTalismansExpanded}
+          expandLabel={isTalismansExpanded ? 'Collapse Talismans' : 'Expand Talismans'}
+          label="Talismans"
+          onToggle={() => setIsTalismansExpanded((expanded) => !expanded)}>
+          <DrawerItem isNested isSelected={pathname === '/talismans'} label="All" onPress={() => { props.navigation.navigate('talismans/index'); closeDrawer(); }} />
+          <DrawerItem isNested isSelected={pathname === '/talismans/base-game'} label="Base Game" onPress={() => { props.navigation.navigate('talismans/base-game'); closeDrawer(); }} />
+          <DrawerItem isNested isSelected={pathname === '/talismans/shadow-of-the-erdtree'} label="Shadow of the Erdtree" onPress={() => { props.navigation.navigate('talismans/shadow-of-the-erdtree'); closeDrawer(); }} />
         </DirectRouteGroup>
 
         <DirectRouteGroup

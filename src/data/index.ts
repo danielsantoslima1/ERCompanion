@@ -58,6 +58,17 @@ export {
   sortSpiritAshes,
   validateSpiritAshCatalog,
 } from './spirit-ashes';
+export {
+  talismans,
+  EXPECTED_TALISMAN_COUNTS,
+  getAllTalismans,
+  getTalismanById,
+  getTalismansByContentPack,
+  searchAndSortTalismans,
+  sortTalismans,
+  validateTalismanCatalog,
+} from './talismans';
+export type { Talisman, TalismanContentPack } from './talismans';
 export type {
   SpiritAsh,
   SpiritAshAcquisition,
@@ -109,6 +120,8 @@ export {
   calculateIncantationProgressByContentPack,
   calculateSpiritAshProgress,
   calculateSpiritAshProgressByContentPack,
+  calculateTalismanProgress,
+  calculateTalismanProgressByContentPack,
   calculateProgressPercentage,
   calculateSorceryProgress,
   calculateSorceryProgressByContentPack,

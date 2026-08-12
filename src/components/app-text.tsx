@@ -44,7 +44,15 @@ export const AppText = forwardRef<ElementRef<typeof NativeText>, AppTextProps>(f
     <NativeText
       ref={ref}
       {...props}
-      style={[resolvedStyle, { fontFamily: typography[resolvedVariant] }]}
+      style={[
+        resolvedVariant === 'display' ? styles.display : null,
+        resolvedStyle,
+        { fontFamily: typography[resolvedVariant] },
+      ]}
     />
   );
+});
+
+const styles = StyleSheet.create({
+  display: { fontSize: 32, fontWeight: '700' },
 });

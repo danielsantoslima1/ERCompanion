@@ -1,0 +1,25 @@
+import { Drawer } from 'expo-router/drawer';
+import { router } from 'expo-router';
+import { useMemo, useState } from 'react';
+import { FlatList, Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { AppText as Text } from './app-text';
+import { FilterButtonGroup } from './filter-button-group';
+import { RegionProgressItem } from './region-progress-item';
+import { TalismanCard } from './talisman-card';
+import { CategoryPageTitle } from './category-page-title';
+import { calculateTalismanProgress, calculateTalismanProgressByContentPack, getAllTalismans, getTalismansByContentPack, searchAndSortTalismans, type TalismanContentPack } from '../data';
+import { useApp } from '../hooks/use-app';
+
+type Mode = 'all' | TalismanContentPack;
+export function TalismanListScreen({ mode }: { readonly mode: Mode }) {
+  const app = useApp(); const [query, setQuery] = useState(''); const [origin, setOrigin] = useState<'all' | TalismanContentPack>('all'); const [status, setStatus] = useState<'collected' | 'not-collected' | null>(null); const [legendary, setLegendary] = useState(false); const [missable, setMissable] = useState(false);
+  const collectedIds = useMemo(() => app.collectedTalismanIds ?? [], [app.collectedTalismanIds]); const collected = useMemo(() => new Set(collectedIds), [collectedIds]);
+  const source = mode === 'all' ? origin === 'all' ? getAllTalismans() : getTalismansByContentPack(origin) : getTalismansByContentPack(mode);
+  const entries = useMemo(() => searchAndSortTalismans(source.filter((entry) => !status || (status === 'collected') === collected.has(entry.id)).filter((entry) => !legendary || entry.legendary).filter((entry) => !missable || entry.missable), query), [collected, legendary, missable, query, source, status]);
+  const progress = mode === 'all' && origin === 'all' ? calculateTalismanProgress(collectedIds) : calculateTalismanProgressByContentPack(collectedIds, mode === 'all' ? origin as TalismanContentPack : mode);
+  const title = mode === 'all' ? 'Talismans' : mode === 'base-game' ? 'Talismans — Base game' : 'Talismans — Shadow of the Erdtree';
+  const filter = (active: boolean, label: string, onPress: () => void) => <Pressable accessibilityRole="checkbox" accessibilityState={{ checked: active }} onPress={onPress} style={[styles.filter, { backgroundColor: active ? app.theme.colors.selectedBackground : app.theme.colors.surface, borderColor: active ? app.theme.colors.primary : app.theme.colors.border, borderRadius: app.theme.borderRadius.round }]}><Text style={{ color: app.theme.colors.textPrimary, fontWeight: '700' }}>{label}</Text></Pressable>;
+  return <><Drawer.Screen options={{ title }} /><SafeAreaView style={[styles.screen, { backgroundColor: app.theme.colors.background }]}><FlatList data={entries} keyExtractor={(item) => item.id} keyboardDismissMode="on-drag" keyboardShouldPersistTaps="handled" contentContainerStyle={{ flexGrow: 1, gap: app.theme.spacing.medium, padding: app.theme.spacing.large, paddingBottom: 48 }} ListHeaderComponent={<View style={{ gap: app.theme.spacing.medium }}><CategoryPageTitle>{title}</CategoryPageTitle><RegionProgressItem defeated={progress.completed} percentage={progress.percentage} total={progress.total} /><TextInput accessibilityLabel="Search Talismans" autoCapitalize="none" autoCorrect={false} onChangeText={setQuery} placeholder="Search Talismans" placeholderTextColor={app.theme.colors.placeholder} style={[styles.input, { backgroundColor: app.theme.colors.inputBackground, borderColor: app.theme.colors.inputBorder, color: app.theme.colors.textPrimary }]} value={query} /><FilterButtonGroup accessibilityLabel="Talisman filters">{mode === 'all' ? <>{filter(origin === 'all', 'All', () => setOrigin('all'))}{filter(origin === 'base-game', 'Base', () => setOrigin('base-game'))}{filter(origin === 'shadow-of-the-erdtree', 'DLC', () => setOrigin('shadow-of-the-erdtree'))}</> : null}{filter(status === 'collected', 'Collected', () => setStatus((value) => value === 'collected' ? null : 'collected'))}{filter(status === 'not-collected', 'Not Collected', () => setStatus((value) => value === 'not-collected' ? null : 'not-collected'))}{filter(legendary, 'Legendary', () => setLegendary((value) => !value))}{filter(missable, 'Missable', () => setMissable((value) => !value))}</FilterButtonGroup><Text style={{ color: app.theme.colors.textSecondary }}>{entries.length} results</Text></View>} ListEmptyComponent={<Text style={{ color: app.theme.colors.textSecondary, padding: 16 }}>No Talismans match these filters.</Text>} renderItem={({ item }) => <TalismanCard {...item} location={item.primaryLocation} isCollected={collected.has(item.id)} onViewDetails={() => router.push({ pathname: '/talismans/[talismanId]', params: { talismanId: item.id } })} />} /></SafeAreaView></>;
+}
+const styles = StyleSheet.create({ screen: { flex: 1 }, input: { borderWidth: 1, fontSize: 16, minHeight: 48, paddingHorizontal: 12 }, filter: { borderWidth: 1, justifyContent: 'center', minHeight: 44, paddingHorizontal: 12, paddingVertical: 8 } });
