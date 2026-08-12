@@ -15,6 +15,7 @@ export default function HomeScreen() {
     incantationProgress,
     sorceryProgress,
     spiritAshProgress,
+    talismanProgress,
     theme,
     translations,
   } = useApp();
@@ -48,6 +49,12 @@ export default function HomeScreen() {
       label: 'Spirit Ashes',
       progress: spiritAshProgress,
       route: '/spirit-ashes' as const,
+    },
+    {
+      id: 'talismans',
+      label: 'Talismans',
+      progress: talismanProgress ?? { completed: 0, total: 154, percentage: 0 },
+      route: '/talismans' as const,
     },
   ] as const;
 

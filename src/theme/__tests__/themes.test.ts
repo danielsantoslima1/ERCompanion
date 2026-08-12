@@ -92,6 +92,7 @@ describe('semantic color themes', () => {
   it.each([lightTheme, darkTheme])(
     'keeps completed action text readable on the $mode success button',
     (theme) => {
+      expect(theme.colors.successActionText).toBe(theme.colors.primaryContrast);
       expect(getContrastRatio(theme.colors.successActionText, theme.colors.successActionBackground))
         .toBeGreaterThanOrEqual(4.5);
     },

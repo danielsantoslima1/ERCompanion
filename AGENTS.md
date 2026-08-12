@@ -29,6 +29,42 @@ sobre ele. Instruções explícitas do prompt atual continuam tendo precedência
 - Se nenhuma alteração for necessária, não criar commit vazio.
 - Um prompt novo permite um novo commit, sempre condicionado à aprovação explícita.
 
+## Perguntas e decisões com o usuário
+
+- Ao levantar decisões ou requisitos com o usuário, fazer no máximo 5 perguntas por vez.
+- Numerar todas as perguntas e sempre informar `Pergunta X de Y`.
+- Fazer somente perguntas realmente essenciais.
+- Evitar perguntas que possam ser resolvidas com investigação técnica ou factual.
+- O objetivo explícito é economizar o consumo do plano do usuário.
+- Quando não houver decisão de produto necessária, investigar e implementar sem perguntar.
+
+## Consistência global entre categorias
+
+- Todas as categorias devem seguir o mesmo padrão visual, estrutural e comportamental,
+  salvo decisão explícita do usuário em contrário.
+- Categorias novas devem reutilizar os padrões já aprovados das categorias existentes.
+- Não criar uma versão visual ou comportamental diferente de um componente equivalente
+  sem decisão explícita do usuário.
+- Antes de criar um novo padrão, verificar o padrão compartilhado já existente.
+- Bosses, Ashes of War, Sorceries, Incantations, Spirit Ashes, Talismans e categorias
+  futuras devem se comportar de forma consistente.
+- Correções globais devem ser feitas preferencialmente em abstrações compartilhadas.
+- Todas as páginas principais de categorias e subdivisões usam o mesmo componente ou
+  estilo compartilhado de título.
+- Botões verdes de progresso usam texto branco nos temas Light e Dark.
+
+## Hierarquia de prioridades
+
+1. Regras explícitas do usuário.
+2. Consistência global já aprovada.
+3. Correção funcional.
+4. Correção factual.
+5. Qualidade técnica.
+6. Economia de uso.
+
+Economia de uso nunca pode remover, esquecer, simplificar, alterar ou sobrescrever
+uma regra ou prioridade anterior.
+
 ## Autonomia
 
 Dentro do escopo e do repositório, executar autonomamente ações necessárias e

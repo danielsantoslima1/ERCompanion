@@ -138,6 +138,9 @@ export default function DrawerLayout() {
         name="spirit-ashes/shadow-of-the-erdtree"
         options={{ drawerItemStyle: { display: 'none' }, title: 'Spirit Ashes — Shadow of the Erdtree' }}
       />
+      <Drawer.Screen name="talismans/index" options={{ drawerItemStyle: { display: 'none' }, title: 'Talismans' }} />
+      <Drawer.Screen name="talismans/base-game" options={{ drawerItemStyle: { display: 'none' }, title: 'Talismans — Base game' }} />
+      <Drawer.Screen name="talismans/shadow-of-the-erdtree" options={{ drawerItemStyle: { display: 'none' }, title: 'Talismans — Shadow of the Erdtree' }} />
       <Drawer.Screen
         name="index/remembrance-bosses/index"
         options={{

@@ -163,6 +163,7 @@ export function RootNavigation({
                 title: 'Spirit Ash details',
               }}
             />
+            <Stack.Screen name="talismans/[talismanId]" options={{ title: 'Talisman details' }} />
           </Stack>
         )}
         <StatusBar
