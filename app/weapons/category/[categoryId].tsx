@@ -1,0 +1,1 @@
+import { useLocalSearchParams } from 'expo-router'; import { WeaponListScreen } from '@/src/components/weapon-list-screen'; export default function Page(){const {categoryId}=useLocalSearchParams<{categoryId:string}>();return <WeaponListScreen mode="all" categoryId={categoryId}/>}

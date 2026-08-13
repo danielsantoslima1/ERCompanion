@@ -1,4 +1,4 @@
-import { ashesOfWar, bosses, incantations, regions, sorceries, spiritAshes, talismans } from '..';
+import { ashesOfWar, bosses, incantations, regions, sorceries, spiritAshes, talismans, weapons } from '..';
 import {
   calculateAshOfWarProgress,
   calculateAshOfWarProgressByContentPack,
@@ -23,7 +23,8 @@ describe('progress selectors', () => {
       incantations: 129,
       spiritAshes: 84,
       talismans: 154,
-      combined: 775,
+      weapons: 479,
+      combined: 1254,
       bossByContentPack: {
         'base-game': 165,
         'shadow-of-the-erdtree': 43,
@@ -83,7 +84,7 @@ describe('progress selectors', () => {
   it('calculates zero, partial, complete and combined progress safely', () => {
     expect(calculateCombinedProgress([], [])).toEqual({
       completed: 0,
-      total: 775,
+      total: 1254,
       percentage: 0,
     });
     expect(
@@ -94,8 +95,9 @@ describe('progress selectors', () => {
         incantations.map((entry) => entry.id),
         spiritAshes.map((entry) => entry.id),
         talismans.map((entry) => entry.id),
+        weapons.map((entry) => entry.id),
       ),
-    ).toEqual({ completed: 775, total: 775, percentage: 100 });
+    ).toEqual({ completed: 1254, total: 1254, percentage: 100 });
     expect(calculateProgressPercentage(1, 3)).toBe(33);
     expect(calculateProgressPercentage(1000, 3)).toBe(100);
     expect(calculateProgressPercentage(1, 0)).toBe(0);

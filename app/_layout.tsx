@@ -164,6 +164,8 @@ export function RootNavigation({
               }}
             />
             <Stack.Screen name="talismans/[talismanId]" options={{ title: 'Talisman details' }} />
+            <Stack.Screen name="weapons/category/[categoryId]" options={{ title: 'Weapon Type' }} />
+            <Stack.Screen name="weapons/[weaponId]" options={{ title: 'Weapon details' }} />
           </Stack>
         )}
         <StatusBar
