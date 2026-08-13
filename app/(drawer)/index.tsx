@@ -16,6 +16,7 @@ export default function HomeScreen() {
     sorceryProgress,
     spiritAshProgress,
     talismanProgress,
+    weaponProgress,
     theme,
     translations,
   } = useApp();
@@ -56,6 +57,7 @@ export default function HomeScreen() {
       progress: talismanProgress ?? { completed: 0, total: 154, percentage: 0 },
       route: '/talismans' as const,
     },
+    { id: 'weapons', label: 'Weapons', progress: weaponProgress ?? { completed: 0, total: 479, percentage: 0 }, route: '/weapons' as const },
   ] as const;
 
   return (

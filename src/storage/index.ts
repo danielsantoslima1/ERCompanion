@@ -5,6 +5,7 @@ export {
   addCollectedSorceryId,
   addCollectedSpiritAshId,
   addCollectedTalismanId,
+  addCollectedWeaponId,
   clearProgress,
   isAshOfWarCollected,
   isBossDefeated,
@@ -13,6 +14,7 @@ export {
   loadCollectedSorceryIds,
   loadCollectedSpiritAshIds,
   loadCollectedTalismanIds,
+  loadCollectedWeaponIds,
   loadDefeatedBossIds,
   loadProgressState,
   PROGRESS_SCHEMA_VERSION,
@@ -21,12 +23,13 @@ export {
   removeCollectedSorceryId,
   removeCollectedSpiritAshId,
   removeCollectedTalismanId,
+  removeCollectedWeaponId,
   removeDefeatedBossId,
   saveDefeatedBossIds,
   toggleCollectedAshOfWarId,
   toggleCollectedSpiritAshId,
 } from './progress-storage';
-export type { ProgressStateV5 } from './progress-storage';
+export type { ProgressStateV6 } from './progress-storage';
 export {
   normalizeProgressId,
   normalizeProgressIds,

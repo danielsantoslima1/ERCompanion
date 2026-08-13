@@ -4,9 +4,9 @@ import { storageKeys } from './keys';
 import { normalizeProgressId, normalizeProgressIds } from './validators';
 
 let progressMutationQueue: Promise<void> = Promise.resolve();
-export const PROGRESS_SCHEMA_VERSION = 5;
+export const PROGRESS_SCHEMA_VERSION = 6;
 
-export interface ProgressStateV5 {
+export interface ProgressStateV6 {
   readonly schemaVersion: typeof PROGRESS_SCHEMA_VERSION;
   readonly defeatedBossIds: readonly string[];
   readonly collectedAshOfWarIds: readonly string[];
@@ -14,6 +14,7 @@ export interface ProgressStateV5 {
   readonly collectedIncantationIds: readonly string[];
   readonly collectedSpiritAshIds: readonly string[];
   readonly collectedTalismanIds: readonly string[];
+  readonly collectedWeaponIds: readonly string[];
 }
 
 function enqueueProgressMutation<Result>(
@@ -34,7 +35,8 @@ function createProgressState(
   collectedIncantationIds: unknown = [],
   collectedSpiritAshIds: unknown = [],
   collectedTalismanIds: unknown = [],
-): ProgressStateV5 {
+  collectedWeaponIds: unknown = [],
+): ProgressStateV6 {
   return {
     schemaVersion: PROGRESS_SCHEMA_VERSION,
     defeatedBossIds: normalizeProgressIds(defeatedBossIds),
@@ -43,6 +45,7 @@ function createProgressState(
     collectedIncantationIds: normalizeProgressIds(collectedIncantationIds),
     collectedSpiritAshIds: normalizeProgressIds(collectedSpiritAshIds),
     collectedTalismanIds: normalizeProgressIds(collectedTalismanIds),
+    collectedWeaponIds: normalizeProgressIds(collectedWeaponIds),
   };
 }
 
@@ -51,7 +54,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function parseProgressState(value: unknown): {
-  readonly state: ProgressStateV5;
+  readonly state: ProgressStateV6;
   readonly shouldPersist: boolean;
 } {
   if (Array.isArray(value)) {
@@ -80,6 +83,9 @@ function parseProgressState(value: unknown): {
           typeof value.schemaVersion === 'number' && value.schemaVersion >= 5
             ? value.collectedTalismanIds
             : [],
+          typeof value.schemaVersion === 'number' && value.schemaVersion >= 6
+            ? value.collectedWeaponIds
+            : [],
         );
   const canonicalValue = JSON.stringify(state);
 
@@ -91,7 +97,7 @@ function parseProgressState(value: unknown): {
   };
 }
 
-async function readProgressState(): Promise<ProgressStateV5> {
+async function readProgressState(): Promise<ProgressStateV6> {
   let storedValue: string | null;
 
   try {
@@ -123,7 +129,7 @@ async function readProgressState(): Promise<ProgressStateV5> {
   return state;
 }
 
-async function writeProgressState(state: ProgressStateV5): Promise<void> {
+async function writeProgressState(state: ProgressStateV6): Promise<void> {
   const normalizedState = createProgressState(
     state.defeatedBossIds,
     state.collectedAshOfWarIds,
@@ -131,6 +137,7 @@ async function writeProgressState(state: ProgressStateV5): Promise<void> {
     state.collectedIncantationIds,
     state.collectedSpiritAshIds,
     state.collectedTalismanIds,
+    state.collectedWeaponIds,
   );
 
   try {
@@ -162,7 +169,8 @@ async function updateProgressIds(
     | 'collectedSorceryIds'
     | 'collectedIncantationIds'
     | 'collectedSpiritAshIds'
-    | 'collectedTalismanIds',
+    | 'collectedTalismanIds'
+    | 'collectedWeaponIds',
   id: string,
   shouldInclude: boolean,
 ): Promise<void> {
@@ -181,7 +189,7 @@ async function updateProgressIds(
   await writeProgressState({ ...current, [field]: nextIds });
 }
 
-export async function loadProgressState(): Promise<ProgressStateV5> {
+export async function loadProgressState(): Promise<ProgressStateV6> {
   await progressMutationQueue;
   return readProgressState();
 }
@@ -209,6 +217,7 @@ export async function loadCollectedSpiritAshIds(): Promise<string[]> {
 export async function loadCollectedTalismanIds(): Promise<string[]> {
   return [...(await loadProgressState()).collectedTalismanIds];
 }
+export async function loadCollectedWeaponIds(): Promise<string[]> { return [...(await loadProgressState()).collectedWeaponIds]; }
 
 export async function saveDefeatedBossIds(ids: readonly string[]): Promise<void> {
   return enqueueProgressMutation(async () => {
@@ -326,6 +335,8 @@ export async function removeCollectedTalismanId(id: string): Promise<void> {
   const normalizedId = requireProgressId(id, 'Talisman');
   return enqueueProgressMutation(() => updateProgressIds('collectedTalismanIds', normalizedId, false));
 }
+export async function addCollectedWeaponId(id: string): Promise<void> { const value=requireProgressId(id,'Weapon'); return enqueueProgressMutation(()=>updateProgressIds('collectedWeaponIds',value,true)); }
+export async function removeCollectedWeaponId(id: string): Promise<void> { const value=requireProgressId(id,'Weapon'); return enqueueProgressMutation(()=>updateProgressIds('collectedWeaponIds',value,false)); }
 
 export async function clearProgress(): Promise<void> {
   return enqueueProgressMutation(() => writeProgressState(createProgressState()));

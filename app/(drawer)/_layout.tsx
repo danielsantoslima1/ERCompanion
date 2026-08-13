@@ -141,6 +141,10 @@ export default function DrawerLayout() {
       <Drawer.Screen name="talismans/index" options={{ drawerItemStyle: { display: 'none' }, title: 'Talismans' }} />
       <Drawer.Screen name="talismans/base-game" options={{ drawerItemStyle: { display: 'none' }, title: 'Talismans — Base game' }} />
       <Drawer.Screen name="talismans/shadow-of-the-erdtree" options={{ drawerItemStyle: { display: 'none' }, title: 'Talismans — Shadow of the Erdtree' }} />
+      <Drawer.Screen name="weapons/index" options={{ drawerItemStyle: { display: 'none' }, title: 'Weapons' }} />
+      <Drawer.Screen name="weapons/all" options={{ drawerItemStyle: { display: 'none' }, title: 'All Weapons' }} />
+      <Drawer.Screen name="weapons/base-game" options={{ drawerItemStyle: { display: 'none' }, title: 'Weapons — Base Game' }} />
+      <Drawer.Screen name="weapons/shadow-of-the-erdtree" options={{ drawerItemStyle: { display: 'none' }, title: 'Weapons — Shadow of the Erdtree' }} />
       <Drawer.Screen
         name="index/remembrance-bosses/index"
         options={{

@@ -128,6 +128,7 @@ export {
   PROGRESS_TOTALS,
 } from './progress-selectors';
 export type { CompletionProgress } from './progress-selectors';
+export * from './weapons';
 export type {
   AshOfWar,
   AshOfWarAcquisitionMethod,

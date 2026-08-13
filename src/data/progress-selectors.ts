@@ -7,6 +7,7 @@ import {
 import { incantations, sorceries, type SpellContentPack } from './spells';
 import { spiritAshes, type SpiritAshContentPack } from './spirit-ashes';
 import { talismans, type TalismanContentPack } from './talismans';
+import { weapons } from './weapons';
 
 export interface CompletionProgress {
   readonly completed: number;
@@ -21,7 +22,8 @@ export const PROGRESS_TOTALS = {
   incantations: 129,
   spiritAshes: 84,
   talismans: 154,
-  combined: 775,
+  weapons: 479,
+  combined: 1254,
   bossByContentPack: {
     'base-game': 165,
     'shadow-of-the-erdtree': 43,
@@ -206,6 +208,7 @@ export function calculateCombinedProgress(
   collectedIncantationIds: readonly string[] = [],
   collectedSpiritAshIds: readonly string[] = [],
   collectedTalismanIds: readonly string[] = [],
+  collectedWeaponIds: readonly string[] = [],
 ): CompletionProgress {
   const completed =
     calculateBossCatalogProgress(defeatedBossIds).completed +
@@ -213,7 +216,8 @@ export function calculateCombinedProgress(
     calculateSorceryProgress(collectedSorceryIds).completed +
     calculateIncantationProgress(collectedIncantationIds).completed +
     calculateSpiritAshProgress(collectedSpiritAshIds).completed +
-    calculateTalismanProgress(collectedTalismanIds).completed;
+    calculateTalismanProgress(collectedTalismanIds).completed +
+    createKnownProgress(collectedWeaponIds, new Set(weapons.map((weapon) => weapon.id))).completed;
 
   return {
     completed,

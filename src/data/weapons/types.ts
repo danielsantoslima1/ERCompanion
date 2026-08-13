@@ -1,0 +1,5 @@
+export type WeaponContentPack = 'base-game' | 'shadow-of-the-erdtree';
+export interface WeaponType { readonly id: string; readonly name: string; readonly order: number }
+export interface StatRequirements { readonly strength: number | null; readonly dexterity: number | null; readonly intelligence: number | null; readonly faith: number | null; readonly arcane: number | null }
+export interface Weapon { readonly id: string; readonly name: string; readonly weaponTypeId: string; readonly contentPack: WeaponContentPack; readonly primaryLocation: string; readonly region: string; readonly detailedLocation: string | null; readonly acquisition: string; readonly nearestSiteOfGrace: string | null; readonly weight: number | null; readonly skill: string | null; readonly passiveEffects: readonly string[]; readonly upgradeMaterial: string | null; readonly statRequirements: StatRequirements; readonly description: string | null }
+export interface WeaponTypeCount extends WeaponType { readonly base: number; readonly dlc: number; readonly total: number }

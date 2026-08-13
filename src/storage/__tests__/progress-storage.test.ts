@@ -4,6 +4,7 @@ import {
   addCollectedAshOfWarId,
   addCollectedIncantationId,
   addCollectedSorceryId,
+  addCollectedWeaponId,
   addDefeatedBossId,
   clearProgress,
   isAshOfWarCollected,
@@ -11,11 +12,13 @@ import {
   loadCollectedAshOfWarIds,
   loadCollectedIncantationIds,
   loadCollectedSorceryIds,
+  loadCollectedWeaponIds,
   loadDefeatedBossIds,
   loadProgressState,
   removeCollectedAshOfWarId,
   removeCollectedIncantationId,
   removeCollectedSorceryId,
+  removeCollectedWeaponId,
   removeDefeatedBossId,
   saveDefeatedBossIds,
   toggleCollectedAshOfWarId,
@@ -38,19 +41,45 @@ const state = (
   collectedIncantationIds: readonly string[] = [],
   collectedSpiritAshIds: readonly string[] = [],
 ) => ({
-  schemaVersion: 5,
+  schemaVersion: 6,
   defeatedBossIds,
   collectedAshOfWarIds,
   collectedSorceryIds,
   collectedIncantationIds,
   collectedSpiritAshIds,
   collectedTalismanIds: [],
+  collectedWeaponIds: [],
 });
 
 describe('progress storage v3', () => {
   beforeEach(async () => {
     await AsyncStorage.clear();
     jest.clearAllMocks();
+  });
+
+  it('migrates v5 to v6 while preserving previous progress and starting Weapons empty', async () => {
+    await AsyncStorage.setItem(PROGRESS_KEY, JSON.stringify({
+      schemaVersion: 5,
+      defeatedBossIds: ['boss-a'],
+      collectedAshOfWarIds: ['ash-a'],
+      collectedSorceryIds: ['sorcery-a'],
+      collectedIncantationIds: ['incantation-a'],
+      collectedSpiritAshIds: ['spirit-a'],
+      collectedTalismanIds: ['talisman-a'],
+      collectedWeaponIds: ['injected-weapon'],
+    }));
+
+    await expect(loadProgressState()).resolves.toEqual({
+      ...state(['boss-a'], ['ash-a'], ['sorcery-a'], ['incantation-a'], ['spirit-a']),
+      collectedTalismanIds: ['talisman-a'],
+    });
+  });
+
+  it('persists and removes Weapon progress independently', async () => {
+    await addCollectedWeaponId('weapon-a');
+    await expect(loadCollectedWeaponIds()).resolves.toEqual(['weapon-a']);
+    await removeCollectedWeaponId('weapon-a');
+    await expect(loadCollectedWeaponIds()).resolves.toEqual([]);
   });
 
   it('returns an empty v3 state when storage is absent or corrupted', async () => {

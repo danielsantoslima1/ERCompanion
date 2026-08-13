@@ -14,6 +14,7 @@ import {
   loadCollectedAshOfWarIds,
   loadCollectedIncantationIds,
   loadCollectedSorceryIds,
+  loadCollectedWeaponIds,
   loadSettings,
   removeDefeatedBossId,
   removeCollectedAshOfWarId,
@@ -43,6 +44,9 @@ jest.mock('../../storage', () => ({
   loadCollectedAshOfWarIds: jest.fn(),
   loadCollectedSorceryIds: jest.fn(),
   loadCollectedIncantationIds: jest.fn(),
+  loadCollectedWeaponIds: jest.fn(),
+  addCollectedWeaponId: jest.fn(),
+  removeCollectedWeaponId: jest.fn(),
   saveDefeatedBossIds: jest.fn(),
   addDefeatedBossId: jest.fn(),
   addCollectedAshOfWarId: jest.fn(),
@@ -63,6 +67,7 @@ const mockedLoadDefeatedBossIds = jest.mocked(loadDefeatedBossIds);
 const mockedLoadCollectedAshOfWarIds = jest.mocked(loadCollectedAshOfWarIds);
 const mockedLoadCollectedSorceryIds = jest.mocked(loadCollectedSorceryIds);
 const mockedLoadCollectedIncantationIds = jest.mocked(loadCollectedIncantationIds);
+const mockedLoadCollectedWeaponIds = jest.mocked(loadCollectedWeaponIds);
 const mockedSaveDefeatedBossIds = jest.mocked(saveDefeatedBossIds);
 const mockedAddDefeatedBossId = jest.mocked(addDefeatedBossId);
 const mockedAddCollectedAshOfWarId = jest.mocked(addCollectedAshOfWarId);
@@ -257,6 +262,8 @@ beforeEach(() => {
   mockedLoadCollectedSorceryIds.mockResolvedValue([]);
   mockedLoadCollectedIncantationIds.mockReset();
   mockedLoadCollectedIncantationIds.mockResolvedValue([]);
+  mockedLoadCollectedWeaponIds.mockReset();
+  mockedLoadCollectedWeaponIds.mockResolvedValue([]);
   mockedSaveDefeatedBossIds.mockReset();
   mockedSaveDefeatedBossIds.mockResolvedValue();
   mockedAddDefeatedBossId.mockReset();

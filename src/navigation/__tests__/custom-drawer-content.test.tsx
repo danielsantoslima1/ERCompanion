@@ -259,6 +259,7 @@ describe('CustomDrawerContent', () => {
       mockAppState.translations.navigation.expandIncantations,
       'Spirit Ashes',
       'Expand Talismans',
+      'Expand Weapons',
       'Expand Index',
       mockAppState.translations.navigation.settings,
     ]);
@@ -313,6 +314,7 @@ describe('CustomDrawerContent', () => {
       mockAppState.translations.navigation.expandIncantations,
       'Spirit Ashes',
       'Expand Talismans',
+      'Expand Weapons',
       'Expand Index',
       mockAppState.translations.navigation.settings,
     ]);
